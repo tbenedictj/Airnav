@@ -1,11 +1,21 @@
 import logo from '../assets/icon/logo.svg';
-import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react"
-import { useContext, createContext, useState } from "react"
+import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react";
+import { useContext, createContext, useState } from "react";
+import {
+  LifeBuoy,
+  Receipt,
+  Boxes,
+  Package,
+  CircleUser,
+  ChartColumn,
+  LayoutDashboard,
+  Settings
+} from  "lucide-react"
 
-const SidebarContext = createContext()
+const SidebarContext = createContext();
 
-export default function Sidebar({ children }) {
-  const [expanded, setExpanded] = useState(true)
+export default function Sidebar() {
+  const [expanded, setExpanded] = useState(true);
   
   return (
     <aside className="h-screen">
@@ -27,7 +37,21 @@ export default function Sidebar({ children }) {
         </div>
 
         <SidebarContext.Provider value={{ expanded }}>
-          <ul className="flex-1 px-3">{children}</ul>
+          <ul className="flex-1 px-3">
+            <SidebarItem
+              icon={<LayoutDashboard size={20} />}
+              text="Dashboard"
+              alert
+            />
+            <SidebarItem icon={<ChartColumn size={20} />} text="Statistics" active />
+            <SidebarItem icon={<CircleUser size={20} />} text="Users" />
+            <SidebarItem icon={<Boxes size={20} />} text="Inventory" />
+            <SidebarItem icon={<Package size={20} />} text="Orders" alert />
+            <SidebarItem icon={<Receipt size={20} />} text="Billings" />
+            <hr className='my-3'/>
+            <SidebarItem icon={<Settings size={20} />} text="Settings" />
+            <SidebarItem icon={<LifeBuoy size={20} />} text="Help" />
+          </ul>
         </SidebarContext.Provider>
 
         <div className="border-t flex p-3">
@@ -51,11 +75,11 @@ export default function Sidebar({ children }) {
         </div>
       </nav>
     </aside>
-  )
+  );
 }
 
 export function SidebarItem({ icon, text, active, alert }) {
-  const { expanded } = useContext(SidebarContext)
+  const { expanded } = useContext(SidebarContext);
   
   return (
     <li
@@ -99,5 +123,5 @@ export function SidebarItem({ icon, text, active, alert }) {
         </div>
       )}
     </li>
-  )
+  );
 }

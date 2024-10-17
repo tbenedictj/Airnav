@@ -6,7 +6,7 @@ import LoginForm from './LoginForm';  // Mengimpor LoginForm
 function App() {
   const [count, setCount] = useState(0);
 
-export default function App() {
+const function App() {
   return (
     <>
       <h1 className="text-3xl font-bold underline">

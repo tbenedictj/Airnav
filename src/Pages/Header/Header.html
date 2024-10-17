@@ -1,0 +1,35 @@
+<html>
+<head>
+    <script src="https://unpkg.com/react/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"></link>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const App = () => {
+            return (
+                <div className="flex items-center justify-between p-4 bg-white shadow-sm">
+                    <div className="text-gray-500">
+                        Thursday, 17 October 2024
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        <div className="text-gray-500">
+                            Selamat Bekerja,<span className="font-bold text-gray-700">Dinas Pagi</span>
+                        </div>
+                        <div className="border-l h-6 border-gray-300"></div>
+                        <div className="flex items-center text-gray-500">
+                            <span>admin</span>
+                            <i className="fas fa-user ml-2"></i>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>

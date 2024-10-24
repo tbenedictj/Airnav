@@ -70,3 +70,29 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+
+/* Sidebar and Header Positioning */
+aside {
+  width: 260px; /* Lebar default Sidebar */
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  transition: width 0.3s ease-in-out;
+  z-index: 1000;
+}
+.sidebar-collapsed {
+  width: 80px; /* Lebar ketika collapsed */
+}
+
+.header {
+  z-index: 999;
+  left: 260px; /* Sesuaikan dengan lebar default Sidebar */
+  right: 0;
+  top: 0;
+  position: fixed;
+  transition: left 0.3s ease-in-out;
+}
+.header-collapsed {
+  left: 80px; /* Sesuaikan saat Sidebar collapsed */
+}

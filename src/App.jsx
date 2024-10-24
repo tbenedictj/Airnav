@@ -1,20 +1,22 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
-import Sidebar from './Sidebar';  // Pastikan ini valid jika Sidebar ada
-import LoginForm from './LoginForm';  // Mengimpor LoginForm
+import Sidebar, { SidebarContext } from './Component/Sidebar/Sidebar';
+import Header from './Component/Header/Header';
+import CatatanMingguan from './Pages/catatan/catatanmingguan';
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [expanded, setExpanded] = useState(true); // Pastikan ini ada
 
-const function App() {
   return (
-    <>
-      <h1 className="text-3xl font-bold underline">
-        Hello world!
-      </h1>
-      <Sidebar />  {/* Menampilkan Sidebar */}
-      <LoginForm />  {/* Menampilkan LoginForm */}
-    </>
+    <div className="flex">
+      <SidebarContext.Provider value={{ expanded, setExpanded }}>
+        <Sidebar />
+        <div className="flex-1">
+          <Header />
+          <CatatanMingguan />
+        </div>
+      </SidebarContext.Provider>
+    </div>
   );
 }
 

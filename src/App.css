@@ -40,3 +40,8 @@
 .read-the-docs {
   color: #888;
 }
+
+/* Reset margin-top for header coverage */
+body {
+  margin-top: 70px; /* Adjust according to the header's height */
+}

@@ -1,21 +1,15 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './App.css';
-import Sidebar, { SidebarContext } from './Component/Sidebar/Sidebar';
-import Header from './Component/Header/Header';
+import Navigation from './Component/Nav/Navigation';
 import CatatanMingguan from './Pages/catatan/catatanmingguan';
 
 function App() {
-  const [expanded, setExpanded] = useState(true); // Pastikan ini ada
-
   return (
     <div className="flex">
-      <SidebarContext.Provider value={{ expanded, setExpanded }}>
-        <Sidebar />
-        <div className="flex-1">
-          <Header />
-          <CatatanMingguan />
-        </div>
-      </SidebarContext.Provider>
+      <Navigation />
+      <div className="flex-1">
+        <CatatanMingguan />
+      </div>
     </div>
   );
 }

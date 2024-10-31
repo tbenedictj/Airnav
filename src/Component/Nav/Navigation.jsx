@@ -1,7 +1,7 @@
 import React, { useState, createContext, useContext } from 'react';
 import logo from "../../assets/Icon/logo.svg";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
 import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react";
 import {
   LifeBuoy, Receipt, Boxes, Package, CircleUser, ChartColumn, LayoutDashboard, Settings
@@ -38,7 +38,7 @@ export default function Navigation() {
 
   return (
     <NavigationContext.Provider value={{ expanded, setExpanded }}>
-      <aside className={`fixed top-0 h-screen transition-all bg-white border-r shadow-sm ${expanded ? 'w-40' : 'w-16'}`}>
+      <aside className={`fixed top-0 h-screen transition-all bg-white border-r shadow-sm ${expanded ? 'w-40' : 'w-16'} sidebar`}>
         <nav className="h-full flex flex-col">
           <div className="p-4 pb-2 flex justify-between items-center">
             <img src={logo} className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`} alt="Logo"/>
@@ -60,8 +60,7 @@ export default function Navigation() {
         </nav>
       </aside>
       
-      {/* Header component */}
-      <div className={`fixed top-0 z-10 w-full bg-white shadow-sm transition-all duration-300 ${expanded ? 'pl-40' : 'pl-16'}`}>
+      <div className={`fixed top-0 z-10 w-full bg-white shadow-sm transition-all duration-300 ${expanded ? 'pl-40' : 'pl-16'} header`}>
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center space-x-4">
             <div className="text-gray-500">Thursday, 17 October 2024</div>

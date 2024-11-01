@@ -1,19 +1,19 @@
 import React, { useContext } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBars } from '@fortawesome/free-solid-svg-icons';
-import { SidebarContext } from '../Sidebar/Sidebar';
-import '../../App.css';
+import { SidebarContext } from '../Sidebar/Sidebar'; // Pastikan path ini benar sesuai struktur folder Anda
+import '../../App.css'; // Pastikan path ini benar sesuai struktur folder Anda
 
 export default function Header() {
-  const { expanded, setExpanded } = useContext(SidebarContext);
+  const { expanded, setExpanded } = useContext(SidebarContext); // Menggunakan context untuk mendapatkan state 'expanded' dan fungsi 'setExpanded'
 
-  // Fungsi untuk toggle sidebar
+  // Fungsi untuk toggle state 'expanded' pada sidebar
   const toggleSidebar = () => {
-    setExpanded(!expanded);
+    setExpanded(!expanded); // Mengubah state 'expanded'
   };
 
   return (
-    <div className={`fixed top-0 z-10 w-full bg-white shadow-sm transition-all ${expanded ? 'pl-40' : 'pl-16'}`}>
+    <div className={expanded ? "header" : "header-collapsed"}>
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center">
           <button onClick={toggleSidebar} className="text-gray-600 mr-4">

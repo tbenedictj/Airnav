@@ -1,15 +1,37 @@
-/* App.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
 .sidebar {
-  z-index: 20; /* Memastikan sidebar di atas header */
+  z-index: 20; 
 }
 
 .header {
-  width: calc(100% - 40px); /* Sesuaikan lebar header sesuai dengan sidebar yang diperluas */
-  z-index: 10; /* Lebih rendah dari sidebar untuk mencegah overlap */
-  transition: width 300ms ease; /* Transisi yang halus ketika sidebar diperluas/diperkecil */
+  width: calc(100% - 40px); 
+  z-index: 10; 
+  transition: width 300ms ease; 
 }
 
-/* Sesuaikan lebar header saat sidebar diperkecil */
 .header.collapsed {
   width: calc(100% - 16px);
 }
+
+.container {
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  min-height: 100vh;
+  padding: 2rem; 
+  margin: auto;
+}
+
+.table-container {
+  width: 100%;
+  max-width: 960px;
+}
+
+.table-container table {
+  width: 100%;
+}
+

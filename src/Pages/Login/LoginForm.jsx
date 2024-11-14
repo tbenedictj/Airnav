@@ -1,12 +1,12 @@
 // src/components/LoginForm.js
 import React, { useState, useEffect } from 'react';
 import './LoginForm.css';
-import bg1 from '../assets/img/bg_1.jpg';
-import bg2 from '../assets/img/bg_2.jpg';
-import bg3 from '../assets/img/bg_3.jpg';
-import bg4 from '../assets/img/bg_4.jpg';
-import bg5 from '../assets/img/bg_5.JPG';
-import logo from '../assets/img/logoairnav3D.png';
+import bg1 from '../../assets/background/mb1.jpg';
+import bg2 from '../../assets/background/mb2.jpg';
+import bg3 from '../../assets/background/mb3.jpg';
+import bg4 from '../../assets/background/mb4.jpg';
+import bg5 from '../../assets/background/of1.jpg';
+import logo from '../../assets/background/logo1.jpg';
 
 const LoginForm = () => {
   const [username, setUsername] = useState('');

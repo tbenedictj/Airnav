@@ -1,14 +1,13 @@
 import React from 'react';
 import './App.css';
-import Navigation from './Component/Nav/Navigation';
-import CatatanMingguan from './Pages/catatan/catatanmingguan';
+import Teknisi from './Pages/Teknisi/Teknisi';
+import LoginForm from './Pages/Login/LoginForm';
 
 function App() {
   return (
     <div className="flex">
-      <Navigation />
-      <div className="flex-1">
-        <CatatanMingguan />
+      <LoginForm />
+      <div className="flex-1 main-content">
       </div>
     </div>
   );

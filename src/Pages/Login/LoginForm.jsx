@@ -1,5 +1,8 @@
-// src/components/LoginForm.js
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../config/firebase';
+import { useAuth } from '../../contexts/AuthContext';
 import './LoginForm.css';
 import bg1 from '../../assets/background/mb1.jpg';
 import bg2 from '../../assets/background/mb2.jpg';
@@ -9,22 +12,66 @@ import bg5 from '../../assets/background/of1.jpg';
 import logo from '../../assets/background/logo1.jpg';
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
   const slides = [bg1, bg2, bg3, bg4, bg5];
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
-  // Mengatur timeout untuk logout setelah 5 menit tidak ada aktivitas
+  // Redirect if already logged in
   useEffect(() => {
-    const timeout = 300000; // 5 menit dalam milidetik
+    if (currentUser) {
+      navigate('/dashboard');
+    }
+  }, [currentUser, navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      switch (error.code) {
+        case 'auth/invalid-email':
+          setError('Email tidak valid.');
+          break;
+        case 'auth/user-disabled':
+          setError('Akun ini telah dinonaktifkan.');
+          break;
+        case 'auth/user-not-found':
+          setError('Email tidak ditemukan.');
+          break;
+        case 'auth/wrong-password':
+          setError('Password salah.');
+          break;
+        default:
+          setError('Terjadi kesalahan saat login. Silakan coba lagi.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Auto logout after 5 minutes of inactivity
+  useEffect(() => {
+    const timeout = 300000; // 5 minutes in milliseconds
     let timer = setTimeout(() => {
-      window.location.href = 'https://teknikairnavmanado.com/Login/logout';
+      auth.signOut();
+      navigate('/login');
     }, timeout);
 
     const resetTimeout = () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        window.location.href = 'https://teknikairnavmanado.com/Login/logout';
+        auth.signOut();
+        navigate('/login');
       }, timeout);
     };
 
@@ -40,75 +87,87 @@ const LoginForm = () => {
       window.removeEventListener('click', resetTimeout);
       window.removeEventListener('scroll', resetTimeout);
     };
-  }, []);
+  }, [navigate]);
 
-  // Mengatur slideshow background
+  // Background slideshow
   useEffect(() => {
     const interval = setInterval(() => {
       setSlideIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 5000); // Ganti gambar setiap 5 detik
+    }, 5000);
     return () => clearInterval(interval);
   }, [slides.length]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Lakukan aksi login, misalnya panggil API
-    console.log('Username:', username);
-    console.log('Password:', password);
-    // Implementasikan logika autentikasi sesuai kebutuhan
-  };
-
   return (
-    <div className="login-page">
-      <div className="slideshow">
-        {slides.map((slide, index) => (
-          <img
-            key={index}
-            src={slide}
-            alt={`Background ${index + 1}`}
-            className={slideIndex === index ? 'active' : ''}
-          />
-        ))}
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img
+          src={slides[slideIndex]}
+          alt="background"
+          className="w-full h-full object-cover"
+          style={{ opacity: 0.8 }}
+        />
       </div>
-      <div className="blur-background"></div>
-      <div className="container">
-        <div className="heading">
-          <button className="cta">
-            <span>Sign In</span>
-            <svg width="15px" height="10px" viewBox="0 0 13 10">
-              <path d="M1,5 L11,5"></path>
-              <polyline points="8 1 12 5 8 9"></polyline>
-            </svg>
-          </button>
-          <img src={logo} alt="AirNav_Logo" className="logo" />
+      
+      <div className="bg-white p-8 rounded-lg shadow-md w-96 z-10 relative">
+        <div className="text-center mb-6">
+          <img src={logo} alt="Logo" className="mx-auto w-32 mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800">Login</h2>
         </div>
-        <div className="form">
-          <form onSubmit={handleSubmit}>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Email
+            </label>
             <input
-              type="text"
-              name="username"
-              className="input"
-              placeholder="Username"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
             />
+          </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Password
+            </label>
             <input
               type="password"
-              name="password"
-              className="input"
-              placeholder="Password"
-              required
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
             />
-            <button className="login-button" type="submit">
-              Login
-            </button>
-          </form>
-        </div>
-        <div className="agreement">
-          <a href="#">Teknik Airnav Cabang Manado</a>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors
+              ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                <span className="ml-2">Loading...</span>
+              </div>
+            ) : (
+              'Login'
+            )}
+          </button>
+        </form>
+
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600">
+            Teknik Airnav Cabang Manado
+          </p>
         </div>
       </div>
     </div>

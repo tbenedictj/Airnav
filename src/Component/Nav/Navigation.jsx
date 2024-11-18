@@ -168,16 +168,16 @@ export default function Navigation({ onToggle }) {
         <div className="flex items-center justify-end p-4">
           <div className="flex items-center space-x-4">
             <div className="flex items-center gap-2">
-              <div className="text-sm font-semibold text-gray-600">
+              <div className="text-sm font-semibold text-black">
                 {currentDate}
               </div>
             </div>
             <div className="border-l h-6 border-gray-300 mx-4"></div>
-            <div className="text-gray-500">
-              Selamat Bekerja, <span className="font-bold text-gray-700">{currentShift}</span>
+            <div className="text-black">
+              Selamat Bekerja, <span className="font-bold text-black">{currentShift}</span>
             </div>
             <div className="border-l h-6 border-gray-300 mx-4"></div>
-            <div className="flex items-center text-gray-500">
+            <div className="flex items-center text-black">
               <span>admin</span>
               <FontAwesomeIcon icon={faUser} className="ml-2" />
             </div>

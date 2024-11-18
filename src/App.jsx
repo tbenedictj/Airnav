@@ -41,7 +41,6 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <CatatanHarian />
-                    <LogoutButton />
                   </main>
                 </div>
               </PrivateRoute>

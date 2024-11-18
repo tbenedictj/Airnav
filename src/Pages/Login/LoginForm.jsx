@@ -21,7 +21,6 @@ const LoginForm = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
-  // Redirect if already logged in
   useEffect(() => {
     if (currentUser) {
       navigate('/dashboard');
@@ -38,28 +37,29 @@ const LoginForm = () => {
       navigate('/dashboard');
     } catch (error) {
       console.error('Login error:', error);
-      switch (error.code) {
-        case 'auth/invalid-email':
-          setError('Email tidak valid.');
-          break;
-        case 'auth/user-disabled':
-          setError('Akun ini telah dinonaktifkan.');
-          break;
-        case 'auth/user-not-found':
-          setError('Email tidak ditemukan.');
-          break;
-        case 'auth/wrong-password':
-          setError('Password salah.');
-          break;
-        default:
-          setError('Terjadi kesalahan saat login. Silakan coba lagi.');
-      }
+      const errorCode = error.code;
+      const errorMessage = getErrorMessage(errorCode);
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  // Auto logout after 5 minutes of inactivity
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case 'auth/invalid-email':
+        return 'Email tidak valid.';
+      case 'auth/user-disabled':
+        return 'Akun ini telah dinonaktifkan.';
+      case 'auth/user-not-found':
+        return 'Email tidak ditemukan.';
+      case 'auth/wrong-password':
+        return 'Password salah.';
+      default:
+        return 'Terjadi kesalahan saat login. Silakan coba lagi.';
+    }
+  };
+
   useEffect(() => {
     const timeout = 300000; // 5 minutes in milliseconds
     let timer = setTimeout(() => {
@@ -89,7 +89,6 @@ const LoginForm = () => {
     };
   }, [navigate]);
 
-  // Background slideshow
   useEffect(() => {
     const interval = setInterval(() => {
       setSlideIndex((prevIndex) => (prevIndex + 1) % slides.length);

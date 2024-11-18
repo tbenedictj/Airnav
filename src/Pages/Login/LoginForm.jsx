@@ -14,7 +14,6 @@ const LoginForm = () => {
   const [slideIndex, setSlideIndex] = useState(0);
   const slides = [bg1, bg2, bg3, bg4, bg5];
 
-  // Mengatur timeout untuk logout setelah 5 menit tidak ada aktivitas
   useEffect(() => {
     const timeout = 300000; // 5 menit dalam milidetik
     let timer = setTimeout(() => {
@@ -42,20 +41,17 @@ const LoginForm = () => {
     };
   }, []);
 
-  // Mengatur slideshow background
   useEffect(() => {
     const interval = setInterval(() => {
       setSlideIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 5000); // Ganti gambar setiap 5 detik
+    }, 5000);
     return () => clearInterval(interval);
   }, [slides.length]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // Lakukan aksi login, misalnya panggil API
     console.log('Username:', username);
     console.log('Password:', password);
-    // Implementasikan logika autentikasi sesuai kebutuhan
   };
 
   return (
@@ -72,43 +68,35 @@ const LoginForm = () => {
       </div>
       <div className="blur-background"></div>
       <div className="container">
-        <div className="heading">
-          <button className="cta">
-            <span>Sign In</span>
-            <svg width="15px" height="10px" viewBox="0 0 13 10">
-              <path d="M1,5 L11,5"></path>
-              <polyline points="8 1 12 5 8 9"></polyline>
-            </svg>
-          </button>
-          <img src={logo} alt="AirNav_Logo" className="logo" />
-        </div>
-        <div className="form">
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="username"
-              className="input"
-              placeholder="Username"
-              required
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-            <input
-              type="password"
-              name="password"
-              className="input"
-              placeholder="Password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <button className="login-button" type="submit">
-              Login
-            </button>
-          </form>
-        </div>
-        <div className="agreement">
-          <a href="#">Teknik Airnav Cabang Manado</a>
+        <div className="form-container">
+          <div className="heading">
+            <img src={logo} alt="AirNav_Logo" className="logo" />
+          </div>
+          <div className="form">
+            <form onSubmit={handleSubmit}>
+              <input
+                type="text"
+                name="username"
+                className="input"
+                placeholder="Username"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <input
+                type="password"
+                name="password"
+                className="input"
+                placeholder="Password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <button type="submit" className="login-button">
+                Sign In
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

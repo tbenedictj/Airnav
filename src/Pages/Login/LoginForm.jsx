@@ -1,5 +1,8 @@
-// src/components/LoginForm.js
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../config/firebase';
+import { useAuth } from '../../contexts/AuthContext';
 import './LoginForm.css';
 import bg1 from '../../assets/background/mb1.jpg';
 import bg2 from '../../assets/background/mb2.jpg';
@@ -9,21 +12,66 @@ import bg5 from '../../assets/background/of1.jpg';
 import logo from '../../assets/background/logo1.jpg';
 
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const [slideIndex, setSlideIndex] = useState(0);
   const slides = [bg1, bg2, bg3, bg4, bg5];
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
-    const timeout = 300000; // 5 menit dalam milidetik
+    if (currentUser) {
+      navigate('/dashboard');
+    }
+  }, [currentUser, navigate]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/dashboard');
+    } catch (error) {
+      console.error('Login error:', error);
+      const errorCode = error.code;
+      const errorMessage = getErrorMessage(errorCode);
+      setError(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const getErrorMessage = (errorCode) => {
+    switch (errorCode) {
+      case 'auth/invalid-email':
+        return 'Email tidak valid.';
+      case 'auth/user-disabled':
+        return 'Akun ini telah dinonaktifkan.';
+      case 'auth/user-not-found':
+        return 'Email tidak ditemukan.';
+      case 'auth/wrong-password':
+        return 'Password salah.';
+      default:
+        return 'Terjadi kesalahan saat login. Silakan coba lagi.';
+    }
+  };
+
+  useEffect(() => {
+    const timeout = 300000; // 5 minutes in milliseconds
     let timer = setTimeout(() => {
-      window.location.href = 'https://teknikairnavmanado.com/Login/logout';
+      auth.signOut();
+      navigate('/login');
     }, timeout);
 
     const resetTimeout = () => {
       clearTimeout(timer);
       timer = setTimeout(() => {
-        window.location.href = 'https://teknikairnavmanado.com/Login/logout';
+        auth.signOut();
+        navigate('/login');
       }, timeout);
     };
 
@@ -39,7 +87,7 @@ const LoginForm = () => {
       window.removeEventListener('click', resetTimeout);
       window.removeEventListener('scroll', resetTimeout);
     };
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -48,55 +96,77 @@ const LoginForm = () => {
     return () => clearInterval(interval);
   }, [slides.length]);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Username:', username);
-    console.log('Password:', password);
-  };
-
   return (
-    <div className="login-page">
-      <div className="slideshow">
-        {slides.map((slide, index) => (
-          <img
-            key={index}
-            src={slide}
-            alt={`Background ${index + 1}`}
-            className={slideIndex === index ? 'active' : ''}
-          />
-        ))}
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <img
+          src={slides[slideIndex]}
+          alt="background"
+          className="w-full h-full object-cover"
+          style={{ opacity: 0.8 }}
+        />
       </div>
-      <div className="blur-background"></div>
-      <div className="container">
-        <div className="form-container">
-          <div className="heading">
-            <img src={logo} alt="AirNav_Logo" className="logo" />
+      
+      <div className="bg-white p-8 rounded-lg shadow-md w-96 z-10 relative">
+        <div className="text-center mb-6">
+          <img src={logo} alt="Logo" className="mx-auto w-32 mb-4" />
+          <h2 className="text-2xl font-bold text-gray-800">Login</h2>
+        </div>
+
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {error}
           </div>
-          <div className="form">
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="username"
-                className="input"
-                placeholder="Username"
-                required
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-              />
-              <input
-                type="password"
-                name="password"
-                className="input"
-                placeholder="Password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <button type="submit" className="login-button">
-                Sign In
-              </button>
-            </form>
+        )}
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Email
+            </label>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
           </div>
+
+          <div>
+            <label className="block text-gray-700 text-sm font-bold mb-2">
+              Password
+            </label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              required
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className={`w-full bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline transition-colors
+              ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-700'}`}
+          >
+            {loading ? (
+              <div className="flex items-center justify-center">
+                <div className="animate-spin rounded-full h-5 w-5 border-t-2 border-b-2 border-white"></div>
+                <span className="ml-2">Loading...</span>
+              </div>
+            ) : (
+              'Login'
+            )}
+          </button>
+        </form>
+
+        <div className="text-center mt-4">
+          <p className="text-sm text-gray-600">
+            Teknik Airnav Cabang Manado
+          </p>
         </div>
       </div>
     </div>

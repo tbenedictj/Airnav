@@ -1,120 +1,151 @@
-// Sidebar.jsx
-import React, { useContext, createContext, useState } from 'react';
-import logo from "../../assets/Icon/logo.svg";
-import { MoreVertical, ChevronLast, ChevronFirst } from "lucide-react";
+import React, { useState, createContext, useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import logo from "../../assets/background/logo4.jpg";
+import { ChevronLast, ChevronFirst, ChevronDown, ChevronUp, LogOut } from "lucide-react";
+import { signOut } from 'firebase/auth';
+import { auth } from '../../config/firebase';
 import {
-  LifeBuoy,
-  Receipt,
-  Boxes,
-  Package,
-  CircleUser,
-  ChartColumn,
-  LayoutDashboard,
-  Settings
+  Radio, LayoutDashboard, LifeBuoy
 } from "lucide-react";
 import '../../App.css';
 
 export const SidebarContext = createContext({
-  expanded: true, // Nilai default
-  setExpanded: () => {} // Fungsi kosong sebagai placeholder
+  expanded: true,
+  setExpanded: () => {}
 });
 
-export default function Sidebar() {
-  const [expanded, setExpanded] = useState(true);  // State untuk mengatur expand/collapse sidebar
-  
+function SidebarItem({ icon, text, active, onClick, hasSubmenu, isSubmenuOpen, submenuItems, className }) {
+  const { expanded } = useContext(SidebarContext);
+
+  return (
+    <div className={className}>
+      <li 
+        className={`nav-item ${active ? 'active' : ''} ${hasSubmenu ? 'cursor-pointer' : ''}`}
+        onClick={onClick}
+      >
+        <div className="nav-icon">{icon}</div>
+        <span className={`nav-text overflow-hidden transition-all ${expanded ? "opacity-100 w-32" : "opacity-0 w-0"}`}>
+          {text}
+        </span>
+        {hasSubmenu && expanded && (
+          <div className="ml-auto">
+            {isSubmenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </div>
+        )}
+        {!expanded && (
+          <div className="absolute left-full rounded-md px-2 py-1 ml-6 bg-white text-gray-700 text-sm invisible opacity-20 -translate-x-3 transition-all group-hover:visible group-hover:opacity-100 group-hover:translate-x-0 shadow-lg">
+            {text}
+          </div>
+        )}
+      </li>
+      {hasSubmenu && isSubmenuOpen && expanded && (
+        <ul className="ml-8 space-y-1">
+          {submenuItems.map((item, index) => (
+            <li key={index} className="text-sm py-2 text-gray-700 hover:text-blue-600 cursor-pointer">
+              {item}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export default function Sidebar({ onToggle }) {
+  const [expanded, setExpanded] = useState(true);
+  const [activeItem, setActiveItem] = useState('Dashboard');
+  const [cnsSubmenuOpen, setCnsSubmenuOpen] = useState(false);
+  const [supportSubmenuOpen, setSupportSubmenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const submenuItems = [
+    'Laporan kegiatan & kerusakan',
+    'Pemeliharaan Harian',
+    'Pemeliharaan Mingguan',
+    'Pemeliharaan Bulanan',
+    'Peralatan'
+  ];
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      navigate('/login');
+    } catch (error) {
+      console.error('Error logging out:', error);
+    }
+  };
+
+  const toggleSidebar = () => {
+    const newExpanded = !expanded;
+    setExpanded(newExpanded);
+    if (onToggle) {
+      onToggle(newExpanded);
+    }
+  };
+
+  const handleCnsClick = () => {
+    setCnsSubmenuOpen(!cnsSubmenuOpen);
+    setActiveItem('CNS');
+  };
+
+  const handleSupportClick = () => {
+    setSupportSubmenuOpen(!supportSubmenuOpen);
+    setActiveItem('Support');
+  };
+
   return (
     <SidebarContext.Provider value={{ expanded, setExpanded }}>
-      <aside
-        className={`fixed top-0 h-screen transition-all bg-white border-r shadow-sm ${
-          expanded ? 'w-40' : 'w-16'
-        }`}
-      >
+      <aside className={`sidebar ${!expanded ? 'collapsed' : ''}`}>
         <nav className="h-full flex flex-col">
-          <div className="p-4 pb-2 flex justify-between items-center">
-            <img
-              src={logo}
-              className={`overflow-hidden transition-all ${
-                expanded ? "w-32" : "w-0"
-              }`}
-              alt="Logo"
-            />
-            <button
-              onClick={() => setExpanded((curr) => !curr)}
-              className="p-1.5 rounded-lg bg-gray-50 hover:bg-gray-100"
+          <div className="p-4 pb-2 flex justify-between items-center border-b border-gray-200">
+            <img src={logo} className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`} alt="Logo"/>
+            <button 
+              onClick={toggleSidebar} 
+              className="p-1.5 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
             >
               {expanded ? <ChevronFirst /> : <ChevronLast />}
             </button>
           </div>
 
-          <ul className="flex-1 px-3">
-            <SidebarItem icon={<LayoutDashboard size={20} />} text="Dashboard" />
-            <SidebarItem icon={<ChartColumn size={20} />} text="Statistics" />
-            <SidebarItem icon={<CircleUser size={20} />} text="Users" />
-            <SidebarItem icon={<Boxes size={20} />} text="Inventory" />
-            <SidebarItem icon={<Package size={20} />} text="Orders" />
-            <SidebarItem icon={<Receipt size={20} />} text="Billings" />
-            <hr className="my-3" />
-            <SidebarItem icon={<Settings size={20} />} text="Settings" />
-            <SidebarItem icon={<LifeBuoy size={20} />} text="Help" />
-          </ul>
-
-          <div className="border-t flex p-3">
-            <img
-              src="https://ui-avatars.com/api/?background=c7d2fe&color=3730a3&bold=true"
-              alt="User Avatar"
-              className="w-10 h-10 rounded-md"
-            />
-            <div
-              className={`
-                flex justify-between items-center
-                overflow-hidden transition-all ${expanded ? "w-52 ml-3" : "w-0"}
-              `}
-            >
-              <div className="leading-4">
-                <h4 className="font-semibold">John Doe</h4>
-                <span className="text-xs text-gray-600">johndoe@gmail.com</span>
-              </div>
-              <MoreVertical size={20} />
+          <div className="flex-1 flex flex-col">
+            <ul className="flex-1 px-3 py-4 space-y-1">
+              <SidebarItem 
+                icon={<LayoutDashboard size={20} />} 
+                text="Dashboard" 
+                active={activeItem === 'Dashboard'}
+                onClick={() => setActiveItem('Dashboard')}
+              />
+              <SidebarItem 
+                icon={<Radio size={20} />} 
+                text="CNS" 
+                active={activeItem === 'CNS'}
+                hasSubmenu={true}
+                isSubmenuOpen={cnsSubmenuOpen}
+                submenuItems={submenuItems}
+                onClick={handleCnsClick}
+              />
+              <SidebarItem 
+                icon={<LifeBuoy size={20} />} 
+                text="Support" 
+                active={activeItem === 'Support'}
+                hasSubmenu={true}
+                isSubmenuOpen={supportSubmenuOpen}
+                submenuItems={submenuItems}
+                onClick={handleSupportClick}
+              />
+            </ul>
+            
+            <div className="mt-auto px-3 py-4 border-t border-gray-200">
+              <SidebarItem 
+                icon={<LogOut size={20} />} 
+                text="Logout" 
+                onClick={handleLogout}
+                className="hover:text-red-600"
+              />
             </div>
           </div>
         </nav>
       </aside>
     </SidebarContext.Provider>
-  );
-}
-
-function SidebarItem({ icon, text }) {
-  const { expanded } = useContext(SidebarContext);  // Menggunakan context untuk menampilkan icon/text
-  
-  return (
-    <li
-      className={`
-        relative flex items-center py-2 px-3 my-1
-        font-medium rounded-md cursor-pointer
-        transition-colors group
-        hover:bg-indigo-50 text-gray-600
-      `}
-    >
-      {icon}
-      <span
-        className={`overflow-hidden transition-all ${
-          expanded ? "w-52 ml-3" : "w-0"
-        }`}
-      >
-        {text}
-      </span>
-      {!expanded && (
-        <div
-          className={`
-            absolute left-full rounded-md px-2 py-1 ml-6
-            bg-indigo-100 text-indigo-800 text-sm
-            invisible opacity-20 -translate-x-3 transition-all
-            group-hover:visible group-hover:opacity-100 group-hover:translate-x-0
-          `}
-        >
-          {text}
-        </div>
-      )}
-    </li>
   );
 }

@@ -103,8 +103,8 @@ const LoginForm = () => {
       <div className="absolute inset-0 z-0 slideshow" >
         <img src={slides[slideIndex]} alt="background" className="w-full h-full object-cover" style={{opacity : 0.8}}/>
       </div>
-      <div className="bg-transparent p-8 rounded-lg shadow-md w-96 z-10"   />
-      <div className="bg-transparent p-8 rounded-lg shadow-md w-9 z-10"   />
+      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
+      <div className="bg-transparent p-8 rounded-lg w-9 z-10"   />
 
       
 
@@ -170,8 +170,8 @@ const LoginForm = () => {
           </p>
         </div>
       </div>
-      <div className="bg-transparent p-8 rounded-lg shadow-md w-96 z-10"   />
-      <div className="bg-transparent p-8 rounded-lg shadow-md w-96 z-10"   />
+      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
+      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
     </div>
 
   );

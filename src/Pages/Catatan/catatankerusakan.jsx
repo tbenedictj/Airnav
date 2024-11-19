@@ -1,18 +1,37 @@
 import React from 'react';
 
-const CatatanHarian = () => {
+const LaporanKerusakan = () => {
+    const data = [
+        {
+            date: "2024-08-18 16:00:00 sampai 2024-09-15 07:44:00",
+            alat: "AC Split 2 PK Daikin Kanan (MM)",
+            kegiatan: "Pada saat ..",
+            teknisi: "WISNU H. BIMANYU TUNAS T. MADA",
+            status: "Normal Ops",
+            paraf: "https://placehold.co/50x50",
+        },
+        {
+            date: "2024-09-23 15:15:00 sampai 2024-09-24 18:00:00",
+            alat: "Elevator/Lift Schindler (Tower)",
+            kegiatan: "Lift berop..",
+            teknisi: "DAVID KHARISMA. N EVAN H SIPAYUNG WISNU H. BIMANYU",
+            status: "Normal Ops",
+            paraf: "https://placehold.co/50x50",
+        },
+        // Tambahkan data lainnya di sini
+    ];
+
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Mingguan CNS</h1>
+            <h1 className="text-2xl font-bold mb-4 text-black">List Laporan Kerusakan</h1>
             <div className="bg-white p-4 rounded shadow">
-                <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan CNS</h2>
                 <div className="flex justify-between mb-4">
                     <div>
                         <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2">
-                            <i className="fas fa-plus"></i> Tambah Data
+                            Tambah Data
                         </button>
                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                            <i className="fas fa-filter"></i> Filter & Print PDF
+                            Filter & Print PDF
                         </button>
                     </div>
                     <div className="flex items-center text-black">
@@ -22,7 +41,7 @@ const CatatanHarian = () => {
                             <option>25</option>
                             <option>50</option>
                             <option>100</option>
-                        </select> 
+                        </select>
                         <span className="ml-2">entries</span>
                     </div>
                 </div>
@@ -33,83 +52,69 @@ const CatatanHarian = () => {
                         <input type="text" className="border rounded p-1" />
                     </div>
                 </div>
-                <table className="min-w-full bg-white">
+                <table className="min-w-full bg-white border">
                     <thead>
                         <tr className="text-black">
                             <th className="py-2 px-4 border-b">Tanggal / Jam</th>
                             <th className="py-2 px-4 border-b">Alat</th>
                             <th className="py-2 px-4 border-b">Kegiatan</th>
                             <th className="py-2 px-4 border-b">Teknisi</th>
-                            <th className="py-2 px-4 border-b">Note</th>
+                            <th className="py-2 px-4 border-b">Status</th>
                             <th className="py-2 px-4 border-b">Paraf</th>
                             <th className="py-2 px-4 border-b">Aksi</th>
                         </tr>
                     </thead>
-                    <tbody className="text-black">
-                        <tr>
-                            <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
-                            <td className="py-2 px-4 border-b">DME MWB</td>
-                            <td className="py-2 px-4 border-b">
-                                - Pemeliha.. <br />
-                                <a href="#" className="text-blue-600">Selengkapnya</a>
-                            </td>
-                            <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
-                                <img src="https://placehold.co/20x20" alt="Paraf" />
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2">
-                                    <i className="fas fa-edit"></i>
-                                </button>
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">
-                                    <i className="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
-                            <td className="py-2 px-4 border-b">DVOR MWB</td>
-                            <td className="py-2 px-4 border-b">
-                                - Pemeliha.. <br />
-                                <a href="#" className="text-blue-600">Selengkapnya</a>
-                            </td>
-                            <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
-                                <img src="https://placehold.co/20x20" alt="Paraf" />
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2">
-                                    <i className="fas fa-edit"></i>
-                                </button>
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">
-                                    <i className="fas fa-trash"></i>
-                                </button>
-                            </td>
-                        </tr>
+                    <tbody>
+                        {data.map((item, index) => (
+                            <tr key={index} className="text-black">
+                                <td className="py-2 px-4 border-b">{item.date}</td>
+                                <td className="py-2 px-4 border-b">{item.alat}</td>
+                                <td className="py-2 px-4 border-b">
+                                    {item.kegiatan}{' '}
+                                    <a href="#" className="text-blue-600">
+                                        Selengkapnya
+                                    </a>
+                                </td>
+                                <td className="py-2 px-4 border-b">{item.teknisi}</td>
+                                <td className="py-2 px-4 border-b">
+                                    <span
+                                        className={`px-2 py-1 rounded ${
+                                            item.status === 'Normal Ops'
+                                                ? 'bg-green-500 text-white'
+                                                : 'bg-red-500 text-white'
+                                        }`}
+                                    >
+                                        {item.status}
+                                    </span>
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                    <img
+                                        src={item.paraf}
+                                        alt="Paraf"
+                                        className="w-8 h-8"
+                                    />
+                                </td>
+                                <td className="py-2 px-4 border-b">
+                                    <button className="text-blue-500 mr-2">
+                                        <i className="fas fa-edit"></i>
+                                    </button>
+                                    <button className="text-red-500 mr-2">
+                                        <i className="fas fa-trash"></i>
+                                    </button>
+                                    <button className="text-green-500">
+                                        <i className="fas fa-eye"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
-            <div className="container mx-auto p-4">
-                <div className="bg-white shadow-md rounded-lg p-4">
-                    <div className="flex justify-between items-center text-black">
-                        <p>Showing 1 to 10 of 28 entries</p>
-                        <div className="flex items-center space-x-2">
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
             <footer className="text-center py-4">
-                <p className="text-black">Air Nav Manado</p>
+                <p className="text-black">Manado Air Nav</p>
             </footer>
         </div>
     );
 };
 
-export default CatatanHarian;
+export default LaporanKerusakan;

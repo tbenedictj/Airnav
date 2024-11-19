@@ -1,8 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Pencil, FileText, Trash2 } from 'lucide-react';
 
 const CatatanHarian = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Mingguan CNS</h1>
@@ -10,7 +13,10 @@ const CatatanHarian = () => {
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan CNS</h2>
                 <div className="flex justify-between mb-4">
                     <div>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2">
+                        <button 
+                            onClick={() => navigate('/tambah-catatan')}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
+                        >
                             <i className="fas fa-plus"></i> Tambah Data
                         </button>
                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">

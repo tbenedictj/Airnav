@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import './App.css';
 import LoginForm from './Pages/Login/LoginForm';
 import CatatanHarian from './Pages/catatan/catatanharian';
+import TambahCatatan from './Pages/catatan/TambahCatatan';
 import Navigation from './Component/Nav/Navigation';
 import LogoutButton from './Component/LogoutButton/LogoutButton';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { AuthProvider, useAuth } from './config/AuthContext';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -41,6 +42,19 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <CatatanHarian />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-catatan"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahCatatan />
                   </main>
                 </div>
               </PrivateRoute>

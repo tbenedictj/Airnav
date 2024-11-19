@@ -97,29 +97,30 @@ const LoginForm = () => {
   }, [slides.length]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <img
-          src={slides[slideIndex]}
-          alt="background"
-          className="w-full h-full object-cover"
-          style={{ opacity: 0.8 }}
-        />
+    
+
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden" >
+      <div className="absolute inset-0 z-0 slideshow" >
+        <img src={slides[slideIndex]} alt="background" className="w-full h-full object-cover" style={{opacity : 0.8}}/>
       </div>
+      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
+      <div className="bg-transparent p-8 rounded-lg w-9 z-10"   />
+
       
-      <div className="bg-white p-8 rounded-lg shadow-md w-96 z-10 relative">
+
+      <div className="bg-white p-6 md:p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md lg:max-w-lg z-10">
         <div className="text-center mb-6">
-          <img src={logo} alt="Logo" className="mx-auto w-32 mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800">Login</h2>
+          <img src={logo} alt="Logo" className="mx-auto w-20 md:w-28 lg:w-32 mb-4" />
+          <h2 className="text-lg md:text-2xl font-bold text-gray-800">Login</h2>
         </div>
 
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
             {error}
           </div>
         )}
 
-        <form onSubmit={handleLogin} className="space-y-4">
+<form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Email
@@ -164,12 +165,15 @@ const LoginForm = () => {
         </form>
 
         <div className="text-center mt-4">
-          <p className="text-sm text-gray-600">
+          <p className="text-xs md:text-sm text-gray-600">
             Teknik Airnav Cabang Manado
           </p>
         </div>
       </div>
+      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
+      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
     </div>
+
   );
 };
 

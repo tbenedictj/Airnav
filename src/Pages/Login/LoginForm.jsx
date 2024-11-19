@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../config/firebase';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../config/AuthContext';
 import './LoginForm.css';
 import bg1 from '../../assets/background/mb1.jpg';
 import bg2 from '../../assets/background/mb2.jpg';

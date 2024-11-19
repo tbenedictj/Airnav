@@ -1,6 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import { Pencil, FileText, Trash2 } from 'lucide-react';
 
 const CatatanHarian = () => {
+    const navigate = useNavigate();
+
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Mingguan CNS</h1>
@@ -8,7 +13,10 @@ const CatatanHarian = () => {
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan CNS</h2>
                 <div className="flex justify-between mb-4">
                     <div>
-                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2">
+                        <button 
+                            onClick={() => navigate('/tambah-catatan')}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
+                        >
                             <i className="fas fa-plus"></i> Tambah Data
                         </button>
                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
@@ -59,12 +67,17 @@ const CatatanHarian = () => {
                                 <img src="https://placehold.co/20x20" alt="Paraf" />
                             </td>
                             <td className="py-2 px-4 border-b">
-                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2">
-                                    <i className="fas fa-edit"></i>
-                                </button>
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">
-                                    <i className="fas fa-trash"></i>
-                                </button>
+                                <div className="flex space-x-2">
+                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                        <i className="fas fa-edit text-white text-sm"></i>
+                                    </button>
+                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                        <i className="fas fa-file text-white text-sm"></i>
+                                    </button>
+                                    <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
+                                        <i className="fas fa-trash text-white text-sm"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                         <tr>
@@ -80,12 +93,17 @@ const CatatanHarian = () => {
                                 <img src="https://placehold.co/20x20" alt="Paraf" />
                             </td>
                             <td className="py-2 px-4 border-b">
-                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-2 py-1 rounded mr-2">
-                                    <i className="fas fa-edit"></i>
-                                </button>
-                                <button className="bg-blue-600 hover:bg-blue-700 text-white px-2 py-1 rounded">
-                                    <i className="fas fa-trash"></i>
-                                </button>
+                                <div className="flex space-x-2">
+                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                        <i className="fas fa-edit text-white text-sm"></i>
+                                    </button>
+                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                        <i className="fas fa-file text-white text-sm"></i>
+                                    </button>
+                                    <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
+                                        <i className="fas fa-trash text-white text-sm"></i>
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     </tbody>

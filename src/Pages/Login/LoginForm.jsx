@@ -97,17 +97,18 @@ const LoginForm = () => {
   }, [slides.length]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <div className="absolute inset-0 z-0">
-        <img
-          src={slides[slideIndex]}
-          alt="background"
-          className="w-full h-full object-cover"
-          style={{ opacity: 0.8 }}
-        />
+    
+
+    <div className="min-h-screen flex items-center justify-center relative overflow-hidden" >
+      <div className="absolute inset-0 z-0 slideshow" >
+        <img src={slides[slideIndex]} alt="background" className="w-full h-full object-cover" style={{opacity : 0.8}}/>
       </div>
+      <div className="bg-transparent p-8 rounded-lg shadow-md w-96 z-10"   />
+      <div className="bg-transparent p-8 rounded-lg shadow-md w-9 z-10"   />
+
       
-      <div className="bg-white p-8 rounded-lg shadow-md w-96 z-10 relative">
+
+      <div className="bg-white p-8 rounded-lg shadow-md w-96 z-10">
         <div className="text-center mb-6">
           <img src={logo} alt="Logo" className="mx-auto w-32 mb-4" />
           <h2 className="text-2xl font-bold text-gray-800">Login</h2>
@@ -169,7 +170,10 @@ const LoginForm = () => {
           </p>
         </div>
       </div>
+      <div className="bg-transparent p-8 rounded-lg shadow-md w-96 z-10"   />
+      <div className="bg-transparent p-8 rounded-lg shadow-md w-96 z-10"   />
     </div>
+
   );
 };
 

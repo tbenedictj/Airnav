@@ -52,19 +52,11 @@ function SidebarItem({ icon, text, active, onClick, hasSubmenu, isSubmenuOpen, s
 }
 
 export default function Sidebar({ onToggle }) {
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(true);
-  const [activeItem, setActiveItem] = useState('Dashboard');
+  const [activeItem, setActiveItem] = useState('');
   const [cnsSubmenuOpen, setCnsSubmenuOpen] = useState(false);
   const [supportSubmenuOpen, setSupportSubmenuOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const submenuItems = [
-    'Laporan kegiatan & kerusakan',
-    'Pemeliharaan Harian',
-    'Pemeliharaan Mingguan',
-    'Pemeliharaan Bulanan',
-    'Peralatan'
-  ];
 
   const handleLogout = async () => {
     try {
@@ -74,6 +66,23 @@ export default function Sidebar({ onToggle }) {
       console.error('Error logging out:', error);
     }
   };
+
+  const handleCnsSubmenuItemClick = (path) => {
+    navigate(path);
+    setActiveItem('CNS');
+  };
+
+  const cnsSubmenuItems = [
+    <div onClick={() => handleCnsSubmenuItemClick('/catatan-harian')}>Pemeliharaan Harian</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/catatan-mingguan')}>Pemeliharaan Mingguan</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/catatan-bulanan')}>Pemeliharaan Bulanan</div>
+  ];
+
+  const supportSubmenuItems = [
+    "Help Center",
+    "Contact Us",
+    "Documentation"
+  ];
 
   const toggleSidebar = () => {
     const newExpanded = !expanded;
@@ -121,7 +130,7 @@ export default function Sidebar({ onToggle }) {
                 active={activeItem === 'CNS'}
                 hasSubmenu={true}
                 isSubmenuOpen={cnsSubmenuOpen}
-                submenuItems={submenuItems}
+                submenuItems={cnsSubmenuItems}
                 onClick={handleCnsClick}
               />
               <SidebarItem 
@@ -130,7 +139,7 @@ export default function Sidebar({ onToggle }) {
                 active={activeItem === 'Support'}
                 hasSubmenu={true}
                 isSubmenuOpen={supportSubmenuOpen}
-                submenuItems={submenuItems}
+                submenuItems={supportSubmenuItems}
                 onClick={handleSupportClick}
               />
             </ul>

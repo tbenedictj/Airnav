@@ -8,9 +8,9 @@ const CatatanHarian = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Mingguan CNS</h1>
+            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Harian CNS</h1>
             <div className="bg-white p-4 rounded shadow">
-                <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan CNS</h2>
+                <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Harian CNS</h2>
                 <div className="flex justify-between mb-4">
                     <div>
                         <button 

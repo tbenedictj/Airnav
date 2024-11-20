@@ -106,10 +106,8 @@ const TambahCatatan = () => {
     };
 
     return (
-    <div className="container mx-auto p-4 w-screen mt-40">
-        <div className="bg-white rounded-lg shadow p-6"></div>
-        <div className="bg-white rounded-lg shadow p-6"></div>
-        <div className="bg-white rounded-lg shadow p-6">
+    <div className="mx-auto p-4 w-screen h-full bg-gray-200 flex items-center justify-center mt-40">
+        <div className="bg-white w-full max-w-4xl rounded-lg shadow p-6">
             <h1 className="text-2xl font-bold mb-4">Tambah Catatan Baru</h1>
             <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-4">

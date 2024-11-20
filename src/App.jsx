@@ -5,7 +5,8 @@ import LoginForm from './Pages/Login/LoginForm';
 import CatatanHarian from './Pages/catatan/catatanharian';
 import TambahCatatan from './Pages/catatan/TambahCatatan';
 import Navigation from './Component/Nav/Navigation';
-import LogoutButton from './Component/LogoutButton/LogoutButton';
+import CatatanBulanan from './Pages/catatan/catatanbulanan';
+import CatatanMingguan from './Pages/catatan/catatanmingguan';
 import { AuthProvider, useAuth } from './config/AuthContext';
 
 function PrivateRoute({ children }) {
@@ -55,6 +56,32 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <CatatanHarian />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/catatan-mingguan"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CatatanMingguan />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/catatan-bulanan"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CatatanBulanan />
                   </main>
                 </div>
               </PrivateRoute>

@@ -74,8 +74,8 @@ export default function Sidebar({ onToggle }) {
 
   const cnsSubmenuItems = [
     <div onClick={() => handleCnsSubmenuItemClick('/catatan-harian')}>Pemeliharaan Harian</div>,
-    "Pemeliharaan Mingguan",
-    "Pemeliharaan Bulanan"
+    <div onClick={() => handleCnsSubmenuItemClick('/catatan-mingguan')}>Pemeliharaan Mingguan</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/catatan-bulanan')}>Pemeliharaan Bulanan</div>
   ];
 
   const supportSubmenuItems = [

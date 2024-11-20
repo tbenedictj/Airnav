@@ -48,6 +48,19 @@ function App() {
             }
           />
           <Route
+            path="/catatan-harian"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CatatanHarian />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/tambah-catatan"
             element={
               <PrivateRoute>

@@ -106,139 +106,141 @@ const TambahCatatan = () => {
     };
 
     return (
-        <div className="container mx-auto p-4 max-w-2xl mt-16">
-            <div className="bg-white rounded-lg shadow p-6">
-                <h1 className="text-2xl font-bold mb-4">Tambah Catatan Baru</h1>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-4">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Tanggal</label>
-                            <input
-                                type="date"
-                                name="tanggal"
-                                value={formData.tanggal}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Jam Selesai</label>
-                            <input
-                                type="time"
-                                name="jamSelesai"
-                                value={formData.jamSelesai}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Peralatan</label>
-                            <input
-                                type="text"
-                                name="peralatan"
-                                value={formData.peralatan}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Aktivitas</label>
-                            <textarea
-                                name="aktivitas"
-                                value={formData.aktivitas}
-                                onChange={handleInputChange}
-                                rows={4}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-                            <input
-                                type="text"
-                                name="teknisi"
-                                value={formData.teknisi}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                required
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Status</label>
-                            <select
-                                name="status"
-                                value={formData.status}
-                                onChange={handleInputChange}
-                                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                required
-                            >
-                                <option value="open">Open</option>
-                                <option value="close">Close</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700">Upload Bukti</label>
-                            <input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleImageChange}
-                                className="mt-1 block w-full"
-                            />
-                            {imagePreview && (
-                                <div className="relative mt-2">
-                                    <img
-                                        src={imagePreview}
-                                        alt="Preview"
-                                        className="h-40 object-contain"
-                                    />
-                                    <button
-                                        type="button"
-                                        onClick={handleCancelImage}
-                                        className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transform translate-x-1/2 -translate-y-1/2"
-                                    >
-                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-
-                        {/* Signature Component */}
-                        <div className="mb-4">
-                            <Tandatangan onSignatureChange={handleSignatureChange} />
-                        </div>
+    <div className="container mx-auto p-4 w-screen mt-40">
+        <div className="bg-white rounded-lg shadow p-6"></div>
+        <div className="bg-white rounded-lg shadow p-6"></div>
+        <div className="bg-white rounded-lg shadow p-6">
+            <h1 className="text-2xl font-bold mb-4">Tambah Catatan Baru</h1>
+            <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="space-y-4">
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Tanggal</label>
+                        <input
+                            type="date"
+                            name="tanggal"
+                            value={formData.tanggal}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                        />
                     </div>
 
-                    <div className="flex justify-between pt-4">
-                        <button
-                            type="button"
-                            onClick={() => navigate(-1)}
-                            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
-                            disabled={loading}
-                        >
-                            Kembali
-                        </button>
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                            disabled={loading}
-                        >
-                            {loading ? 'Menyimpan...' : 'Simpan'}
-                        </button>
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Jam Selesai</label>
+                        <input
+                            type="time"
+                            name="jamSelesai"
+                            value={formData.jamSelesai}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                        />
                     </div>
-                </form>
-            </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Peralatan</label>
+                        <input
+                            type="text"
+                            name="peralatan"
+                            value={formData.peralatan}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Aktivitas</label>
+                        <textarea
+                            name="aktivitas"
+                            value={formData.aktivitas}
+                            onChange={handleInputChange}
+                            rows={4}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Teknisi</label>
+                        <input
+                            type="text"
+                            name="teknisi"
+                            value={formData.teknisi}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                        />
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Status</label>
+                        <select
+                            name="status"
+                            value={formData.status}
+                            onChange={handleInputChange}
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            required
+                        >
+                            <option value="open">Open</option>
+                            <option value="close">Close</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">Upload Bukti</label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="mt-1 block w-full"
+                        />
+                        {imagePreview && (
+                            <div className="relative mt-2">
+                                <img
+                                    src={imagePreview}
+                                    alt="Preview"
+                                    className="h-40 object-contain"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={handleCancelImage}
+                                    className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transform translate-x-1/2 -translate-y-1/2"
+                                >
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                                    </svg>
+                                </button>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Signature Component */}
+                    <div className="mb-4">
+                        <Tandatangan onSignatureChange={handleSignatureChange} />
+                    </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row justify-between pt-4">
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
+                        disabled={loading}
+                    >
+                        Kembali
+                    </button>
+                    <button
+                        type="submit"
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        disabled={loading}
+                    >
+                        {loading ? 'Menyimpan...' : 'Simpan'}
+                    </button>
+                </div>
+            </form>
         </div>
+    </div>
     );
 };
 

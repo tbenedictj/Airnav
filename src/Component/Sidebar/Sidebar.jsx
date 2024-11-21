@@ -72,16 +72,21 @@ export default function Sidebar({ onToggle }) {
     setActiveItem('CNS');
   };
 
+  const handleSupportSubmenuItemClick = (path) => {
+    navigate(path);
+    setActiveItem('Support');
+  };
+
   const cnsSubmenuItems = [
-    <div onClick={() => handleCnsSubmenuItemClick('/catatan-harian')}>Pemeliharaan Harian</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/catatan-mingguan')}>Pemeliharaan Mingguan</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/catatan-bulanan')}>Pemeliharaan Bulanan</div>
+    <div onClick={() => handleCnsSubmenuItemClick('/ch-cns')}>Pemeliharaan Harian</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/cm-cns')}>Pemeliharaan Mingguan</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/cb-cns')}>Pemeliharaan Bulanan</div>
   ];
 
   const supportSubmenuItems = [
-    "Help Center",
-    "Contact Us",
-    "Documentation"
+    <div onClick={() => handleSupportSubmenuItemClick('/ch-sup')}>Pemeliharaan Harian</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/cm-sup')}>Pemeliharaan Mingguan</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/cb-sup')}>Pemeliharaan Bulanan</div>
   ];
 
   const toggleSidebar = () => {

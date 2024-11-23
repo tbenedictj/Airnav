@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Pencil, FileText, Trash2 } from 'lucide-react';
 
-const CatatanBulanan = () => {
+const CatatanMingguan = () => {
     const navigate = useNavigate();
 
     return (
@@ -14,7 +14,7 @@ const CatatanBulanan = () => {
                 <div className="flex justify-between mb-4">
                     <div>
                         <button 
-                            onClick={() => navigate('/tambah-catatan')}
+                            onClick={() => navigate('/tambah-catatan-mingguan')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
                             <i className="fas fa-plus"></i> Tambah Data
@@ -55,10 +55,10 @@ const CatatanBulanan = () => {
                     </thead>
                     <tbody className="text-black">
                         <tr>
-                            <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
-                            <td className="py-2 px-4 border-b">DME MWB</td>
+                            <td className="py-2 px-4 border-b">2024-07-31 09:00:00 - 2024-07-31 09:30:00</td>
+                            <td className="py-2 px-4 border-b">DVOR MWB</td>
                             <td className="py-2 px-4 border-b">
-                                - Pemeliha.. <br />
+                                - Inspeksi mingguan..<br />
                                 <a href="#" className="text-blue-600">Selengkapnya</a>
                             </td>
                             <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
@@ -81,14 +81,14 @@ const CatatanBulanan = () => {
                             </td>
                         </tr>
                         <tr>
-                            <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
-                            <td className="py-2 px-4 border-b">DVOR MWB</td>
+                            <td className="py-2 px-4 border-b">2024-08-01 10:00:00 - 2024-08-01 10:30:00</td>
+                            <td className="py-2 px-4 border-b">ILS MWB</td>
                             <td className="py-2 px-4 border-b">
-                                - Pemeliha.. <br />
+                                - Perawatan mingguan..<br />
                                 <a href="#" className="text-blue-600">Selengkapnya</a>
                             </td>
-                            <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
+                            <td className="py-2 px-4 border-b">JERRY MOKOGINTA</td>
+                            <td className="py-2 px-4 border-b">Stabil</td>
                             <td className="py-2 px-4 border-b">
                                 <img src="https://placehold.co/20x20" alt="Paraf" />
                             </td>
@@ -108,24 +108,26 @@ const CatatanBulanan = () => {
                         </tr>
                     </tbody>
                 </table>
-                <div className="pagination">
-                    <div className="flex justify-between items-center">
-                        <p className="text-gray-600">Showing 1 to 10 of 28 entries</p>
-                        <div className="flex space-x-2">
-                            <button className="btn btn-secondary">Previous</button>
-                            <button className="btn btn-primary">1</button>
-                            <button className="btn btn-secondary">2</button>
-                            <button className="btn btn-secondary">3</button>
-                            <button className="btn btn-secondary">Next</button>
+            </div>
+            <div className="container mx-auto p-4">
+                <div className="bg-white shadow-md rounded-lg p-4">
+                    <div className="flex justify-between items-center text-black">
+                        <p>Showing 1 to 10 of 28 entries</p>
+                        <div className="flex items-center space-x-2">
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
                         </div>
                     </div>
                 </div>
             </div>
             <footer className="text-center py-4">
-                <p className="text-gray-600">Air Nav Manado</p>
+                <p className="text-black">Air Nav Manado</p>
             </footer>
         </div>
     );
 };
 
-export default CatatanBulanan;
+export default CatatanMingguan;

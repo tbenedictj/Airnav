@@ -52,19 +52,11 @@ function SidebarItem({ icon, text, active, onClick, hasSubmenu, isSubmenuOpen, s
 }
 
 export default function Sidebar({ onToggle }) {
+  const navigate = useNavigate();
   const [expanded, setExpanded] = useState(true);
-  const [activeItem, setActiveItem] = useState('Dashboard');
+  const [activeItem, setActiveItem] = useState('');
   const [cnsSubmenuOpen, setCnsSubmenuOpen] = useState(false);
   const [supportSubmenuOpen, setSupportSubmenuOpen] = useState(false);
-  const navigate = useNavigate();
-
-  const submenuItems = [
-    'Laporan kegiatan & kerusakan',
-    'Pemeliharaan Harian',
-    'Pemeliharaan Mingguan',
-    'Pemeliharaan Bulanan',
-    'Peralatan'
-  ];
 
   const handleLogout = async () => {
     try {
@@ -74,6 +66,30 @@ export default function Sidebar({ onToggle }) {
       console.error('Error logging out:', error);
     }
   };
+
+  const handleCnsSubmenuItemClick = (path) => {
+    navigate(path);
+    setActiveItem('CNS');
+  };
+
+  const handleSupportSubmenuItemClick = (path) => {
+    navigate(path);
+    setActiveItem('Support');
+  };
+
+  const cnsSubmenuItems = [
+    <div onClick={() => handleCnsSubmenuItemClick('/lk-cns')}>Laporan Kegiatan & Kerusakan</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/ch-cns')}>Pemeliharaan Harian</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/cm-cns')}>Pemeliharaan Mingguan</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/cb-cns')}>Pemeliharaan Bulanan</div>
+  ];
+
+  const supportSubmenuItems = [
+    <div onClick={() => handleSupportSubmenuItemClick('/lk-sup')}>Laporan Kegiatan & Kerusakan</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/ch-sup')}>Pemeliharaan Harian</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/cm-sup')}>Pemeliharaan Mingguan</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/cb-sup')}>Pemeliharaan Bulanan</div>
+  ];
 
   const toggleSidebar = () => {
     const newExpanded = !expanded;
@@ -121,7 +137,7 @@ export default function Sidebar({ onToggle }) {
                 active={activeItem === 'CNS'}
                 hasSubmenu={true}
                 isSubmenuOpen={cnsSubmenuOpen}
-                submenuItems={submenuItems}
+                submenuItems={cnsSubmenuItems}
                 onClick={handleCnsClick}
               />
               <SidebarItem 
@@ -130,7 +146,7 @@ export default function Sidebar({ onToggle }) {
                 active={activeItem === 'Support'}
                 hasSubmenu={true}
                 isSubmenuOpen={supportSubmenuOpen}
-                submenuItems={submenuItems}
+                submenuItems={supportSubmenuItems}
                 onClick={handleSupportClick}
               />
             </ul>

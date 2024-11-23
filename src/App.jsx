@@ -8,6 +8,8 @@ import CMCNS from './Pages/catatan/CNS/CM-CNS';
 import CMSup from './Pages/catatan/Support/CM-Sup';
 import CBCNS from './Pages/catatan/CNS/CB-CNS';
 import CBSup from './Pages/catatan/Support/CB-Sup';
+import LKCNS from './Pages/catatan/CNS/LK-CNS';
+import LKSup from './Pages/catatan/Support/LK-Sup';
 import TambahCatatan from './Pages/catatan/TambahCatatan';
 import Navigation from './Component/Nav/Navigation';
 import { AuthProvider, useAuth } from './config/AuthContext';
@@ -46,6 +48,19 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <CHCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lk-cns"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <LKCNS />
                   </main>
                 </div>
               </PrivateRoute>
@@ -124,6 +139,19 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <CBSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lk-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <LKSup />
                   </main>
                 </div>
               </PrivateRoute>

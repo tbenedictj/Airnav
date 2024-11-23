@@ -78,12 +78,14 @@ export default function Sidebar({ onToggle }) {
   };
 
   const cnsSubmenuItems = [
+    <div onClick={() => handleCnsSubmenuItemClick('/lk-cns')}>Laporan Kegiatan & Kerusakan</div>,
     <div onClick={() => handleCnsSubmenuItemClick('/ch-cns')}>Pemeliharaan Harian</div>,
     <div onClick={() => handleCnsSubmenuItemClick('/cm-cns')}>Pemeliharaan Mingguan</div>,
     <div onClick={() => handleCnsSubmenuItemClick('/cb-cns')}>Pemeliharaan Bulanan</div>
   ];
 
   const supportSubmenuItems = [
+    <div onClick={() => handleSupportSubmenuItemClick('/lk-sup')}>Laporan Kegiatan & Kerusakan</div>,
     <div onClick={() => handleSupportSubmenuItemClick('/ch-sup')}>Pemeliharaan Harian</div>,
     <div onClick={() => handleSupportSubmenuItemClick('/cm-sup')}>Pemeliharaan Mingguan</div>,
     <div onClick={() => handleSupportSubmenuItemClick('/cb-sup')}>Pemeliharaan Bulanan</div>

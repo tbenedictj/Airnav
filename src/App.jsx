@@ -13,6 +13,8 @@ import LKSup from './Pages/catatan/Support/LK-Sup';
 import TambahCatatan from './Pages/catatan/TambahCatatan';
 import Navigation from './Component/Nav/Navigation';
 import { AuthProvider, useAuth } from './config/AuthContext';
+import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
+import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -165,6 +167,32 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <TambahCatatan />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/peralatan-cns"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <PeralatanCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/peralatan-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <PeralatanSup />
                   </main>
                 </div>
               </PrivateRoute>

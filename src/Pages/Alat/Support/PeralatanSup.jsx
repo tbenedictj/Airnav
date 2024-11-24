@@ -3,24 +3,21 @@ import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { Pencil, FileText, Trash2 } from 'lucide-react';
 
-const CatatanMingguan = () => {
+const PeralatanSup = () => {
     const navigate = useNavigate();
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Mingguan CNS</h1>
+            <h1 className="text-2xl font-bold mb-4 text-black">List Peralatan Support</h1>
             <div className="bg-white p-4 rounded shadow">
-                <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan CNS</h2>
+                <h2 className="text-lg font-semibold text-blue-600 mb-4">Peralatan Support</h2>
                 <div className="flex justify-between mb-4">
                     <div>
                         <button 
                             onClick={() => navigate('/tambah-catatan')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
-                            <i className="fas fa-plus"></i> Tambah Data
-                        </button>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                            <i className="fas fa-filter"></i> Filter & Print PDF
+                            <i className="fas fa-plus"></i> Tambah Alat
                         </button>
                     </div>
                     <div className="flex items-center text-black">
@@ -44,35 +41,23 @@ const CatatanMingguan = () => {
                 <table className="min-w-full bg-white">
                     <thead>
                         <tr className="text-black">
-                            <th className="py-2 px-4 border-b">Tanggal / Jam</th>
-                            <th className="py-2 px-4 border-b">Alat</th>
-                            <th className="py-2 px-4 border-b">Kegiatan</th>
-                            <th className="py-2 px-4 border-b">Teknisi</th>
-                            <th className="py-2 px-4 border-b">Note</th>
-                            <th className="py-2 px-4 border-b">Paraf</th>
+                            <th className="py-2 px-4 border-b">Nama Alat</th>
+                            <th className="py-2 px-4 border-b">kategori</th>
+                            <th className="py-2 px-4 border-b">Frekuensi</th>
+                            <th className="py-2 px-4 border-b">Status</th>
                             <th className="py-2 px-4 border-b">Action</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">
                         <tr>
-                            <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
                             <td className="py-2 px-4 border-b">DME MWB</td>
-                            <td className="py-2 px-4 border-b">
-                                - Pemeliha.. <br />
-                                <a href="#" className="text-blue-600">Selengkapnya</a>
-                            </td>
-                            <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
+                            <td className="py-2 px-4 border-b">Surveillance</td>
+                            <td className="py-2 px-4 border-b">CHANNEL 32</td>
                             <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
-                                <img src="https://placehold.co/20x20" alt="Paraf" />
-                            </td>
                             <td className="py-2 px-4 border-b">
                                 <div className="flex space-x-2">
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
                                         <i className="fas fa-edit text-white text-sm"></i>
-                                    </button>
-                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-file text-white text-sm"></i>
                                     </button>
                                     <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
                                         <i className="fas fa-trash text-white text-sm"></i>
@@ -81,24 +66,14 @@ const CatatanMingguan = () => {
                             </td>
                         </tr>
                         <tr>
-                            <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
-                            <td className="py-2 px-4 border-b">DVOR MWB</td>
-                            <td className="py-2 px-4 border-b">
-                                - Pemeliha.. <br />
-                                <a href="#" className="text-blue-600">Selengkapnya</a>
-                            </td>
-                            <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
+                            <td className="py-2 px-4 border-b">DME MWB</td>
+                            <td className="py-2 px-4 border-b">Surveillance</td>
+                            <td className="py-2 px-4 border-b">CHANNEL 32</td>
                             <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
-                                <img src="https://placehold.co/20x20" alt="Paraf" />
-                            </td>
                             <td className="py-2 px-4 border-b">
                                 <div className="flex space-x-2">
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
                                         <i className="fas fa-edit text-white text-sm"></i>
-                                    </button>
-                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-file text-white text-sm"></i>
                                     </button>
                                     <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
                                         <i className="fas fa-trash text-white text-sm"></i>
@@ -128,4 +103,4 @@ const CatatanMingguan = () => {
     );
 };
 
-export default CatatanMingguan;
+export default PeralatanSup;

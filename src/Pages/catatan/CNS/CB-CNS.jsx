@@ -50,7 +50,7 @@ const CatatanBulanan = () => {
                             <th className="py-2 px-4 border-b">Teknisi</th>
                             <th className="py-2 px-4 border-b">Note</th>
                             <th className="py-2 px-4 border-b">Paraf</th>
-                            <th className="py-2 px-4 border-b">Aksi</th>
+                            <th className="py-2 px-4 border-b">Action</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Pencil, FileText, Trash2 } from 'lucide-react';
 
 const PeralatanCNS = () => {
     const navigate = useNavigate();
@@ -57,10 +56,10 @@ const PeralatanCNS = () => {
                             <td className="py-2 px-4 border-b">
                                 <div className="flex space-x-2">
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <Pencil size={16} className="text-white" />
+                                        <i className="fas fa-edit text-white text-sm"></i>
                                     </button>
                                     <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
-                                        <Trash2 size={16} className="text-white" />
+                                        <i className="fas fa-trash text-white text-sm"></i>
                                     </button>
                                 </div>
                             </td>
@@ -73,10 +72,10 @@ const PeralatanCNS = () => {
                             <td className="py-2 px-4 border-b">
                                 <div className="flex space-x-2">
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <Pencil size={16} className="text-white" />
+                                        <i className="fas fa-edit text-white text-sm"></i>
                                     </button>
                                     <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
-                                        <Trash2 size={16} className="text-white" />
+                                        <i className="fas fa-trash text-white text-sm"></i>
                                     </button>
                                 </div>
                             </td>

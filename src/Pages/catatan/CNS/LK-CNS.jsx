@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Pencil, FileText, Trash2 } from 'lucide-react';
 
 const LaporanKegiatanCNS = () => {
     const navigate = useNavigate();
@@ -17,10 +16,10 @@ const LaporanKegiatanCNS = () => {
                             onClick={() => navigate('/tambah-catatan')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
-                            <i className="fas fa-plus"></i> Tambah Data
+                            <i className="fas fa-plus mr-2"></i> Tambah Data
                         </button>
                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                            <i className="fas fa-filter"></i> Filter & Print PDF
+                            <i className="fas fa-filter mr-2"></i> Filter & Print PDF
                         </button>
                     </div>
                     <div className="flex items-center text-black">

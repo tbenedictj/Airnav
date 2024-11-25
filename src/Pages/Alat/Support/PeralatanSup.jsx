@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Pencil, FileText, Trash2 } from 'lucide-react';
 
 const PeralatanSup = () => {
     const navigate = useNavigate();

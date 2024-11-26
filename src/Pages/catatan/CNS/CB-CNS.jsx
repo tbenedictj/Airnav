@@ -1,26 +1,25 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Pencil, FileText, Trash2 } from 'lucide-react';
 
-const CatatanHarian = () => {
+const CatatanBulanan = () => {
     const navigate = useNavigate();
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Harian CNS</h1>
+            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Bulanan CNS</h1>
             <div className="bg-white p-4 rounded shadow">
-                <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Harian CNS</h2>
+                <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Bulanan CNS</h2>
                 <div className="flex justify-between mb-4">
                     <div>
                         <button 
                             onClick={() => navigate('/tambah-catatan')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
-                            <i className="fas fa-plus"></i> Tambah Data
+                            <i className="fas fa-plus mr-2"></i> Tambah Data
                         </button>
                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                            <i className="fas fa-filter"></i> Filter & Print PDF
+                            <i className="fas fa-filter mr-2"></i> Filter & Print PDF
                         </button>
                     </div>
                     <div className="flex items-center text-black">
@@ -30,7 +29,7 @@ const CatatanHarian = () => {
                             <option>25</option>
                             <option>50</option>
                             <option>100</option>
-                        </select> 
+                        </select>
                         <span className="ml-2">entries</span>
                     </div>
                 </div>
@@ -56,12 +55,12 @@ const CatatanHarian = () => {
                     <tbody className="text-black">
                         <tr>
                             <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
-                            <td className="py-2 px-4 border-b">DME MWB</td>
+                            <td className="py-2 px-4 border-b">Router</td>
                             <td className="py-2 px-4 border-b">
                                 - Pemeliha.. <br />
                                 <a href="#" className="text-blue-600">Selengkapnya</a>
                             </td>
-                            <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
+                            <td className="py-2 px-4 border-b">JOHN DOE <br /> JANE DOE</td>
                             <td className="py-2 px-4 border-b">Normal ops</td>
                             <td className="py-2 px-4 border-b">
                                 <img src="https://placehold.co/20x20" alt="Paraf" />
@@ -130,4 +129,4 @@ const CatatanHarian = () => {
     );
 };
 
-export default CatatanHarian;
+export default CatatanBulanan;

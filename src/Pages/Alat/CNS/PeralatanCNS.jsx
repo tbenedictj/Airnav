@@ -6,7 +6,8 @@ const PeralatanCNS = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container w-screen max-w-[1370px] mx-auto p-4">
+            <div className="w-[1150px]">
             <h1 className="text-2xl font-bold mb-4 text-black">List Peralatan CNS</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Peralatan CNS</h2>
@@ -89,6 +90,7 @@ const PeralatanCNS = () => {
                         <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Next</button>
                     </div>
                 </div>
+            </div>
             </div>
         </div>
     );

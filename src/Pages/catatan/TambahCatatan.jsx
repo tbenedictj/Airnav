@@ -118,7 +118,7 @@ const TambahCatatan = () => {
                             name="tanggal"
                             value={formData.tanggal}
                             onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
                             required
                         />
                     </div>
@@ -130,7 +130,7 @@ const TambahCatatan = () => {
                             name="jamSelesai"
                             value={formData.jamSelesai}
                             onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
                             required
                         />
                     </div>
@@ -142,7 +142,7 @@ const TambahCatatan = () => {
                             name="peralatan"
                             value={formData.peralatan}
                             onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
                             required
                         />
                     </div>
@@ -154,7 +154,7 @@ const TambahCatatan = () => {
                             value={formData.aktivitas}
                             onChange={handleInputChange}
                             rows={4}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            className= "mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
                             required
                         />
                     </div>
@@ -166,7 +166,7 @@ const TambahCatatan = () => {
                             name="teknisi"
                             value={formData.teknisi}
                             onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
                             required
                         />
                     </div>
@@ -177,7 +177,7 @@ const TambahCatatan = () => {
                             name="status"
                             value={formData.status}
                             onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
                             required
                         >
                             <option value="open">Open</option>

@@ -99,14 +99,10 @@ const LoginForm = () => {
   return (
     
 
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden" >
+    <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden" >
       <div className="absolute inset-0 z-0 slideshow" >
         <img src={slides[slideIndex]} alt="background" className="w-full h-full object-cover" style={{opacity : 0.8}}/>
       </div>
-      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
-      <div className="bg-transparent p-8 rounded-lg w-9 z-10"   />
-
-      
 
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md lg:max-w-lg z-10">
         <div className="text-center mb-6">
@@ -129,7 +125,7 @@ const LoginForm = () => {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-white leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -142,7 +138,7 @@ const LoginForm = () => {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-white leading-tight focus:outline-none focus:shadow-outline"
               required
             />
           </div>
@@ -170,8 +166,6 @@ const LoginForm = () => {
           </p>
         </div>
       </div>
-      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
-      <div className="bg-transparent p-8 rounded-lg w-96 z-10"   />
     </div>
 
   );

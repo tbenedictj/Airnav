@@ -6,12 +6,12 @@ const CatatanHarian = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container w-screen max-w-[1370px] mx-auto p-4">
-            <div className="w-[1150px]">
+        <div className="container-fluid sm:px-4 md:px-6 lg:px-8 ">
+            <div className="min-w-full bg-white">
             <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Harian CNS</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Harian CNS</h2>
-                <div className="flex justify-between mb-4">
+                <div className="flex flex-wrap justify-between mb-4">
                     <div>
                         <button 
                             onClick={() => navigate('/tambah-catatan')}

@@ -7,7 +7,7 @@ const CatatanMingguan = () => {
 
     return (
         <div className="container w-screen max-w-[1370px] mx-auto p-4">
-            <div className="w-[1150px]">
+            <div className="min-w-full bg-white">
             <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Mingguan Support</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan Support</h2>

@@ -6,8 +6,7 @@ const PeralatanCNS = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container w-screen max-w-[1370px] mx-auto p-4">
-            <div className="w-[1150px]">
+        <div className="container-fluid mx-auto px-4">
             <h1 className="text-2xl font-bold mb-4 text-black">List Peralatan CNS</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Peralatan CNS</h2>
@@ -38,23 +37,23 @@ const PeralatanCNS = () => {
                         <input type="text" className="border rounded p-1" />
                     </div>
                 </div>
-                <table className="min-w-full bg-white">
+                <table className="min-w-full border border-gray-300 border-collapse bg-white">
                     <thead>
                         <tr className="text-black">
-                            <th className="py-2 px-4 border-b">Nama Alat</th>
-                            <th className="py-2 px-4 border-b">Kategori</th>
-                            <th className="py-2 px-4 border-b">Frekuensi</th>
-                            <th className="py-2 px-4 border-b">Status</th>
-                            <th className="py-2 px-4 border-b">Action</th>
+                            <th className="py-2 px-4 border border-gray-300"style={{ width: '300px' }}>Nama Alat</th>
+                            <th className="py-2 px-4 border border-gray-300"style={{ width: '300px' }}>Kategori</th>
+                            <th className="py-2 px-4 border border-gray-300"style={{ width: '300px' }}>Frekuensi</th>
+                            <th className="py-2 px-4 border border-gray-300"style={{ width: '300px' }}>Status</th>
+                            <th className="py-2 px-4 border border-gray-300"style={{ width: '300px' }}>Action</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">
                         <tr>
-                            <td className="py-2 px-4 border-b">DME MWB</td>
-                            <td className="py-2 px-4 border-b">Surveillance</td>
-                            <td className="py-2 px-4 border-b">CHANNEL 32</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border border-gray-300">DME MWB</td>
+                            <td className="py-2 px-4 border border-gray-300">Surveillance</td>
+                            <td className="py-2 px-4 border border-gray-300">CHANNEL 32</td>
+                            <td className="py-2 px-4 border border-gray-300">Normal ops</td>
+                            <td className="py-2 px-4 border border-gray-300">
                                 <div className="flex space-x-2">
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
                                         <i className="fas fa-edit text-white text-sm"></i>
@@ -66,11 +65,11 @@ const PeralatanCNS = () => {
                             </td>
                         </tr>
                         <tr>
-                            <td className="py-2 px-4 border-b">NDB MWB</td>
-                            <td className="py-2 px-4 border-b">Navigation</td>
-                            <td className="py-2 px-4 border-b">320 KHz</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border border-gray-300">NDB MWB</td>
+                            <td className="py-2 px-4 border border-gray-300">Navigation</td>
+                            <td className="py-2 px-4 border border-gray-300">320 KHz</td>
+                            <td className="py-2 px-4 border border-gray-300">Normal ops</td>
+                            <td className="py-2 px-4 border border-gray-300">
                                 <div className="flex space-x-2">
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
                                         <i className="fas fa-edit text-white text-sm"></i>
@@ -90,7 +89,6 @@ const PeralatanCNS = () => {
                         <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Next</button>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     );

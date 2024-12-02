@@ -148,6 +148,15 @@ export default function Sidebar({ onToggle }) {
                 submenuItems={supportSubmenuItems}
                 onClick={handleSupportClick}
               />
+              <SidebarItem 
+                icon={<i className="fas fa-users text-lg" />}
+                text="Teknisi" 
+                active={activeItem === 'Teknisi'}
+                onClick={() => {
+                  setActiveItem('Teknisi');
+                  navigate('/teknisi');
+                }}
+              />
             </ul>
             
             <div className="mt-auto px-3 py-4 border-t border-gray-200">

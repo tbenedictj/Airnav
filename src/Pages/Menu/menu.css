@@ -1,0 +1,40 @@
+/* Responsif untuk layar besar */
+@media (max-width: 768px) {
+    .image-container {
+      flex-direction: column;  /* Menata gambar dalam satu kolom */
+      gap: 20px;
+    }
+  
+    .image-container img {
+      max-width: 150px; /* Membuat gambar sedikit lebih kecil */
+    }
+  
+    .description {
+      font-size: 1em; /* Mengurangi ukuran font label */
+    }
+  
+    h1 {
+      font-size: 2.5em; /* Ukuran font judul lebih kecil */
+    }
+  }
+  
+  /* Responsif untuk layar lebih kecil (ponsel) */
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 2em; /* Menyesuaikan ukuran font judul */
+    }
+  
+    .image-container img {
+      max-width: 130px; /* Mengurangi ukuran gambar lebih kecil lagi */
+    }
+  
+    .description {
+      font-size: 0.9em; /* Mengurangi ukuran font label */
+    }
+  
+    .image-container {
+      flex-direction: column; /* Menata gambar dalam satu kolom */
+      gap: 15px;
+    }
+  }
+  

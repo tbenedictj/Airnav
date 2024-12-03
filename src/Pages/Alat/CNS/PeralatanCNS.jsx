@@ -6,7 +6,7 @@ const PeralatanCNS = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container-fluid mx-auto px-4">
+        <div className="container-fluid w-full mx-auto px-4">
             <h1 className="text-2xl font-bold mb-4 text-black">List Peralatan CNS</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Peralatan CNS</h2>

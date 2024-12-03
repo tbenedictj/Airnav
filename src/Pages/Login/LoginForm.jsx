@@ -23,7 +23,7 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (currentUser) {
-      navigate('/dashboard');
+      navigate('/menu');
     }
   }, [currentUser, navigate]);
 
@@ -34,7 +34,7 @@ const LoginForm = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard');
+      navigate('/menu');
     } catch (error) {
       console.error('Login error:', error);
       const errorCode = error.code;

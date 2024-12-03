@@ -16,6 +16,7 @@ import { AuthProvider, useAuth } from './config/AuthContext';
 import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
 import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
 import Teknisi from './Pages/Teknisi/Teknisi';
+import Menu from './Pages/Menu/menu'
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -43,6 +44,14 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<LoginForm />} />
+          <Route
+            path="/menu"
+            element={
+              <PrivateRoute>
+                <Menu />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="/dashboard"
             element={

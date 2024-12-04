@@ -3,16 +3,16 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const teknisiData = [
-  { name: "ALLAN LENGKONG", category: "CNS" },
-  { name: "ANDI NURFAJRIANA", category: "CNS" },
-  { name: "BENEDITH KELVIN", category: "CNS" },
-  { name: "BHIMA A. PUTRA", category: "Support" },
-  { name: "DAVID KHARISMA. N", category: "Support" },
-  { name: "DEIVI TUMIIR", category: "Supervisor" },
-  { name: "EVAN H SIPAYUNG", category: "Support" },
-  { name: "FADJAR RAMADHAN", category: "CNS" },
-  { name: "GUNAWAN PRASETYO", category: "CNS" },
-  { name: "JEFRI RANTE", category: "Support" }
+  { name: "ALLAN LENGKONG", category: "CNS", status: "Active" },
+  { name: "ANDI NURFAJRIANA", category: "CNS", status: "Active" },
+  { name: "BENEDITH KELVIN", category: "CNS", status: "Active" },
+  { name: "BHIMA A. PUTRA", category: "Support", status: "Active" },
+  { name: "DAVID KHARISMA. N", category: "Support", status: "Active" },
+  { name: "DEIVI TUMIIR", category: "Supervisor", status: "Active" },
+  { name: "EVAN H SIPAYUNG", category: "Support", status: "Active" },
+  { name: "FADJAR RAMADHAN", category: "CNS", status: "Active" },
+  { name: "GUNAWAN PRASETYO", category: "CNS", status: "Active" },
+  { name: "JEFRI RANTE", category: "Support", status: "Active" },
 ];
 
 function Teknisi() {
@@ -32,6 +32,7 @@ function Teknisi() {
               <tr>
                 <th>Nama Teknisi</th>
                 <th>Kategori</th>
+                <th>Status</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -40,6 +41,7 @@ function Teknisi() {
                 <tr key={index}>
                   <td>{teknisi.name}</td>
                   <td>{teknisi.category}</td>
+                  <td>{teknisi.status}</td>
                   <td>
                     <button className="bg-green-500 text-white px-2 py-1 rounded-lg mr-2">
                       <FontAwesomeIcon icon={faEdit} />

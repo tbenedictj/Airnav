@@ -28,7 +28,7 @@ function PrivateRoute({ children }) {
       </div>
     );
   }
-  
+    
   return currentUser ? children : <Navigate to="/login" />;
 }
 

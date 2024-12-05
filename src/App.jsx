@@ -17,6 +17,7 @@ import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
 import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
 import Teknisi from './Pages/Teknisi/Teknisi';
 import Menu from './Pages/Menu/menu'
+import AddTeknisi from './Pages/Teknisi/TambahTeknisi/TambahTeknisi';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -216,6 +217,19 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <Teknisi />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-teknisi"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <AddTeknisi />
                   </main>
                 </div>
               </PrivateRoute>

@@ -1,12 +1,9 @@
 import React, { useState, createContext, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import logo from "../../assets/background/logo4.jpg";
-import { ChevronLast, ChevronFirst, ChevronDown, ChevronUp, LogOut } from "lucide-react";
 import { signOut } from 'firebase/auth';
 import { auth } from '../../config/firebase';
-import {
-  Radio, LayoutDashboard, LifeBuoy
-} from "lucide-react";
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import '../../App.css';
 
 export const SidebarContext = createContext({
@@ -29,7 +26,7 @@ function SidebarItem({ icon, text, active, onClick, hasSubmenu, isSubmenuOpen, s
         </span>
         {hasSubmenu && expanded && (
           <div className="ml-auto">
-            {isSubmenuOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            {isSubmenuOpen ? <i className="fas fa-chevron-up text-sm" /> : <i className="fas fa-chevron-down text-sm" />}
           </div>
         )}
         {!expanded && (
@@ -81,14 +78,16 @@ export default function Sidebar({ onToggle }) {
     <div onClick={() => handleCnsSubmenuItemClick('/lk-cns')}>Laporan Kegiatan & Kerusakan</div>,
     <div onClick={() => handleCnsSubmenuItemClick('/ch-cns')}>Pemeliharaan Harian</div>,
     <div onClick={() => handleCnsSubmenuItemClick('/cm-cns')}>Pemeliharaan Mingguan</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/cb-cns')}>Pemeliharaan Bulanan</div>
+    <div onClick={() => handleCnsSubmenuItemClick('/cb-cns')}>Pemeliharaan Bulanan</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/peralatan-cns')}>Peralatan</div>
   ];
 
   const supportSubmenuItems = [
     <div onClick={() => handleSupportSubmenuItemClick('/lk-sup')}>Laporan Kegiatan & Kerusakan</div>,
     <div onClick={() => handleSupportSubmenuItemClick('/ch-sup')}>Pemeliharaan Harian</div>,
     <div onClick={() => handleSupportSubmenuItemClick('/cm-sup')}>Pemeliharaan Mingguan</div>,
-    <div onClick={() => handleSupportSubmenuItemClick('/cb-sup')}>Pemeliharaan Bulanan</div>
+    <div onClick={() => handleSupportSubmenuItemClick('/cb-sup')}>Pemeliharaan Bulanan</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/peralatan-sup')}>Peralatan</div>
   ];
 
   const toggleSidebar = () => {
@@ -119,20 +118,20 @@ export default function Sidebar({ onToggle }) {
               onClick={toggleSidebar} 
               className="p-1.5 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
             >
-              {expanded ? <ChevronFirst /> : <ChevronLast />}
+              {expanded ? <i className="fas fa-chevron-left" /> : <i className="fas fa-chevron-right" />}
             </button>
           </div>
 
           <div className="flex-1 flex flex-col">
             <ul className="flex-1 px-3 py-4 space-y-1">
               <SidebarItem 
-                icon={<LayoutDashboard size={20} />} 
+                icon={<i className="fas fa-th-large text-lg" />}
                 text="Dashboard" 
                 active={activeItem === 'Dashboard'}
                 onClick={() => setActiveItem('Dashboard')}
               />
               <SidebarItem 
-                icon={<Radio size={20} />} 
+                icon={<i className="fas fa-broadcast-tower text-lg" />}
                 text="CNS" 
                 active={activeItem === 'CNS'}
                 hasSubmenu={true}
@@ -141,7 +140,7 @@ export default function Sidebar({ onToggle }) {
                 onClick={handleCnsClick}
               />
               <SidebarItem 
-                icon={<LifeBuoy size={20} />} 
+                icon={<i className="fas fa-life-ring text-lg" />}
                 text="Support" 
                 active={activeItem === 'Support'}
                 hasSubmenu={true}
@@ -149,11 +148,20 @@ export default function Sidebar({ onToggle }) {
                 submenuItems={supportSubmenuItems}
                 onClick={handleSupportClick}
               />
+              <SidebarItem 
+                icon={<i className="fas fa-users text-lg" />}
+                text="Teknisi" 
+                active={activeItem === 'Teknisi'}
+                onClick={() => {
+                  setActiveItem('Teknisi');
+                  navigate('/teknisi');
+                }}
+              />
             </ul>
             
             <div className="mt-auto px-3 py-4 border-t border-gray-200">
               <SidebarItem 
-                icon={<LogOut size={20} />} 
+                icon={<i className="fas fa-sign-out-alt text-lg" />}
                 text="Logout" 
                 onClick={handleLogout}
                 className="hover:text-red-600"

@@ -13,6 +13,10 @@ import LKSup from './Pages/catatan/Support/LK-Sup';
 import TambahCatatan from './Pages/catatan/TambahCatatan';
 import Navigation from './Component/Nav/Navigation';
 import { AuthProvider, useAuth } from './config/AuthContext';
+import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
+import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
+import Teknisi from './Pages/Teknisi/Teknisi';
+import Menu from './Pages/Menu/menu';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -39,20 +43,27 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
+          {/* Public route for login */}
           <Route path="/login" element={<LoginForm />} />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <div className="app-container">
-                  <Navigation onToggle={handleSidebarToggle} />
-                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <CHCNS />
-                  </main>
-                </div>
-              </PrivateRoute>
-            }
-          />
+          
+          {/* Protected routes */}
+          <Route path="/menu" element={
+            <PrivateRoute>
+              <Menu />
+            </PrivateRoute>
+          } />
+          
+          <Route path="/dashboard" element={
+            <PrivateRoute>
+              <div className="app-container">
+                <Navigation onToggle={handleSidebarToggle} />
+                <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                  <CHCNS />
+                </main>
+              </div>
+            </PrivateRoute>
+          } />
+          
           <Route
             path="/lk-cns"
             element={
@@ -170,7 +181,49 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route
+            path="/peralatan-cns"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <PeralatanCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/peralatan-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <PeralatanSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/teknisi"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <Teknisi />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          
+          {/* Default routes */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

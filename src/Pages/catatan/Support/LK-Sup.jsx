@@ -1,13 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Pencil, FileText, Trash2 } from 'lucide-react';
 
 const LaporanKegiatanSup = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container w-screen max-w-[1370px] mx-auto p-4">
+            <div className="w-[1150px]">
             <h1 className="text-2xl font-bold mb-4 text-black">List Laporan Kegiatan & Kerusakan Support</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Laporan Kegiatan & Kerusakan Support</h2>
@@ -17,10 +17,10 @@ const LaporanKegiatanSup = () => {
                             onClick={() => navigate('/tambah-catatan')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
-                            <i className="fas fa-plus"></i> Tambah Data
+                            <i className="fas fa-plus mr-2"></i> Tambah Data
                         </button>
                         <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
-                            <i className="fas fa-filter"></i> Filter & Print PDF
+                            <i className="fas fa-filter mr-2"></i> Filter & Print PDF
                         </button>
                     </div>
                     <div className="flex items-center text-black">
@@ -126,6 +126,7 @@ const LaporanKegiatanSup = () => {
             <footer className="text-center py-4">
                 <p className="text-black">Air Nav Manado</p>
             </footer>
+            </div>
         </div>
     );
 };

@@ -20,7 +20,7 @@ function Teknisi() {
   useEffect(() => {
     const fetchTeknisi = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, 'teknisi'));
+        const querySnapshot = await getDocs(collection(db, 'Teknisi'));
         const teknisiData = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()

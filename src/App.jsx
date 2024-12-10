@@ -29,7 +29,8 @@ function PrivateRoute({ children }) {
     );
   }
   
-  return currentUser ? children : <Navigate to="/login" />;
+  // Redirect to /loginform if not authenticated
+  return currentUser ? children : <Navigate to="/loginform" />;
 }
 
 function App() {
@@ -44,7 +45,7 @@ function App() {
       <Router>
         <Routes>
           {/* Public route for login */}
-          <Route path="/login" element={<LoginForm />} />
+          <Route path="/loginform" element={<LoginForm />} />
           
           {/* Protected routes */}
           <Route path="/menu" element={
@@ -222,8 +223,8 @@ function App() {
           />
           
           {/* Default routes */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          <Route path="*" element={<Navigate to="/login" replace />} />
+          <Route path="/" element={<Navigate to="/loginform" replace />} />
+          <Route path="*" element={<Navigate to="/loginform" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -13,7 +13,7 @@ const CatatanBulanan = () => {
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Bulanan Support</h2>
                 <div className="flex justify-between mb-4">
                     <div>
-                        <button 
+                        <button
                             onClick={() => navigate('/tambah-catatan')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
@@ -58,33 +58,7 @@ const CatatanBulanan = () => {
                             <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
                             <td className="py-2 px-4 border-b">DME MWB</td>
                             <td className="py-2 px-4 border-b">
-                                - Pemeliha.. <br />
-                                <a href="#" className="text-blue-600">Selengkapnya</a>
-                            </td>
-                            <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
-                                <img src="https://placehold.co/20x20" alt="Paraf" />
-                            </td>
-                            <td className="py-2 px-4 border-b">
-                                <div className="flex space-x-2">
-                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-edit text-white text-sm"></i>
-                                    </button>
-                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-file text-white text-sm"></i>
-                                    </button>
-                                    <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-trash text-white text-sm"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="py-2 px-4 border-b">2024-07-31 08:00:00 - 2024-07-31 08:30:00</td>
-                            <td className="py-2 px-4 border-b">DVOR MWB</td>
-                            <td className="py-2 px-4 border-b">
-                                - Pemeliha.. <br />
+                                - Pemeliharaan.. <br />
                                 <a href="#" className="text-blue-600">Selengkapnya</a>
                             </td>
                             <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
@@ -109,14 +83,14 @@ const CatatanBulanan = () => {
                     </tbody>
                 </table>
                 <div className="pagination">
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-between items-center mt-4">
                         <p className="text-gray-600">Showing 1 to 10 of 28 entries</p>
                         <div className="flex space-x-2">
-                            <button className="btn btn-secondary">Previous</button>
-                            <button className="btn btn-primary">1</button>
-                            <button className="btn btn-secondary">2</button>
-                            <button className="btn btn-secondary">3</button>
-                            <button className="btn btn-secondary">Next</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
                         </div>
                     </div>
                 </div>

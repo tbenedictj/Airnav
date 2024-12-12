@@ -97,8 +97,6 @@ const LoginForm = () => {
   }, [slides.length]);
 
   return (
-    
-
     <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden" >
       <div className="absolute inset-0 z-0 slideshow" >
         <img src={slides[slideIndex]} alt="background" className="w-full h-full object-cover" style={{opacity : 0.8}}/>
@@ -116,7 +114,7 @@ const LoginForm = () => {
           </div>
         )}
 
-<form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">
               Email
@@ -167,7 +165,6 @@ const LoginForm = () => {
         </div>
       </div>
     </div>
-
   );
 };
 

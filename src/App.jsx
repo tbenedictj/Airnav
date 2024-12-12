@@ -29,8 +29,9 @@ function PrivateRoute({ children }) {
       </div>
     );
   }
-    
-  return currentUser ? children : <Navigate to="/login" />;
+  
+  // Redirect to /loginform if not authenticated
+  return currentUser ? children : <Navigate to="/loginform" />;
 }
 
 function App() {
@@ -44,28 +45,27 @@ function App() {
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/login" element={<LoginForm />} />
-          <Route
-            path="/menu"
-            element={
-              <PrivateRoute>
-                <Menu />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <div className="app-container">
-                  <Navigation onToggle={handleSidebarToggle} />
-                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <CHCNS />
-                  </main>
-                </div>
-              </PrivateRoute>
-            }
-          />
+          {/* Public route for login */}
+          <Route path="/loginform" element={<LoginForm />} />
+          
+          {/* Protected routes */}
+          <Route path="/menu" element={
+            <PrivateRoute>
+              <Menu />
+            </PrivateRoute>
+          } />
+          
+          <Route path="/dashboard" element={
+            <PrivateRoute>
+              <div className="app-container">
+                <Navigation onToggle={handleSidebarToggle} />
+                <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                  <CHCNS />
+                </main>
+              </div>
+            </PrivateRoute>
+          } />
+          
           <Route
             path="/lk-cns"
             element={

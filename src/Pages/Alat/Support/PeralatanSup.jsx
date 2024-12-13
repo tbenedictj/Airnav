@@ -1,103 +1,116 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const PeralatanSup = () => {
     const navigate = useNavigate();
+    const [entries, setEntries] = useState('10');
+    const [searchTerm, setSearchTerm] = useState('');
+
+    // Sample data - replace with your actual data fetching logic
+    const sampleData = [
+        {
+            namaAlat: 'AC 2 PK AUX RUANG MANGUNI KANAN',
+            kategori: 'Mekanikal',
+            snOutdoor: '',
+            snIndoor: '',
+            tahun: '2023',
+            status: 'Normal Ops'
+        },
+        {
+            namaAlat: 'AC 2 PK AUX RUANG MANGUNI KIRI',
+            kategori: 'Mekanikal',
+            snOutdoor: '',
+            snIndoor: '',
+            tahun: '2023',
+            status: 'Normal Ops'
+        },
+        // Add more sample data as needed
+    ];
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Peralatan Support</h1>
-            <div className="bg-white p-4 rounded shadow">
-                <h2 className="text-lg font-semibold text-blue-600 mb-4">Peralatan Support</h2>
-                <div className="flex justify-between mb-4">
-                    <div>
-                        <button 
-                            onClick={() => navigate('/tambah-catatan')}
-                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
+            <h1 className="text-2xl font-semibold mb-4">List Peralatan Support</h1>
+            
+            <div className="bg-white rounded-lg shadow p-6">
+                <h2 className="text-blue-600 text-lg font-semibold mb-4">Peralatan Support</h2>
+                
+                {/* Add Button */}
+                <button 
+                    onClick={() => navigate('/tambah-alat-support')}
+                    className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-blue-600"
+                >
+                    + Tambah Alat
+                </button>
+
+                {/* Entries and Search Controls */}
+                <div className="flex justify-between items-center mb-4">
+                    <div className="flex items-center">
+                        <span className="mr-2">Show</span>
+                        <select 
+                            className="border rounded px-2 py-1"
+                            value={entries}
+                            onChange={(e) => setEntries(e.target.value)}
                         >
-                            <i className="fas fa-plus"></i> Tambah Alat
-                        </button>
-                    </div>
-                    <div className="flex items-center text-black">
-                        <label className="mr-2">Show</label>
-                        <select className="border rounded p-1 text-black">
-                            <option>10</option>
-                            <option>25</option>
-                            <option>50</option>
-                            <option>100</option>
-                        </select> 
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
                         <span className="ml-2">entries</span>
                     </div>
-                </div>
-                <div className="flex justify-between mb-4">
-                    <div></div>
-                    <div className="text-black">
-                        <label className="mr-2">Search:</label>
-                        <input type="text" className="border rounded p-1" />
+                    <div className="flex items-center">
+                        <span className="mr-2">Search:</span>
+                        <input
+                            type="text"
+                            className="border rounded px-2 py-1"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
                     </div>
                 </div>
-                <table className="min-w-full bg-white">
-                    <thead>
-                        <tr className="text-black">
-                            <th className="py-2 px-4 border-b">Nama Alat</th>
-                            <th className="py-2 px-4 border-b">kategori</th>
-                            <th className="py-2 px-4 border-b">Frekuensi</th>
-                            <th className="py-2 px-4 border-b">Status</th>
-                            <th className="py-2 px-4 border-b">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-black">
-                        <tr>
-                            <td className="py-2 px-4 border-b">DME MWB</td>
-                            <td className="py-2 px-4 border-b">Surveillance</td>
-                            <td className="py-2 px-4 border-b">CHANNEL 32</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
-                                <div className="flex space-x-2">
-                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-edit text-white text-sm"></i>
-                                    </button>
-                                    <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-trash text-white text-sm"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="py-2 px-4 border-b">DME MWB</td>
-                            <td className="py-2 px-4 border-b">Surveillance</td>
-                            <td className="py-2 px-4 border-b">CHANNEL 32</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
-                                <div className="flex space-x-2">
-                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-edit text-white text-sm"></i>
-                                    </button>
-                                    <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-trash text-white text-sm"></i>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div className="pagination">
-                    <div className="flex justify-between items-center">
-                        <p className="text-gray-600">Showing 1 to 10 of 28 entries</p>
-                        <div className="flex space-x-2">
-                            <button className="btn btn-secondary">Previous</button>
-                            <button className="btn btn-primary">1</button>
-                            <button className="btn btn-secondary">2</button>
-                            <button className="btn btn-secondary">3</button>
-                            <button className="btn btn-secondary">Next</button>
-                        </div>
-                    </div>
+
+                {/* Table */}
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-200">
+                        <thead>
+                            <tr className="bg-gray-50">
+                                <th className="border px-4 py-2 text-left">Nama Alat ↕</th>
+                                <th className="border px-4 py-2 text-left">Kategori ↕</th>
+                                <th className="border px-4 py-2 text-left">SN Outdoor ↕</th>
+                                <th className="border px-4 py-2 text-left">SN Indoor ↕</th>
+                                <th className="border px-4 py-2 text-left">Tahun ↕</th>
+                                <th className="border px-4 py-2 text-left">Status ↕</th>
+                                <th className="border px-4 py-2 text-center">Action ↕</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {sampleData.map((item, index) => (
+                                <tr key={index} className="hover:bg-gray-50">
+                                    <td className="border px-4 py-2">{item.namaAlat}</td>
+                                    <td className="border px-4 py-2">{item.kategori}</td>
+                                    <td className="border px-4 py-2">{item.snOutdoor}</td>
+                                    <td className="border px-4 py-2">{item.snIndoor}</td>
+                                    <td className="border px-4 py-2">{item.tahun}</td>
+                                    <td className="border px-4 py-2">
+                                        <span className="bg-green-600 text-white px-2 py-1 rounded text-sm">
+                                            {item.status}
+                                        </span>
+                                    </td>
+                                    <td className="border px-4 py-2 text-center">
+                                        <button className="text-blue-500 hover:text-blue-700 mx-1">
+                                            <i className="fas fa-edit"></i>
+                                        </button>
+                                        <button className="text-red-500 hover:text-red-700 mx-1">
+                                            <i className="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
                 </div>
             </div>
-            <footer className="text-center py-4">
-                <p className="text-gray-600">Air Nav Manado</p>
-            </footer>
         </div>
     );
 };

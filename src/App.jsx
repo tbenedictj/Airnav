@@ -16,8 +16,8 @@ import { AuthProvider, useAuth } from './config/AuthContext';
 import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
 import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
 import Teknisi from './Pages/Teknisi/Teknisi';
-import Menu from './Pages/Menu/menu'
-import AddTeknisi from './Pages/Teknisi/TambahTeknisi/TambahTeknisi';
+import Menu from './Pages/Menu/menu';
+import TambahAlat from './Pages/Alat/CNS/TambahAlat';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -223,19 +223,22 @@ function App() {
             }
           />
           <Route
-            path="/tambah-teknisi"
+            path="/tambah-alat-cns"
             element={
               <PrivateRoute>
                 <div className="app-container">
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <AddTeknisi />
+                    <TambahAlat />
                   </main>
                 </div>
               </PrivateRoute>
             }
           />
-          <Route path="/" element={<Navigate to="/login" />} />
+          
+          {/* Default routes */}
+          <Route path="/" element={<Navigate to="/loginform" replace />} />
+          <Route path="*" element={<Navigate to="/loginform" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

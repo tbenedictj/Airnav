@@ -17,7 +17,7 @@ const PeralatanCNS = () => {
                 <div className="flex justify-between mb-4">
                     <div>
                         <button 
-                            onClick={() => navigate('/tambah-catatan')}
+                            onClick={() => navigate('/tambah-alat-cns')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Alat

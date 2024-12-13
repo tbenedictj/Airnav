@@ -10,7 +10,7 @@ const LaporanKegiatanCNS = () => {
     return (
         <div className="container mx-auto p-4">
             {/* Title Section */}
-            <h1 className="text-2xl font-bold mb-4 text-black">List Laporan Kegiatan & Kerusakan CNS</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">List Laporan Kegiatan & Kerusakan CNS</h1>
             
             {/* Main Content Section */}
             <div className="bg-white p-4 rounded shadow">

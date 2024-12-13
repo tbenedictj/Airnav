@@ -22,10 +22,10 @@ const teknisiData = [
 function Teknisi() {
   const navigate = useNavigate();
   return (
-    <div className="container w-screen max-w-[1370px] mx-auto p-4">
+    <div className="container-fluid mt-10 max-h-screen w-screen max-w-[1370px] mx-auto p-4">
       {/* Header */}
       <div className="w-[1150px] mb-6">
-        <h1 className="text-2xl font-bold mb-4 text-black">List Teknisi</h1>
+        <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">List Teknisi</h1>
         <button
          onClick={() => navigate('/tambah-teknisi')}
          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">

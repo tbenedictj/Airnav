@@ -7,7 +7,7 @@ const PeralatanCNS = () => {
 
     return (
         <div className="container-fluid w-full mx-auto px-4">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Peralatan CNS</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">List Peralatan CNS</h1>
             
             {/* Section for Table Header and Controls */}
             <div className="bg-white p-4 rounded shadow">

@@ -18,6 +18,7 @@ import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
 import Teknisi from './Pages/Teknisi/Teknisi';
 import Menu from './Pages/Menu/menu';
 import TambahAlat from './Pages/Alat/CNS/TambahAlatCNS';
+import TambahAlatSup from './Pages/Alat/Support/TambahAlatSupport';
 import AddTeknisi from './Pages/Teknisi/TambahTeknisi/TambahTeknisi';
 
 function PrivateRoute({ children }) {
@@ -244,6 +245,19 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <TambahAlat />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-alat-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahAlatSup />
                   </main>
                 </div>
               </PrivateRoute>

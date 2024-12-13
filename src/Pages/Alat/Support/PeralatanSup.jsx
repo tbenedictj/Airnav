@@ -37,7 +37,7 @@ const PeralatanSup = () => {
                 
                 {/* Add Button */}
                 <button 
-                    onClick={() => navigate('/tambah-alat-support')}
+                    onClick={() => navigate('/tambah-alat-sup')}
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-blue-600"
                 >
                     + Tambah Alat

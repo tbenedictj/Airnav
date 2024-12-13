@@ -157,6 +157,15 @@ export default function Sidebar({ onToggle }) {
                   navigate('/teknisi');
                 }}
               />
+              <SidebarItem 
+                icon={<i className="fas fa-user-plus text-lg" />}
+                text="Tambah Teknisi" 
+                active={activeItem === 'TambahTeknisi'}
+                onClick={() => {
+                  setActiveItem('TambahTeknisi');
+                  navigate('/tambah-teknisi');
+                }}
+              />
             </ul>
             
             <div className="mt-auto px-3 py-4 border-t border-gray-200">

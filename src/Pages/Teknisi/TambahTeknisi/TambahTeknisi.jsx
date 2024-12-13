@@ -1,16 +1,43 @@
 import React, { useState } from "react";
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { useNavigate } from 'react-router-dom';
+import { collection, addDoc } from 'firebase/firestore';
+import { db, auth } from '../../../../src/config/firebase';
 
 const AddTeknisi = () => {
   const navigate = useNavigate();
   const [technicianName, setTechnicianName] = useState("");
   const [category, setCategory] = useState("Supervisor");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log({ technicianName, category });
-    alert(`Teknisi ${technicianName} dengan kategori ${category} berhasil disimpan.`);
+    setIsLoading(true);
+
+    if (!auth.currentUser) {
+      alert("Anda harus login terlebih dahulu!");
+      navigate('/loginform');
+      return;
+    }
+
+    try {
+      // Add document to Firestore
+      const docRef = await addDoc(collection(db, "teknisi"), {
+        name: technicianName,
+        category: category,
+        createdAt: new Date().toISOString(),
+        createdBy: auth.currentUser.uid
+      });
+
+      console.log("Document written with ID: ", docRef.id);
+      alert(`Teknisi ${technicianName} berhasil ditambahkan ke database.`);
+      navigate('/teknisi'); // Redirect back to technician list
+    } catch (error) {
+      console.error("Error detail:", error);
+      alert(`Terjadi kesalahan saat menyimpan data teknisi: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const goBack = () => {
@@ -40,6 +67,7 @@ const AddTeknisi = () => {
               onChange={(e) => setTechnicianName(e.target.value)}
               placeholder="Masukkan nama teknisi"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              required
             />
           </div>
 
@@ -53,26 +81,31 @@ const AddTeknisi = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              required
             >
               <option value="Supervisor">Supervisor</option>
-              <option value="Operator">CNS</option>
-              <option value="Assistant">Support</option>
+              <option value="CNS">CNS</option>
+              <option value="Support">Support</option>
             </select>
           </div>
 
           {/* Tombol Aksi */}
           <div className="flex justify-end space-x-4">
-          <button
-            onClick={goBack}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
-          >
-            Kembali
-          </button>
+            <button
+              type="button"
+              onClick={goBack}
+              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
+              disabled={isLoading}
+            >
+              Kembali
+            </button>
 
             <button
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
+              disabled={isLoading}
             >
-              Simpan
+              {isLoading ? 'Menyimpan...' : 'Simpan'}
             </button>
           </div>
         </form>

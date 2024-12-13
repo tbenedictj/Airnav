@@ -30,7 +30,7 @@ const PeralatanSup = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-semibold mb-4">List Peralatan Support</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">List Peralatan Support</h1>
             
             <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-blue-600 text-lg font-semibold mb-4">Peralatan Support</h2>

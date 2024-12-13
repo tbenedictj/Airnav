@@ -8,7 +8,7 @@ const CatatanMingguan = () => {
     return (
         <div className="container w-screen max-w-[1370px] mx-auto p-4">
             <div className="w-[1150px]">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Mingguan Support</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">List Data Pemeliharaan Mingguan Support</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan Support</h2>
                 <div className="flex justify-between mb-4">

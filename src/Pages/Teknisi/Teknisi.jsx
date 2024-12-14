@@ -93,7 +93,7 @@ function Teknisi() {
               <tr key={index} className="hover:bg-gray-100 border-b border-gray-300">
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.name}</td>
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.category}</td>
-                <td className="py-2 px-4">
+                <td className="py-2 px-4 w-[100px]">
                   <div className="flex space-x-2">
                     <button 
                       onClick={() => navigate(`/edit-teknisi/${teknisi.id}`)}

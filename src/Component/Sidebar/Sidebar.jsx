@@ -129,7 +129,10 @@ export default function Sidebar({ onToggle }) {
                 icon={<i className="fas fa-th-large text-lg" />}
                 text="Dashboard" 
                 active={activeItem === 'Dashboard'}
-                onClick={() => setActiveItem('Dashboard')}
+                onClick={() => {
+                  setActiveItem('Dashboard');
+                  navigate('/dashboard');
+                }}
               />
               <SidebarItem 
                 icon={<i className="fas fa-broadcast-tower text-lg" />}

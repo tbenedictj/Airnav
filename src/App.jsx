@@ -27,6 +27,7 @@ import Menu from './Pages/Menu/menu';
 import TambahAlat from './Pages/Alat/CNS/TambahAlatCNS';
 import TambahAlatSup from './Pages/Alat/Support/TambahAlatSupport';
 import AddTeknisi from './Pages/Teknisi/TambahTeknisi/TambahTeknisi';
+import Dashboard from './Pages/Dashboard/dashboard';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -64,16 +65,19 @@ function App() {
             </PrivateRoute>
           } />
           
-          <Route path="/dashboard" element={
-            <PrivateRoute>
-              <div className="app-container">
-                <Navigation onToggle={handleSidebarToggle} />
-                <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                  <CHCNS />
-                </main>
-              </div>
-            </PrivateRoute>
-          } />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <Dashboard />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
           
           <Route
             path="/lk-cns"

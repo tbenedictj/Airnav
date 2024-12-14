@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { storage, db } from '../../config/firebase';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { collection, addDoc } from 'firebase/firestore';
@@ -106,11 +106,20 @@ const TambahCatatan = () => {
     };
 
     return (
-    <div className="mx-auto p-4 w-screen h-full bg-gray-200 flex items-center justify-center mt-40">
-        <div className="bg-white w-full max-w-4xl rounded-lg shadow p-6">
-            <h1 className="text-2xl font-bold mb-4">Tambah Catatan Baru</h1>
-            <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+    <div className="container shadow w-screen max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 mt-96">
+        <div className="bg-white rounded-lg shadow p-6 sm:p-8">
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Catatan Baru</h1>
+
+            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                <nav className="text-gray-600">
+                    <span className="mx-2">/</span>
+                    <Link to="/ch-cns" className="text-blue-500">List Catatan CNS</Link>
+                    <span className="mx-2">/</span>
+                    <span>Tambah Catatan</span>
+                </nav>
+            </div>
+            <form onSubmit={handleSubmit} className="shadow space-y-6">
+                <div className="shadow space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Tanggal</label>
                         <input

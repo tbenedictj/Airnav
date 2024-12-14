@@ -72,27 +72,27 @@ const PeralatanSup = () => {
 
                 {/* Table */}
                 <div className="overflow-x-auto">
-                    <table className="min-w-full border border-gray-200">
+                    <table className="min-w-full border border-gray-300">
                         <thead>
-                            <tr className="bg-gray-50">
-                                <th className="border px-4 py-2 text-left">Nama Alat ↕</th>
-                                <th className="border px-4 py-2 text-left">Kategori ↕</th>
-                                <th className="border px-4 py-2 text-left">SN Outdoor ↕</th>
-                                <th className="border px-4 py-2 text-left">SN Indoor ↕</th>
-                                <th className="border px-4 py-2 text-left">Tahun ↕</th>
-                                <th className="border px-4 py-2 text-left">Status ↕</th>
-                                <th className="border px-4 py-2 text-center">Action ↕</th>
+                            <tr className="text-black border-b border-gray-300">
+                                <th className="border-gray-300 border-r px-4 py-2 text-left">Nama Alat ↕</th>
+                                <th className="border-gray-300 border-r px-4 py-2 text-left">Kategori ↕</th>
+                                <th className="border-gray-300 border-r px-4 py-2 text-left">SN Outdoor ↕</th>
+                                <th className="border-gray-300 border-r px-4 py-2 text-left">SN Indoor ↕</th>
+                                <th className="border-gray-300 border-r px-4 py-2 text-left">Tahun ↕</th>
+                                <th className="border-gray-300 border-r px-4 py-2 text-left">Status ↕</th>
+                                <th className="px-4 py-2 text-center">Action ↕</th>
                             </tr>
                         </thead>
                         <tbody>
                             {sampleData.map((item, index) => (
-                                <tr key={index} className="hover:bg-gray-50">
-                                    <td className="border px-4 py-2">{item.namaAlat}</td>
-                                    <td className="border px-4 py-2">{item.kategori}</td>
-                                    <td className="border px-4 py-2">{item.snOutdoor}</td>
-                                    <td className="border px-4 py-2">{item.snIndoor}</td>
-                                    <td className="border px-4 py-2">{item.tahun}</td>
-                                    <td className="border px-4 py-2">
+                                <tr key={index} className="hover:bg-gray-50 border-b border-gray-300">
+                                    <td className="border-gray-300 border-r px-4 py-2">{item.namaAlat}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2">{item.kategori}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2">{item.snOutdoor}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2">{item.snIndoor}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2">{item.tahun}</td>
+                                    <td className="px-4 py-2">
                                         <span className="bg-green-600 text-white px-2 py-1 rounded text-sm">
                                             {item.status}
                                         </span>

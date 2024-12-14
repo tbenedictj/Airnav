@@ -102,8 +102,8 @@ function TambahAlatCNS() {
                         onChange={handleInputChange}
                         className="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500"
                     >
-                        <option value="Close">Close</option>
-                        <option value="Open">Open</option>
+                        <option value="close">Close</option>
+                        <option value="open">Open</option>
                     </select>
                 </div>
 

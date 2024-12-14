@@ -115,8 +115,8 @@ const PeralatanCNS = () => {
                                     <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.kategoriAlat}</td>
                                     <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.frekuensi}</td>
                                     <td className="px-4 py-2">
-                                        <span className="bg-green-600 text-white px-2 py-1 rounded text-xs sm:text-sm">
-                                            {alat.status}
+                                        <span className={`bg-${alat.status === 'open' ? 'yellow-500' : 'green-600'} text-white px-2 py-1 rounded text-xs sm:text-sm`}>
+                                            {alat.status === 'open' ? 'Maintenance' : 'Normal ops'}
                                         </span>
                                     </td>
                                     <td className="border px-4 py-2 text-center">

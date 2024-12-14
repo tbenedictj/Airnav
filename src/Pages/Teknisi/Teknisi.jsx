@@ -67,7 +67,7 @@ function Teknisi() {
     <div className="container-fluid mt-10 max-h-screen w-screen max-w-[1370px] mx-auto p-4">
       {/* Header */}
       <div className="w-[1150px] mb-6">
-        <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">List Teknisi</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Teknisi</h1>
         <button
           onClick={() => navigate('/tambah-teknisi')}
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
@@ -77,23 +77,23 @@ function Teknisi() {
 
       {/* Table Container */}
       <div className="w-[1150px] bg-white shadow-md rounded-lg p-4">
-        <table className="min-w-full bg-white">
+        <table className="min-w-full border border-gray-300 bg-white">
           {/* Table Header */}
           <thead>
-            <tr className="text-black">
-              <th className="py-2 px-4 border-b">Nama Teknisi</th>
-              <th className="py-2 px-4 border-b">Kategori</th>
-              <th className="py-2 px-4 border-b">Action</th>
+            <tr className="text-black border-b border-gray-300">
+              <th className="py-2 px-4 border-r border-gray-300">Nama Teknisi</th>
+              <th className="py-2 px-4 border-r border-gray-300">Kategori</th>
+              <th className="py-2 px-4">Action</th>
             </tr>
           </thead>
 
           {/* Table Body */}
           <tbody className="text-black">
-            {teknisiData.map((teknisi) => (
-              <tr key={teknisi.id} className="hover:bg-gray-100">
-                <td className="py-2 px-4 border-b">{teknisi.name}</td>
-                <td className="py-2 px-4 border-b">{teknisi.category}</td>
-                <td className="py-2 px-4 border-b">
+            {teknisiData.map((teknisi, index) => (
+              <tr key={index} className="hover:bg-gray-100 border-b border-gray-300">
+                <td className="py-2 px-4 border-r border-gray-300">{teknisi.name}</td>
+                <td className="py-2 px-4 border-r border-gray-300">{teknisi.category}</td>
+                <td className="py-2 px-4 w-[100px]">
                   <div className="flex space-x-2">
                     <button 
                       onClick={() => navigate(`/edit-teknisi/${teknisi.id}`)}
@@ -114,7 +114,14 @@ function Teknisi() {
 
         {/* Pagination */}
         <div className="flex justify-between items-center mt-4 text-black">
-          <div>Showing {teknisiData.length} entries</div>
+          <div>Showing 1 to 10 of {teknisiData.length} entries</div>
+          <div className="flex items-center space-x-2">
+            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
+            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
+            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
+            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
+            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
+          </div>
         </div>
       </div>
 

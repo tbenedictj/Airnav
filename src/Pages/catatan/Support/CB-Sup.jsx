@@ -8,13 +8,13 @@ const CatatanBulanan = () => {
     return (
         <div className="container w-screen max-w-[1370px] mx-auto p-4">
             <div className="w-[1150px]">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Bulanan Support</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Bulanan Support</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Bulanan Support</h2>
                 <div className="flex justify-between mb-4">
                     <div>
                         <button
-                            onClick={() => navigate('/tambah-catatan')}
+                            onClick={() => navigate('/tambah-cb-sup')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data
@@ -34,7 +34,7 @@ const CatatanBulanan = () => {
                         <span className="ml-2">entries</span>
                     </div>
                 </div>
-                <div className="flex justify-between mb-4">
+                <div className="flex items-center text-black">
                     <div></div>
                     <div className="text-black">
                         <label className="mr-2">Search:</label>
@@ -82,18 +82,7 @@ const CatatanBulanan = () => {
                         </tr>
                     </tbody>
                 </table>
-                <div className="pagination">
-                    <div className="flex justify-between items-center mt-4">
-                        <p className="text-gray-600">Showing 1 to 10 of 28 entries</p>
-                        <div className="flex space-x-2">
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
-                        </div>
-                    </div>
-                </div>
+
             </div>
             <div className="container mx-auto p-4">
                 <div className="bg-white shadow-md rounded-lg p-4">

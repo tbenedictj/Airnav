@@ -9,13 +9,13 @@ const CatatanMingguan = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">List Data Pemeliharaan Mingguan CNS</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Mingguan CNS</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg md:text-xl font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan CNS</h2>
                 <div className="flex flex-col md:flex-row justify-between mb-4">
                     <div className="flex flex-wrap mb-4 md:mb-0">
                         <button
-                            onClick={() => navigate('/tambah-catatan')}
+                            onClick={() => navigate('/tambah-cm-cns')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2 mb-2 md:mb-0"
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data

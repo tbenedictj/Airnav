@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { collection, addDoc } from 'firebase/firestore';
 import { db, auth } from '../../../../src/config/firebase';
 
@@ -45,14 +45,20 @@ const AddTeknisi = () => {
   };
 
   return (
-    <div className="container mr-40 w-screen justify-center items-center flex mx-auto p-4">
+    <div className="container mx-auto w-screen max-w-4xl p-4">
       <div className="bg-white shadow-md max-w-4xl rounded-lg p-6">
         <form onSubmit={handleSubmit}>
-          <h1 className="text-2xl md:text-3xl mr-40 font-bold mb-4 text-black text-center">
+          <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">
             Tambah Data Teknisi
           </h1>
-          <div className="text-sm text-gray-500 mb-6">
-            Teknisi / <span className="text-blue-600">List Teknisi</span> / Add Teknisi
+
+          <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+            <nav className="text-gray-600">
+                <span className="mx-2">/</span>
+                  <Link to="/teknisi" className="text-blue-500">List Teknisi</Link>
+                  <span className="mx-2">/</span>
+                  <span>Tambah Teknisi</span>
+            </nav>
           </div>
 
           {/* Nama Teknisi */}
@@ -66,7 +72,7 @@ const AddTeknisi = () => {
               value={technicianName}
               onChange={(e) => setTechnicianName(e.target.value)}
               placeholder="Masukkan nama teknisi"
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-100"
               required
             />
           </div>
@@ -80,7 +86,7 @@ const AddTeknisi = () => {
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-100 text-black "
               required
             >
               <option value="Supervisor">Supervisor</option>

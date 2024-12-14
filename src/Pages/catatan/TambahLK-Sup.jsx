@@ -113,7 +113,7 @@ const TambahCatatan = () => {
             <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
                 <nav className="text-gray-600">
                     <span className="mx-2">/</span>
-                    <Link to="/lk-cns" className="text-blue-500">List Laporan Kegiatan & Kerusakan CNS</Link>
+                    <Link to="/lk-sup" className="text-blue-500">List Laporan Kegiatan & Kerusakan Support</Link>
                     <span className="mx-2">/</span>
                     <span>Tambah Laporan Kegiatan & Kerusakan</span>
                 </nav>

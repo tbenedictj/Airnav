@@ -11,15 +11,23 @@ import CBSup from './Pages/catatan/Support/CB-Sup';
 import LKCNS from './Pages/catatan/CNS/LK-CNS';
 import LKSup from './Pages/catatan/Support/LK-Sup';
 import TambahCatatan from './Pages/catatan/TambahCatatan';
+import TambahLKSup from './Pages/catatan/TambahLK-Sup';
+import TambahCHCNS from './Pages/catatan/TambahCH-CNS';
+import TambahCHSup from './Pages/catatan/TambahCHSup';
+import TambahCMCNS from './Pages/catatan/TambahCM-CNS';
+import TambahCMSup from './Pages/catatan/TambahCMSup';
+import TambahCBsup from './Pages/catatan/TambahCBSup';
+import Tambahcbcns from './Pages/catatan/TambahCB-CNS';
 import Navigation from './Component/Nav/Navigation';
 import { AuthProvider, useAuth } from './config/AuthContext';
 import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
 import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
 import Teknisi from './Pages/Teknisi/Teknisi';
 import Menu from './Pages/Menu/menu';
-import TambahAlat from './Pages/Alat/CNS/TambahAlatCNS';
+import TambahAlatCNS from './Pages/Alat/CNS/TambahAlatCNS';
 import TambahAlatSup from './Pages/Alat/Support/TambahAlatSupport';
 import AddTeknisi from './Pages/Teknisi/TambahTeknisi/TambahTeknisi';
+import Dashboard from './Pages/Dashboard/dashboard';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -57,16 +65,19 @@ function App() {
             </PrivateRoute>
           } />
           
-          <Route path="/dashboard" element={
-            <PrivateRoute>
-              <div className="app-container">
-                <Navigation onToggle={handleSidebarToggle} />
-                <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                  <CHCNS />
-                </main>
-              </div>
-            </PrivateRoute>
-          } />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <Dashboard />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
           
           <Route
             path="/lk-cns"
@@ -173,13 +184,104 @@ function App() {
             }
           />
           <Route
-            path="/tambah-catatan"
+            path="/tambah-lk"
             element={
               <PrivateRoute>
                 <div className="app-container">
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <TambahCatatan />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-lk-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahLKSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-ch-cns"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahCHCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-ch-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahCHSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-cm-cns"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahCMCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-cm-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahCMSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-cb-cns"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <Tambahcbcns />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/tambah-cb-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahCBsup />
                   </main>
                 </div>
               </PrivateRoute>
@@ -244,14 +346,14 @@ function App() {
                 <div className="app-container">
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <TambahAlat />
+                    <TambahAlatCNS />
                   </main>
                 </div>
               </PrivateRoute>
             }
           />
           <Route
-            path="/tambah-alat-sup"
+            path="/tambah-alat-support"
             element={
               <PrivateRoute>
                 <div className="app-container">

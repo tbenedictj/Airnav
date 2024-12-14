@@ -8,13 +8,13 @@ const CatatanHarian = () => {
     return (
         <div className="container w-screen max-w-[1370px] mx-auto p-4">
             <div className="w-[1150px]">
-            <h1 className="text-2xl font-bold mb-4 text-black">List Data Pemeliharaan Harian Support</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Harian Support</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Harian Support</h2>
                 <div className="flex justify-between mb-4">
                     <div>
                         <button 
-                            onClick={() => navigate('/tambah-catatan')}
+                            onClick={() => navigate('/tambah-ch-sup')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data

@@ -10,7 +10,7 @@ const LaporanKegiatanCNS = () => {
     return (
         <div className="container mx-auto p-4">
             {/* Title Section */}
-            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">List Laporan Kegiatan & Kerusakan CNS</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Laporan Kegiatan & Kerusakan CNS</h1>
             
             {/* Main Content Section */}
             <div className="bg-white p-4 rounded shadow">
@@ -20,7 +20,7 @@ const LaporanKegiatanCNS = () => {
                 <div className="flex justify-between mb-4">
                     <div>
                         <button 
-                            onClick={() => navigate('/tambah-catatan')}
+                            onClick={() => navigate('/tambah-lk')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data

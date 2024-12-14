@@ -25,7 +25,7 @@ function TambahAlatSup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await addDoc(collection(db, 'peralatanSupport'), formData);
+            await addDoc(collection(db, 'PeralatanSupport'), formData);
             navigate('/peralatan-sup'); // Navigate back to equipment list
         } catch (error) {
             console.error("Error adding equipment: ", error);
@@ -33,8 +33,8 @@ function TambahAlatSup() {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-semibold mb-4">Tambah Data Peralatan CNS</h1>
+        <div className="container mt-40 w-screen max-w-4xl mx-auto p-4">
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Data Peralatan CNS</h1>
             
             {/* Breadcrumb */}
             <div className="bg-gray-100 p-3 rounded-lg mb-6">
@@ -75,7 +75,8 @@ function TambahAlatSup() {
 
                 <div>
                     <label className="block text-gray-700 mb-2">SN Indoor</label>
-                    <select
+                    <input
+                        type="text"
                         name="SNIndoor"
                         value={formData.SNIndoor}
                         onChange={handleInputChange}
@@ -84,8 +85,9 @@ function TambahAlatSup() {
                 </div>
 
                 <div>
-                    <label className="block text-gray-700 mb-2">SN Outdoor</label>
-                    <select
+                    <label className="block text-gray-700 mb-2">SN outdoor</label>
+                    <input
+                        type="text"
                         name="SNOutdoor"
                         value={formData.SNOutdoor}
                         onChange={handleInputChange}
@@ -96,13 +98,13 @@ function TambahAlatSup() {
                 <div>
                     <label className="block text-gray-700 mb-2">Status</label>
                     <select
-                        name="status"
+                        name="Status"
                         value={formData.Status}
                         onChange={handleInputChange}
                         className="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500"
                     >
-                        <option value="Close">Close</option>
-                        <option value="Open">Open</option>
+                        <option value="close">Close</option>
+                        <option value="open">Open</option>
                     </select>
                 </div>
 

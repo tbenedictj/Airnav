@@ -1,32 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const PeralatanSup = () => {
     const navigate = useNavigate();
     const [entries, setEntries] = useState('10');
     const [searchTerm, setSearchTerm] = useState('');
+    const [peralatanSup, setPeralatanSup] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Sample data - replace with your actual data fetching logic
-    const sampleData = [
-        {
-            namaAlat: 'AC 2 PK AUX RUANG MANGUNI KANAN',
-            kategori: 'Mekanikal',
-            snOutdoor: '',
-            snIndoor: '',
-            tahun: '2023',
-            status: 'Normal Ops'
-        },
-        {
-            namaAlat: 'AC 2 PK AUX RUANG MANGUNI KIRI',
-            kategori: 'Mekanikal',
-            snOutdoor: '',
-            snIndoor: '',
-            tahun: '2023',
-            status: 'Normal Ops'
-        },
-        // Add more sample data as needed
-    ];
+    useEffect(() => {
+        const fetchPeralatanSup = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'PeralatanSupport'));
+                const peralatanData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setPeralatanSup(peralatanData);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPeralatanSup();
+    }, []);
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this item?')) {
+            try {
+                await deleteDoc(doc(db, 'PeralatanSupport', id));
+                setPeralatanSup(peralatanSup.filter(alat => alat.id !== id)); // Update local state
+                alert('Data berhasil dihapus.');
+            } catch (err) {
+                console.error('Error deleting document:', err);
+                alert('Terjadi kesalahan saat menghapus data.');
+            }
+        }
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="container mx-auto p-4">
@@ -37,7 +61,7 @@ const PeralatanSup = () => {
                 
                 {/* Add Button */}
                 <button 
-                    onClick={() => navigate('/tambah-alat-sup')}
+                    onClick={() => navigate('/tambah-alat-support', { state: { from: 'PeralatanSup' } })}
                     className="bg-blue-500 text-white px-4 py-2 rounded-lg mb-4 hover:bg-blue-600"
                 >
                     + Tambah Alat
@@ -85,23 +109,23 @@ const PeralatanSup = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {sampleData.map((item, index) => (
-                                <tr key={index} className="hover:bg-gray-50 border-b border-gray-300">
-                                    <td className="border-gray-300 border-r px-4 py-2">{item.namaAlat}</td>
-                                    <td className="border-gray-300 border-r px-4 py-2">{item.kategori}</td>
-                                    <td className="border-gray-300 border-r px-4 py-2">{item.snOutdoor}</td>
-                                    <td className="border-gray-300 border-r px-4 py-2">{item.snIndoor}</td>
-                                    <td className="border-gray-300 border-r px-4 py-2">{item.tahun}</td>
+                            {peralatanSup.map((alat) => (
+                                <tr key={alat.id} className="hover:bg-gray-50 border-b border-gray-300">
+                                    <td className="border-gray-300 border-r px-4 py-2">{alat.namaAlat}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2">{alat.kategoriAlat}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2">{alat.snOutdoor}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2">{alat.snIndoor}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2">{alat.tahun}</td>
                                     <td className="px-4 py-2">
                                         <span className="bg-green-600 text-white px-2 py-1 rounded text-sm">
-                                            {item.status}
+                                            {alat.status}
                                         </span>
                                     </td>
                                     <td className="border px-4 py-2 text-center">
                                         <button className="text-blue-500 hover:text-blue-700 mx-1">
                                             <i className="fas fa-edit"></i>
                                         </button>
-                                        <button className="text-red-500 hover:text-red-700 mx-1">
+                                        <button className="text-red-500 hover:text-red-700 mx-1" onClick={() => handleDelete(alat.id)}>
                                             <i className="fas fa-trash"></i>
                                         </button>
                                     </td>

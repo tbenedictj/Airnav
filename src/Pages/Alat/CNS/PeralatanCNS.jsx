@@ -1,18 +1,56 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
+import { db } from '../../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
 const PeralatanCNS = () => {
     const navigate = useNavigate();
     const [entries, setEntries] = useState('10');
     const [searchTerm, setSearchTerm] = useState('');
+    const [peralatan, setPeralatan] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
-    // Sample data - replace with your actual data fetching logic
-    const sampleData = [
-        { namaAlat: 'DME MWB', kategori: 'Surveillance', frekuensi: 'CHANNEL 32', status: 'Normal ops' },
-        { namaAlat: 'NDB MWB', kategori: 'Navigation', frekuensi: '320 KHz', status: 'Normal ops' },
-        // Add more sample data as needed
-    ];
+    useEffect(() => {
+        const fetchPeralatan = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'PeralatanCNS'));
+                const peralatanData = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setPeralatan(peralatanData);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPeralatan();
+    }, []);
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this item?')) {
+            try {
+                await deleteDoc(doc(db, 'PeralatanCNS', id));
+                setPeralatan(peralatan.filter(alat => alat.id !== id)); // Update local state
+                alert('Data berhasil dihapus.');
+            } catch (err) {
+                console.error('Error deleting document:', err);
+                alert('Terjadi kesalahan saat menghapus data.');
+            }
+        }
+    };
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -71,21 +109,21 @@ const PeralatanCNS = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {sampleData.map((item, index) => (
-                                <tr key={index} className="hover:bg-gray-50 border-b border-gray-300">
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{item.namaAlat}</td>
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{item.kategori}</td>
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{item.frekuensi}</td>
+                            {peralatan.map((alat) => (
+                                <tr key={alat.id} className="hover:bg-gray-50 border-b border-gray-300">
+                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.namaAlat}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.kategoriAlat}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.frekuensi}</td>
                                     <td className="px-4 py-2">
                                         <span className="bg-green-600 text-white px-2 py-1 rounded text-xs sm:text-sm">
-                                            {item.status}
+                                            {alat.status}
                                         </span>
                                     </td>
                                     <td className="border px-4 py-2 text-center">
                                         <button className="text-blue-500 hover:text-blue-700 mx-1">
                                             <i className="fas fa-edit"></i>
                                         </button>
-                                        <button className="text-red-500 hover:text-red-700 mx-1">
+                                        <button className="text-red-500 hover:text-red-700 mx-1" onClick={() => handleDelete(alat.id)}>
                                             <i className="fas fa-trash"></i>
                                         </button>
                                     </td>

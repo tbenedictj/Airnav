@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 
 function TambahAlatSup() {
@@ -29,6 +29,18 @@ function TambahAlatSup() {
             navigate('/peralatan-sup'); // Navigate back to equipment list
         } catch (error) {
             console.error("Error adding equipment: ", error);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Are you sure you want to delete this item?')) {
+            try {
+                await deleteDoc(doc(db, 'peralatanSupport', id));
+                alert('Data berhasil dihapus.');
+            } catch (err) {
+                console.error('Error deleting document:', err);
+                alert('Terjadi kesalahan saat menghapus data.');
+            }
         }
     };
 
@@ -80,7 +92,9 @@ function TambahAlatSup() {
                         value={formData.SNIndoor}
                         onChange={handleInputChange}
                         className="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                    />
+                    >
+                        <option value="">Select SN Indoor</option>
+                    </select>
                 </div>
 
                 <div>
@@ -90,7 +104,9 @@ function TambahAlatSup() {
                         value={formData.SNOutdoor}
                         onChange={handleInputChange}
                         className="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500"
-                    />
+                    >
+                        <option value="">Select SN Outdoor</option>
+                    </select>
                 </div>
 
                 <div>
@@ -132,6 +148,45 @@ function TambahAlatSup() {
                     </Link>
                 </div>
             </form>
+            <div className="mt-6">
+                <h2 className="text-blue-600 text-lg font-semibold mb-4">List Peralatan Support</h2>
+                <div className="overflow-x-auto">
+                    <table className="min-w-full border border-gray-300">
+                        <thead>
+                            <tr className="text-black border-b border-gray-300 bg-gray-100">
+                                <th className="border-gray-300 w-[300px] border-r px-4 py-2 text-left text-sm sm:text-base">Nama Alat ↕</th>
+                                <th className="border-gray-300 w-[200px] border-r px-4 py-2 text-left text-sm sm:text-base">Kategori ↕</th>
+                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">Status ↕</th>
+                                <th className="px-4 py-2 text-center text-sm sm:text-base">Action ↕</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {getDocs(collection(db, 'peralatanSupport')).then(querySnapshot => {
+                                const alatData = querySnapshot.docs.map(doc => ({
+                                    id: doc.id,
+                                    ...doc.data()
+                                }));
+                                return alatData.map((alat) => (
+                                    <tr key={alat.id} className="hover:bg-gray-50 border-b border-gray-300">
+                                        <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.namaAlat}</td>
+                                        <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.kategoriAlat}</td>
+                                        <td className="px-4 py-2">
+                                            <span className="bg-green-600 text-white px-2 py-1 rounded text-xs sm:text-sm">
+                                                {alat.status}
+                                            </span>
+                                        </td>
+                                        <td className="border px-4 py-2 text-center">
+                                            <button className="text-red-500 hover:text-red-700 mx-1" onClick={() => handleDelete(alat.id)}>
+                                                <i className="fas fa-trash"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ));
+                            })}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     );
 }

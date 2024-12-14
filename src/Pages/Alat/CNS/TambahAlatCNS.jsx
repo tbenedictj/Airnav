@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { collection, addDoc } from 'firebase/firestore';
-import { db } from '../../../config/firebase';
+import { db, auth } from '../../../config/firebase';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 
-function TambahAlat() {
+function TambahAlatCNS() {
     const navigate = useNavigate();
+    const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         namaAlat: '',
         kategoriAlat: 'Communication',
@@ -22,17 +24,36 @@ function TambahAlat() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsLoading(true);
+
+        if (!auth.currentUser) {
+            alert("Anda harus login terlebih dahulu!");
+            navigate('/loginform');
+            return;
+        }
+
         try {
-            await addDoc(collection(db, 'peralatanCNS'), formData);
-            navigate('/peralatan-cns'); // Navigate back to equipment list
+            // Add document to Firestore
+            const docRef = await addDoc(collection(db, "PeralatanCNS"), {
+                ...formData,
+                createdAt: new Date().toISOString(),
+                createdBy: auth.currentUser.uid
+            });
+
+            console.log("Document written with ID: ", docRef.id);
+            alert(`Peralatan ${formData.namaAlat} berhasil ditambahkan ke database.`);
+            navigate('/peralatan-cns');
         } catch (error) {
-            console.error("Error adding equipment: ", error);
+            console.error("Error adding equipment:", error);
+            alert(`Terjadi kesalahan saat menyimpan data peralatan: ${error.message}`);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <div className="container w-screen max-w-4xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Data Peralatan CNS</h1>
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">Tambah Data Peralatan CNS</h1>
             
             {/* Breadcrumb */}
             <div className="bg-gray-100 p-3 rounded-lg mb-6">
@@ -101,9 +122,10 @@ function TambahAlat() {
                 <div className="flex space-x-4">
                     <button
                         type="submit"
-                        className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
+                        className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none disabled:bg-blue-300"
+                        disabled={isLoading}
                     >
-                        Simpan
+                        {isLoading ? 'Menyimpan...' : 'Simpan'}
                     </button>
                     <Link
                         to="/peralatan-cns"
@@ -117,4 +139,4 @@ function TambahAlat() {
     );
 }
 
-export default TambahAlat;
+export default TambahAlatCNS;

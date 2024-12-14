@@ -24,7 +24,7 @@ import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
 import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
 import Teknisi from './Pages/Teknisi/Teknisi';
 import Menu from './Pages/Menu/menu';
-import TambahAlat from './Pages/Alat/CNS/TambahAlatCNS';
+import TambahAlatCNS from './Pages/Alat/CNS/TambahAlatCNS';
 import TambahAlatSup from './Pages/Alat/Support/TambahAlatSupport';
 import AddTeknisi from './Pages/Teknisi/TambahTeknisi/TambahTeknisi';
 import Dashboard from './Pages/Dashboard/dashboard';
@@ -346,14 +346,14 @@ function App() {
                 <div className="app-container">
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <TambahAlat />
+                    <TambahAlatCNS />
                   </main>
                 </div>
               </PrivateRoute>
             }
           />
           <Route
-            path="/tambah-alat-sup"
+            path="/tambah-alat-support"
             element={
               <PrivateRoute>
                 <div className="app-container">

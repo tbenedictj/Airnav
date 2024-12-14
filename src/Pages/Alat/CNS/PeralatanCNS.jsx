@@ -16,7 +16,7 @@ const PeralatanCNS = () => {
 
     return (
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <h1 className="text-2xl md:text-3xl font-bold mb-6 text-black text-center">List Peralatan CNS</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Peralatan CNS</h1>
 
             <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-blue-600 text-lg font-semibold mb-4">Peralatan CNS</h2>

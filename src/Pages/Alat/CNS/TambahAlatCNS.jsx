@@ -31,8 +31,8 @@ function TambahAlat() {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-center">Tambah Data Peralatan CNS</h1>
+        <div className="container w-screen max-w-4xl mx-auto p-4">
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Data Peralatan CNS</h1>
             
             {/* Breadcrumb */}
             <div className="bg-gray-100 p-3 rounded-lg mb-6">

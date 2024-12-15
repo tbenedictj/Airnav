@@ -92,6 +92,7 @@ const AddTeknisi = () => {
               <option value="Supervisor">Supervisor</option>
               <option value="CNS">CNS</option>
               <option value="Support">Support</option>
+              <option value="Manager Teknik">Manager Teknik</option>
             </select>
           </div>
 

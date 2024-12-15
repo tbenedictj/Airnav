@@ -6,6 +6,7 @@ import { auth } from '../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import '../../App.css';
 import './Sidebar.css';
+import airnav from "../../assets/background/airnav.jpeg" 
 
 export const SidebarContext = createContext({
   expanded: true,
@@ -119,7 +120,7 @@ export default function Sidebar({ onToggle }) {
               onClick={toggleSidebar} 
               className="p-1.5 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
             >
-              {expanded ? <i className="fas fa-chevron-left" /> : <i className="fas fa-chevron-right" />}
+              {expanded ? <img src={airnav} className="w-10 h-10" /> : <img src={airnav} className="w-5 h-5" />}
             </button>
           </div>
 

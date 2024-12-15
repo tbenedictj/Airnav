@@ -98,8 +98,8 @@ function TambahAlatSup() {
                 <div>
                     <label className="block text-gray-700 mb-2">Status</label>
                     <select
-                        name="Status"
-                        value={formData.Status}
+                        name="status"
+                        value={formData.status}
                         onChange={handleInputChange}
                         className="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500"
                     >

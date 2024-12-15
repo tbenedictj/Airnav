@@ -44,3 +44,16 @@
   max-height: calc(100vh - 80px); /* Adjust based on your header height */
   overflow-y: auto;
 }
+
+.sidebar-logo {
+  border: none; /* Menghapus border */
+}
+
+.sidebar-logo img {
+  transition: transform 0.3s ease; /* Animasi saat toggle */
+}
+
+.sidebar-logo img:hover {
+  transform: scale(1.05); /* Sedikit membesar saat di-hover */
+}
+

@@ -45,7 +45,7 @@ const AddTeknisi = () => {
   };
 
   return (
-    <div className="container mx-auto w-screen max-w-4xl p-4">
+    <div className="container-fluid mx-auto w-screen max-w-4xl p-4">
       <div className="bg-white shadow-md max-w-4xl rounded-lg p-6">
         <form onSubmit={handleSubmit}>
           <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">

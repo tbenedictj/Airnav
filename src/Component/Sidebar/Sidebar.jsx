@@ -1,12 +1,11 @@
 import React, { useState, createContext, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import logo from "../../assets/background/logo4.jpg";
+import logo from "../../assets/background/airnav.png";
 import { signOut } from 'firebase/auth';
 import { auth } from '../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import '../../App.css';
 import './Sidebar.css';
-import airnav from "../../assets/background/airnav.jpeg" 
 
 export const SidebarContext = createContext({
   expanded: true,
@@ -114,13 +113,12 @@ export default function Sidebar({ onToggle }) {
     <SidebarContext.Provider value={{ expanded, setExpanded }}>
       <aside className={`sidebar ${!expanded ? 'collapsed' : ''}`}>
         <nav className="h-full flex flex-col">
-          <div className="p-4 pb-2 flex justify-between items-center border-b border-gray-200">
-            <img src={logo} className={`overflow-hidden transition-all ${expanded ? "w-32" : "w-0"}`} alt="Logo"/>
+          <div className="sidebar-logo flex justify-center items-center py-6">
             <button 
               onClick={toggleSidebar} 
-              className="p-1.5 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200"
+              className="bg-white p-1.5 rounded-lg focus:outline-none focus:ring-0"
             >
-              {expanded ? <img src={airnav} className="w-10 h-10" /> : <img src={airnav} className="w-5 h-5" />}
+              {expanded ? <img src={logo} className={`transition-all overflow-hidden w-32`} alt="Logo"/> : <img src={logo} className="w-7 h-9" />}
             </button>
           </div>
 

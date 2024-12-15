@@ -51,6 +51,7 @@ const ImageContainer = () => {
         style={{
           fontSize: '3em',
           textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
+          fontWeight: 'bold',
           margin: 0,
           padding: 0,
         }}
@@ -61,14 +62,19 @@ const ImageContainer = () => {
       {/* Container dengan opacity untuk 3 logo */}
       <div
         style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.5)', // Background hitam dengan opacity 50%
-          padding: '20px',
-          borderRadius: '10px',
+          backgroundColor: 'rgba(255, 255, 255, 0.6)',
+          backdropFilter: 'blur',
+          padding: '40px',
+          borderRadius: '20px',
           display: 'flex',
+          gridTemplateColumns: 'repeat(auto-fit), minmax(200px, 2fr))',
           justifyContent: 'center',
-          gap: '30px',
-          flexWrap: 'wrap',
+          alignItems: 'center',
+          maxWidth: '80%',
+          margin: '20px auto',
           marginTop: '20px',
+          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
+          gap: '20px',
         }}
       >
         {[ 
@@ -108,6 +114,8 @@ const ImageContainer = () => {
                 color: '#ffffff',
                 fontSize: '1.2em',
                 marginTop: '10px',
+                fontWeight: 'bold',
+                textShadow: '2px 2px 4px rgba(0, 0, 0, 9.9)'
               }}
             >
               {label}

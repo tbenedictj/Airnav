@@ -5,7 +5,7 @@ import bg3 from '../../assets/background/mb3.jpg';
 import bg4 from '../../assets/background/mb4.jpg';
 import bg5 from '../../assets/background/of1.jpg';
 import logo from '../../assets/background/airnav.png';
-import './menu.css'
+import './menu.css';
 
 const slides = [bg1, bg2, bg3, bg4, bg5];
 
@@ -57,15 +57,18 @@ const ImageContainer = () => {
       >
         Selamat Datang
       </h1>
+
+      {/* Container dengan opacity untuk 3 logo */}
       <div
-        className="image-container"
         style={{
-          marginTop: '20px',
+          backgroundColor: 'rgba(255, 255, 255, 0.5)', // Background hitam dengan opacity 50%
+          padding: '20px',
+          borderRadius: '10px',
           display: 'flex',
           justifyContent: 'center',
           gap: '30px',
-          flexWrap: 'wrap', // Menambahkan wrap untuk responsivitas
-          padding: '0 10px',
+          flexWrap: 'wrap',
+          marginTop: '20px',
         }}
       >
         {[ 
@@ -73,7 +76,7 @@ const ImageContainer = () => {
           { href: 'https://lasimi.airnavindonesia.co.id/', img: bg2, alt: 'Lasimi', label: 'Lasimi' },
           { href: 'https://e-chain.airnavindonesia.co.id/', img: bg3, alt: 'E-Chain', label: 'E-Chain' },
         ].map(({ href, img, alt, label }, idx) => (
-          <div key={idx} style={{ flex: '1 0 200px', marginBottom: '20px', textAlign: 'center' }}>
+          <div key={idx} style={{ flex: '1 0 200px', textAlign: 'center' }}>
             <a href={href} rel="noopener noreferrer">
               <img
                 src={logo}
@@ -81,8 +84,8 @@ const ImageContainer = () => {
                 onClick={() => handleSetBackground(img)}
                 style={{
                   cursor: 'pointer',
-                  width: '100%', // Membuat gambar responsif
-                  maxWidth: '200px', // Menentukan lebar maksimal gambar
+                  width: '100%',
+                  maxWidth: '200px',
                   height: 'auto',
                   background: 'transparent',
                   border: 'none',
@@ -101,11 +104,10 @@ const ImageContainer = () => {
               />
             </a>
             <div
-              className="description"
               style={{
-                color: '#ffffff', // Menjadikan tulisan berwarna putih
-                fontSize: '1.2em', // Memperbesar ukuran font
-                marginTop: '10px', // Jarak antara gambar dan label
+                color: '#ffffff',
+                fontSize: '1.2em',
+                marginTop: '10px',
               }}
             >
               {label}

@@ -8,7 +8,7 @@ const CatatanHarian = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Harian CNS</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg md:text-xl font-semibold text-blue-600 mb-4">Pemeliharaan Harian CNS</h2>

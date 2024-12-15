@@ -6,8 +6,7 @@ const LaporanKegiatanSup = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container w-screen max-w-[1370px] mx-auto p-4">
-            <div className="w-[1150px]">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Laporan Kegiatan & Kerusakan Support</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Laporan Kegiatan & Kerusakan Support</h2>
@@ -126,7 +125,6 @@ const LaporanKegiatanSup = () => {
             <footer className="text-center py-4">
                 <p className="text-black">Air Nav Manado</p>
             </footer>
-            </div>
         </div>
     );
 };

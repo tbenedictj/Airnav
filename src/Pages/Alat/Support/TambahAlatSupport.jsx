@@ -68,8 +68,8 @@ function TambahAlatSup() {
                         onChange={handleInputChange}
                         className="w-full p-2 border rounded-lg focus:outline-none focus:border-blue-500"
                     >
-                        <option value="Communication">Elektrikal</option>
-                        <option value="Navigation">Mekanikal</option>
+                        <option value="Elektrikal">Elektrikal</option>
+                        <option value="Mekanikal">Mekanikal</option>
                     </select>
                 </div>
 

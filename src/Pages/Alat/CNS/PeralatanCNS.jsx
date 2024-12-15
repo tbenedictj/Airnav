@@ -114,16 +114,16 @@ const PeralatanCNS = () => {
                                     <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.namaAlat}</td>
                                     <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.kategoriAlat}</td>
                                     <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.frekuensi}</td>
-                                    <td className="px-4 py-2">
+                                    <td className="border-gray-300 border-r px-4 py-2">
                                         <span className={`bg-${alat.status === 'open' ? 'yellow-500' : 'green-600'} text-white px-2 py-1 rounded text-xs sm:text-sm`}>
                                             {alat.status === 'open' ? 'Maintenance' : 'Normal ops'}
                                         </span>
                                     </td>
-                                    <td className="border px-4 py-2 text-center">
-                                        <button className="text-blue-500 hover:text-blue-700 mx-1">
+                                    <td className="px-4 py-2 w-[110px] space-x-1 flex">
+                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 text-white text-sm rounded flex items-center justify-center">
                                             <i className="fas fa-edit"></i>
                                         </button>
-                                        <button className="text-red-500 hover:text-red-700 mx-1" onClick={() => handleDelete(alat.id)}>
+                                        <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 text-white text-sm rounded flex items-center justify-center" onClick={() => handleDelete(alat.id)}>
                                             <i className="fas fa-trash"></i>
                                         </button>
                                     </td>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { storage, db } from "../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -15,12 +15,14 @@ const TambahCatatan = () => {
         jamSelesai: '',
         peralatan: '',
         aktivitas: '',
-        teknisi: '',
+        teknisi: [],
         status: 'open',
         bukti: null
     });
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [showTeknisiDropdown, setShowTeknisiDropdown] = useState(false);
+    const dropdownRef = useRef(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -57,12 +59,47 @@ const TambahCatatan = () => {
         fetchData();
     }, []);
 
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowTeknisiDropdown(false);
+            }
+        }
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        
+        if (name === 'teknisi') {
+            // Handle multiple select
+            const selectedOptions = Array.from(e.target.selectedOptions).map(option => option.value);
+            setFormData(prev => ({
+                ...prev,
+                [name]: selectedOptions
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        }
+    };
+
+    const handleTeknisiChange = (selectedTeknisi) => {
+        setFormData(prev => {
+            const updatedTeknisi = prev.teknisi.includes(selectedTeknisi)
+                ? prev.teknisi.filter(t => t !== selectedTeknisi)
+                : [...prev.teknisi, selectedTeknisi];
+            return {
+                ...prev,
+                teknisi: updatedTeknisi
+            };
+        });
     };
 
     const handleImageChange = (e) => {
@@ -95,6 +132,10 @@ const TambahCatatan = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (formData.teknisi.length === 0) {
+            alert('Pilih minimal satu teknisi');
+            return;
+        }
         setLoading(true);
 
         try {
@@ -110,18 +151,23 @@ const TambahCatatan = () => {
             // Save to Firestore
             await addDoc(collection(db, 'LaporanCNS'), {
                 ...formData,
+                teknisi: formData.teknisi.join(', '), // Join array into comma-separated string
                 buktiUrl,
                 userId: currentUser.uid,
                 createdAt: new Date().toISOString()
             });
 
-            navigate(-1); // Go back to previous page
+            navigate('/lk-cns');
         } catch (error) {
-            console.error('Error saving data:', error);
+            console.error('Error submitting form:', error);
             alert('Terjadi kesalahan saat menyimpan data');
         } finally {
             setLoading(false);
         }
+    };
+
+    const toggleDropdown = () => {
+        setShowTeknisiDropdown(!showTeknisiDropdown);
     };
 
     return (
@@ -191,26 +237,69 @@ const TambahCatatan = () => {
                         />
                     </div>
 
-                    <div>
+                    <div className="relative">
                         <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-                        <select
-                            name="teknisi"
-                            value={formData.teknisi}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                            required
-                        >
-                            <option value="">Pilih Teknisi</option>
-                            {teknisiOptions.length > 0 ? (
-                                teknisiOptions.map((option, index) => (
-                                    <option key={index} value={option}>
-                                        {option}
-                                    </option>
-                                ))
-                            ) : (
-                                <option value="" disabled>Loading teknisi...</option>
+                        <div className="mt-1" ref={dropdownRef}>
+                            <div 
+                                className="w-full min-h-[38px] rounded-md border border-gray-300 shadow-sm px-2 py-1 bg-white text-sm focus-within:border-blue-500 focus-within:ring-1 focus-within:ring-blue-500 cursor-pointer"
+                                onClick={toggleDropdown}
+                            >
+                                <div className="flex flex-wrap gap-1">
+                                    {formData.teknisi.map((teknisi, index) => (
+                                        <span
+                                            key={index}
+                                            className="inline-flex items-center bg-gray-100 rounded px-2 py-1 text-sm"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            {teknisi}
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleTeknisiChange(teknisi);
+                                                }}
+                                                className="ml-1 text-gray-400 hover:text-gray-600"
+                                            >
+                                                ×
+                                            </button>
+                                        </span>
+                                    ))}
+                                    <span 
+                                        className="flex-grow min-w-[60px] p-1 text-sm text-gray-400"
+                                        onClick={toggleDropdown}
+                                    >
+                                        {formData.teknisi.length === 0 ? "Pilih Teknisi" : ""}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {showTeknisiDropdown && (
+                                <div className="absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                                    <div className="p-2">
+                                        {teknisiOptions.map((teknisi, index) => (
+                                            <div
+                                                key={index}
+                                                className="flex items-center px-2 py-2 hover:bg-gray-100 cursor-pointer"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    handleTeknisiChange(teknisi);
+                                                }}
+                                            >
+                                                <input
+                                                    type="checkbox"
+                                                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                                                    checked={formData.teknisi.includes(teknisi)}
+                                                    onChange={() => {}}
+                                                />
+                                                <label className="ml-3 block text-sm text-gray-700">
+                                                    {teknisi}
+                                                </label>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             )}
-                        </select>
+                        </div>
                     </div>
 
                     <div>

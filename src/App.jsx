@@ -10,14 +10,14 @@ import CBCNS from './Pages/catatan/CNS/CB-CNS';
 import CBSup from './Pages/catatan/Support/CB-Sup';
 import LKCNS from './Pages/catatan/CNS/LK-CNS';
 import LKSup from './Pages/catatan/Support/LK-Sup';
-import TambahCatatan from './Pages/catatan/TambahCatatan';
-import TambahLKSup from './Pages/catatan/TambahLK-Sup';
-import TambahCHCNS from './Pages/catatan/TambahCH-CNS';
-import TambahCHSup from './Pages/catatan/TambahCHSup';
-import TambahCMCNS from './Pages/catatan/TambahCM-CNS';
-import TambahCMSup from './Pages/catatan/TambahCMSup';
-import TambahCBsup from './Pages/catatan/TambahCBSup';
-import Tambahcbcns from './Pages/catatan/TambahCB-CNS';
+import TambahLKCNS from './Pages/Catatan/CNS/TambahLK-CNS';
+import TambahLKSup from './Pages/Catatan/Support/TambahLK-Sup';
+import TambahCHCNS from './Pages/Catatan/CNS/TambahCH-CNS';
+import TambahCHSup from './Pages/Catatan/Support/TambahCHSup';
+import TambahCMCNS from './Pages/Catatan/CNS/TambahCM-CNS';
+import TambahCMSup from './Pages/Catatan/Support/TambahCMSup';
+import TambahCBsup from './Pages/Catatan/Support/TambahCBSup';
+import Tambahcbcns from './Pages/Catatan/CNS/TambahCB-CNS';
 import Navigation from './Component/Nav/Navigation';
 import { AuthProvider, useAuth } from './config/AuthContext';
 import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
@@ -190,20 +190,7 @@ function App() {
                 <div className="app-container">
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <TambahCatatan />
-                  </main>
-                </div>
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/tambah-lk-sup"
-            element={
-              <PrivateRoute>
-                <div className="app-container">
-                  <Navigation onToggle={handleSidebarToggle} />
-                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <TambahLKSup />
+                    <TambahLKCNS />
                   </main>
                 </div>
               </PrivateRoute>

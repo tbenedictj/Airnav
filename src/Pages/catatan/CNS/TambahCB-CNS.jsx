@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { storage, db } from '../../config/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc } from 'firebase/firestore';
-import { useAuth } from '../../config/AuthContext';
-import Tandatangan from '../../Component/Signature/Tandatangan';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { storage, db } from "../../../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { useAuth } from "../../../config/AuthContext";
+import Tandatangan from "../../../Component/Signature/Tandatangan";
 
 const TambahCatatan = () => {
     const navigate = useNavigate();
@@ -113,7 +113,7 @@ const TambahCatatan = () => {
             <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
                 <nav className="text-gray-600">
                     <span className="mx-2">/</span>
-                    <Link to="/cb-sup" className="text-blue-500">List Catatan Bulanan Support</Link>
+                    <Link to="/cb-cns" className="text-blue-500">List Catatan Bulanan CNS</Link>
                     <span className="mx-2">/</span>
                     <span>Tambah Catatan Bulanan</span>
                 </nav>

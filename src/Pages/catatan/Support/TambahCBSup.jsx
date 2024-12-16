@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { storage, db } from '../../config/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc } from 'firebase/firestore';
-import { useAuth } from '../../config/AuthContext';
-import Tandatangan from '../../Component/Signature/Tandatangan';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { storage, db } from "../../../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { useAuth } from "../../../config/AuthContext";
+import Tandatangan from "../../../Component/Signature/Tandatangan";
 
 const TambahCatatan = () => {
     const navigate = useNavigate();
@@ -108,14 +108,14 @@ const TambahCatatan = () => {
     return (
     <div className="container shadow w-screen max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 mt-96">
         <div className="bg-white rounded-lg shadow p-6 sm:p-8">
-            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Catatan Mingguan</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Catatan Bulanan</h1>
 
             <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
                 <nav className="text-gray-600">
                     <span className="mx-2">/</span>
-                    <Link to="/cm-cns" className="text-blue-500">List Catatan Mingguan CNS</Link>
+                    <Link to="/cb-sup" className="text-blue-500">List Catatan Bulanan Support</Link>
                     <span className="mx-2">/</span>
-                    <span>Tambah Catatan Mingguan</span>
+                    <span>Tambah Catatan Bulanan</span>
                 </nav>
             </div>
             <form onSubmit={handleSubmit} className="shadow space-y-6">

@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { storage, db } from '../../config/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc } from 'firebase/firestore';
-import { useAuth } from '../../config/AuthContext';
-import Tandatangan from '../../Component/Signature/Tandatangan';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { storage, db } from "../../../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc, getDocs } from "firebase/firestore";
+import { useAuth } from "../../../config/AuthContext";
 
 const TambahCatatan = () => {
     const navigate = useNavigate();
     const { currentUser } = useAuth();
+    const [peralatanOptions, setPeralatanOptions] = useState([]);
+    const [teknisiOptions, setTeknisiOptions] = useState([]);
     const [formData, setFormData] = useState({
         tanggal: '',
         jamSelesai: '',
@@ -19,8 +20,42 @@ const TambahCatatan = () => {
         bukti: null
     });
     const [imagePreview, setImagePreview] = useState(null);
-    const [signatureData, setSignatureData] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch Peralatan
+                const peralatanCollection = collection(db, "PeralatanCNS");
+                const peralatanSnapshot = await getDocs(peralatanCollection);
+                const peralatanList = peralatanSnapshot.docs.map(doc => doc.data().namaAlat);
+                setPeralatanOptions(peralatanList);
+
+                // Fetch Teknisi CNS
+                const teknisiCollection = collection(db, "teknisi");
+                const teknisiSnapshot = await getDocs(teknisiCollection);
+                
+                const teknisiList = teknisiSnapshot.docs
+                    .filter(doc => {
+                        const data = doc.data();
+                        // Check for both 'CNS' and 'cns' in category
+                        return data.category?.toUpperCase() === 'CNS';
+                    })
+                    .map(doc => {
+                        const data = doc.data();
+                        return data.name || data.nama; // Try both name fields
+                    })
+                    .filter(name => name); // Remove any undefined values
+                
+                console.log("Final teknisi list:", teknisiList);
+                setTeknisiOptions(teknisiList);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -58,21 +93,12 @@ const TambahCatatan = () => {
         }
     };
 
-    const handleSignatureChange = (data) => {
-        setSignatureData(data);
-    };
-
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!signatureData) {
-            alert('Tanda tangan diperlukan');
-            return;
-        }
         setLoading(true);
 
         try {
             let buktiUrl = '';
-            let signatureUrl = '';
 
             // Upload image if exists
             if (formData.bukti) {
@@ -81,17 +107,10 @@ const TambahCatatan = () => {
                 buktiUrl = await getDownloadURL(buktiRef);
             }
 
-            // Upload signature
-            const signatureBlob = await (await fetch(signatureData)).blob();
-            const signatureRef = ref(storage, `signatures/${Date.now()}-signature.png`);
-            await uploadBytes(signatureRef, signatureBlob);
-            signatureUrl = await getDownloadURL(signatureRef);
-
             // Save to Firestore
-            await addDoc(collection(db, 'catatan'), {
+            await addDoc(collection(db, 'LaporanCNS'), {
                 ...formData,
                 buktiUrl,
-                signatureUrl,
                 userId: currentUser.uid,
                 createdAt: new Date().toISOString()
             });
@@ -108,14 +127,14 @@ const TambahCatatan = () => {
     return (
     <div className="container shadow w-screen max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 mt-96">
         <div className="bg-white rounded-lg shadow p-6 sm:p-8">
-            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Catatan Bulanan</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Laporan Kegiatan & Kerusakan Baru</h1>
 
             <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
                 <nav className="text-gray-600">
                     <span className="mx-2">/</span>
-                    <Link to="/cb-cns" className="text-blue-500">List Catatan Bulanan CNS</Link>
+                    <Link to="/lk-cns" className="text-blue-500">List Laporan Kegiatan & Kerusakan CNS</Link>
                     <span className="mx-2">/</span>
-                    <span>Tambah Catatan Bulanan</span>
+                    <span>Tambah Laporan Kegiatan & Kerusakan</span>
                 </nav>
             </div>
             <form onSubmit={handleSubmit} className="shadow space-y-6">
@@ -146,14 +165,18 @@ const TambahCatatan = () => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Peralatan</label>
-                        <input
-                            type="text"
+                        <select
                             name="peralatan"
                             value={formData.peralatan}
                             onChange={handleInputChange}
                             className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
                             required
-                        />
+                        >
+                            <option value="">Pilih Peralatan</option>
+                            {peralatanOptions.map((option, index) => (
+                                <option key={index} value={option}>{option}</option>
+                            ))}
+                        </select>
                     </div>
 
                     <div>
@@ -170,14 +193,24 @@ const TambahCatatan = () => {
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-                        <input
-                            type="text"
+                        <select
                             name="teknisi"
                             value={formData.teknisi}
                             onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                             required
-                        />
+                        >
+                            <option value="">Pilih Teknisi</option>
+                            {teknisiOptions.length > 0 ? (
+                                teknisiOptions.map((option, index) => (
+                                    <option key={index} value={option}>
+                                        {option}
+                                    </option>
+                                ))
+                            ) : (
+                                <option value="" disabled>Loading teknisi...</option>
+                            )}
+                        </select>
                     </div>
 
                     <div>
@@ -220,11 +253,6 @@ const TambahCatatan = () => {
                                 </button>
                             </div>
                         )}
-                    </div>
-
-                    {/* Signature Component */}
-                    <div className="mb-4">
-                        <Tandatangan onSignatureChange={handleSignatureChange} />
                     </div>
                 </div>
 

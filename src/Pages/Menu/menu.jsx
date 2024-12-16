@@ -48,18 +48,6 @@ const ImageContainer = () => {
         transition: 'background-image 1s ease',
       }}
     >
-      <h1
-        style={{
-          fontSize: '3em',
-          textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
-          fontWeight: 'bold',
-          color: 'white',
-          margin: 0,
-          padding: 0,
-        }}
-      >
-        Selamat Datang
-      </h1>
 
       {/* Container diperbesar */}
       <div

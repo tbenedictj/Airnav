@@ -5,6 +5,8 @@ import bg3 from '../../assets/background/mb3.jpg';
 import bg4 from '../../assets/background/mb4.jpg';
 import bg5 from '../../assets/background/of1.jpg';
 import logo from '../../assets/background/airnav.png';
+import echain from '../../assets/background/echain.png';
+import lasimi from '../../assets/background/lasimi.png';
 import './menu.css';
 
 const slides = [bg1, bg2, bg3, bg4, bg5];
@@ -43,7 +45,6 @@ const ImageContainer = () => {
         alignItems: 'center',
         margin: 0,
         padding: 0,
-        color: 'white',
         transition: 'background-image 1s ease',
       }}
     >
@@ -52,6 +53,7 @@ const ImageContainer = () => {
           fontSize: '3em',
           textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
           fontWeight: 'bold',
+          color: 'white',
           margin: 0,
           padding: 0,
         }}
@@ -59,45 +61,52 @@ const ImageContainer = () => {
         Selamat Datang
       </h1>
 
-      {/* Container dengan opacity untuk 3 logo */}
+      {/* Container diperbesar */}
       <div
         style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.6)',
-          backdropFilter: 'blur',
-          padding: '40px',
-          borderRadius: '20px',
+          backgroundColor: 'rgba(255, 255, 255, 1)',
+          padding: '60px',
+          borderRadius: '30px',
           display: 'flex',
-          gridTemplateColumns: 'repeat(auto-fit), minmax(200px, 2fr))',
           justifyContent: 'center',
           alignItems: 'center',
-          maxWidth: '80%',
+          maxWidth: '90%', // Lebar diperbesar
           margin: '20px auto',
           marginTop: '20px',
-          boxShadow: '0 8px 16px rgba(0, 0, 0, 0.2)',
-          gap: '20px',
+          boxShadow: '0 10px 20px rgba(0, 0, 0, 0.3)',
+          gap: '50px', // Jarak antar gambar
         }}
       >
-        {[ 
-          { href: '/dashboard', img: bg1, alt: 'E-Logbook', label: 'E-Logbook' },
-          { href: 'https://lasimi.airnavindonesia.co.id/', img: bg2, alt: 'Lasimi', label: 'Lasimi' },
-          { href: 'https://e-chain.airnavindonesia.co.id/', img: bg3, alt: 'E-Chain', label: 'E-Chain' },
+        {[
+          { href: '/dashboard', img: logo, alt: 'E-Logbook', label: 'E-Logbook' },
+          { href: 'https://lasimi.airnavindonesia.co.id/', img: lasimi, alt: 'Lasimi', label: 'Lasimi' },
+          { href: 'https://e-chain.airnavindonesia.co.id/', img: echain, alt: 'E-Chain', label: 'E-Chain' },
         ].map(({ href, img, alt, label }, idx) => (
-          <div key={idx} style={{ flex: '1 0 200px', textAlign: 'center' }}>
+          <div
+            key={idx}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flex: '1 0 200px',
+              textAlign: 'center',
+            }}
+          >
             <a href={href} rel="noopener noreferrer">
               <img
-                src={logo}
+                src={img}
                 alt={alt}
                 onClick={() => handleSetBackground(img)}
                 style={{
                   cursor: 'pointer',
-                  width: '100%',
-                  maxWidth: '200px',
-                  height: 'auto',
-                  background: 'transparent',
-                  border: 'none',
+                  width: '200px', // Gambar lebih besar
+                  height: '200px',
+                  objectFit: 'contain',
+                  marginBottom: '15px',
                   transition: 'transform 0.3s, opacity 0.3s',
                   transform: 'scale(1)',
-                  opacity: 0.8,
+                  opacity: 0.9,
                 }}
                 onMouseEnter={(e) => {
                   e.target.style.transform = 'scale(1.1)';
@@ -105,17 +114,21 @@ const ImageContainer = () => {
                 }}
                 onMouseLeave={(e) => {
                   e.target.style.transform = 'scale(1)';
-                  e.target.style.opacity = '0.8';
+                  e.target.style.opacity = '0.9';
                 }}
               />
             </a>
             <div
               style={{
-                color: '#ffffff',
-                fontSize: '1.2em',
-                marginTop: '10px',
-                fontWeight: 'bold',
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 9.9)'
+                color: 'white', // Warna putih
+                fontSize: '1.5em',
+                fontWeight: 'bold', // Bold
+                textShadow: '2px 2px 6px rgba(0, 0, 0, 0.9)', // Shadow
+                lineHeight: '1.5',
+                minHeight: '30px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
               }}
             >
               {label}

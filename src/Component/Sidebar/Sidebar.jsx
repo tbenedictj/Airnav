@@ -12,22 +12,22 @@ export const SidebarContext = createContext({
   setExpanded: () => {}
 });
 
-function SidebarItem({ icon, text, active, onClick, hasSubmenu, isSubmenuOpen, submenuItems, className }) {
+function SidebarItem({ icon, text, active, onClick, hasSubmenu, isSubmenuOpen, submenuItems, className, hovered }) {
   const { expanded } = useContext(SidebarContext);
 
   return (
     <div className={className}>
       <li 
-        className={`nav-item ${active ? 'active' : ''} ${hasSubmenu ? 'cursor-pointer' : ''}`}
+        className={`nav-item ${active ? 'active' : ''} ${hovered ? 'hovered' : ''} ${hasSubmenu ? 'cursor-pointer' : ''}`}
         onClick={onClick}
       >
         <div className="nav-icon">{icon}</div>
-        <span className={`nav-text overflow-hidden transition-all ${expanded ? "opacity-100 w-32" : "opacity-0 w-0"}`}>
+        <span className={`nav-text text-white overflow-hidden transition-all ${expanded ? "opacity-100 w-32" : "opacity-0 w-0"}`}>
           {text}
         </span>
         {hasSubmenu && expanded && (
           <div className="ml-auto">
-            {isSubmenuOpen ? <i className="fas fa-chevron-up text-sm" /> : <i className="fas fa-chevron-down text-sm" />}
+            {isSubmenuOpen ? <i className="fas fa-chevron-up text-sm text-white" /> : <i className="fas fa-chevron-down text-sm text-white" />}
           </div>
         )}
         {!expanded && (
@@ -37,9 +37,9 @@ function SidebarItem({ icon, text, active, onClick, hasSubmenu, isSubmenuOpen, s
         )}
       </li>
       {hasSubmenu && isSubmenuOpen && expanded && (
-        <ul className="ml-8 space-y-1">
+        <ul className="space-y-1 bg-white p-2 rounded-lg shadow-lg">
           {submenuItems.map((item, index) => (
-            <li key={index} className="text-sm py-2 text-gray-700 hover:text-blue-600 cursor-pointer">
+            <li key={index} className="text-sm py-2 text-black hover:text-blue-600 cursor-pointer">
               {item}
             </li>
           ))}
@@ -53,6 +53,7 @@ export default function Sidebar({ onToggle }) {
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState(true);
   const [activeItem, setActiveItem] = useState('');
+  const [hoveredItem, setHoveredItem] = useState(null);
   const [cnsSubmenuOpen, setCnsSubmenuOpen] = useState(false);
   const [supportSubmenuOpen, setSupportSubmenuOpen] = useState(false);
 
@@ -68,11 +69,13 @@ export default function Sidebar({ onToggle }) {
   const handleCnsSubmenuItemClick = (path) => {
     navigate(path);
     setActiveItem('CNS');
+    setHoveredItem(null);
   };
 
   const handleSupportSubmenuItemClick = (path) => {
     navigate(path);
     setActiveItem('Support');
+    setHoveredItem(null);
   };
 
   const cnsSubmenuItems = [
@@ -102,11 +105,13 @@ export default function Sidebar({ onToggle }) {
   const handleCnsClick = () => {
     setCnsSubmenuOpen(!cnsSubmenuOpen);
     setActiveItem('CNS');
+    setHoveredItem(null);
   };
 
   const handleSupportClick = () => {
     setSupportSubmenuOpen(!supportSubmenuOpen);
     setActiveItem('Support');
+    setHoveredItem(null);
   };
 
   return (
@@ -116,16 +121,19 @@ export default function Sidebar({ onToggle }) {
           <div className="sidebar-logo flex justify-center items-center py-6">
             <button 
               onClick={toggleSidebar} 
-              className="bg-white p-1.5 rounded-lg focus:outline-none focus:ring-0"
+              className="bg-[#0080FF] p-1.5 rounded-lg focus:outline-none focus:ring-0"
             >
-              {expanded ? <img src={logo} className={`transition-all overflow-hidden w-32`} alt="Logo"/> : <img src={logo} className="w-7 h-9" />}
+              {expanded ? 
+                <img src={logo} className={`transition-all overflow-hidden w-32`} alt="Logo"/> : 
+                <img src={logo} className="w-7 h-9" />
+              }
             </button>
           </div>
 
           <div className="flex-1 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
             <ul className="flex-1 px-3 py-4 space-y-1">
               <SidebarItem 
-                icon={<i className="fas fa-th-large text-lg" />}
+                icon={<i className="fas fa-th-large text-white text-lg" />}
                 text="Dashboard" 
                 active={activeItem === 'Dashboard'}
                 onClick={() => {
@@ -134,7 +142,7 @@ export default function Sidebar({ onToggle }) {
                 }}
               />
               <SidebarItem 
-                icon={<i className="fas fa-broadcast-tower text-lg" />}
+                icon={<i className="fas fa-broadcast-tower text-white text-lg" />}
                 text="CNS" 
                 active={activeItem === 'CNS'}
                 hasSubmenu={true}
@@ -143,7 +151,7 @@ export default function Sidebar({ onToggle }) {
                 onClick={handleCnsClick}
               />
               <SidebarItem 
-                icon={<i className="fas fa-life-ring text-lg" />}
+                icon={<i className="fas fa-life-ring text-white text-lg" />}
                 text="Support" 
                 active={activeItem === 'Support'}
                 hasSubmenu={true}
@@ -152,7 +160,7 @@ export default function Sidebar({ onToggle }) {
                 onClick={handleSupportClick}
               />
               <SidebarItem 
-                icon={<i className="fas fa-users text-lg" />}
+                icon={<i className="fas fa-users text-white text-lg" />}
                 text="Teknisi" 
                 active={activeItem === 'Teknisi'}
                 onClick={() => {
@@ -161,7 +169,7 @@ export default function Sidebar({ onToggle }) {
                 }}
               />
               <SidebarItem 
-                icon={<i className="fas fa-user-plus text-lg" />}
+                icon={<i className="fas fa-user-plus text-white text-lg" />}
                 text="Tambah Teknisi" 
                 active={activeItem === 'TambahTeknisi'}
                 onClick={() => {
@@ -170,15 +178,15 @@ export default function Sidebar({ onToggle }) {
                 }}
               />
             </ul>
-            
-            <div className="mt-auto px-3 py-4 border-t border-gray-200">
-              <SidebarItem 
-                icon={<i className="fas fa-sign-out-alt text-lg" />}
-                text="Logout" 
-                onClick={handleLogout}
-                className="hover:text-red-600"
-              />
-            </div>
+          </div>
+          
+          <div className="mt-auto px-3 py-4 border-t border-gray-200">
+            <SidebarItem 
+              icon={<i className="fas fa-sign-out-alt text-white text-lg" />}
+              text="Logout" 
+              onClick={handleLogout}
+              className="hover:text-red-600"
+            />
           </div>
         </nav>
       </aside>

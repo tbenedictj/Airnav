@@ -247,6 +247,20 @@ const TambahCatatan = () => {
                             )}
                         </div>
 
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Status</label>
+                            <select
+                                name="status"
+                                value={formData.status}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                                required
+                            >
+                                <option value="open">Open</option>
+                                <option value="close">Close</option>
+                            </select>
+                        </div>
+
                         <div className="flex justify-end space-x-4">
                             <Link
                                 to="/lk-sup"

@@ -12,6 +12,7 @@ const LaporanKegiatanCNS = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [entriesPerPage, setEntriesPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const fetchLaporan = async () => {
@@ -41,11 +42,24 @@ const LaporanKegiatanCNS = () => {
         laporan.teknisi.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    // Calculate start and end indices for pagination
+    const startIndex = (currentPage - 1) * entriesPerPage;
+    const endIndex = startIndex + entriesPerPage;
+    const paginatedLaporan = filteredLaporan.slice(startIndex, endIndex);
+
+    // Change page
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    // Calculate total pages
+    const totalPages = Math.ceil(filteredLaporan.length / entriesPerPage);
+
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Title Section */}
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Laporan Kegiatan & Kerusakan CNS</h1>
-            
+
             {/* Main Content Section */}
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Laporan Kegiatan & Kerusakan CNS</h2>
@@ -85,29 +99,26 @@ const LaporanKegiatanCNS = () => {
                 </div>
 
                 {/* Table Section */}
-                <table className="min-w-full border border-gray-300 border-collapse bg-white">
+                <table className="container-fluid min-w-full h-screen border border-gray-300 border-collapse bg-white">
                     <thead>
                         <tr className="text-black">
                             <th className="py-2 px-4 border border-gray-300">Tanggal / Jam</th>
                             <th className="py-2 px-4 border border-gray-300">Alat</th>
                             <th className="py-2 px-4 border border-gray-300" style={{ width: '300px' }}>Kegiatan</th>
                             <th className="py-2 px-4 border border-gray-300">Teknisi</th>
-                            <th className="py-2 px-4 border border-gray-300">Note</th>
                             <th className="py-2 px-4 border border-gray-300">Paraf</th>
                             <th className="py-2 px-4 border border-gray-300">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">
-                        {filteredLaporan.slice(0, entriesPerPage).map((laporan, index) => (
+                        {paginatedLaporan.map((laporan, index) => (
                             <tr key={index}>
                                 <td className="py-2 px-4 border border-gray-300">{laporan.tanggal}</td>
                                 <td className="py-2 px-4 border border-gray-300">{laporan.peralatan}</td>
                                 <td className="py-2 px-4 border border-gray-300">
-                                    - {laporan.aktivitas} <br />
-                                    <a href="#" className="text-blue-600">Selengkapnya</a>
+                                     {laporan.aktivitas} <br />
                                 </td>
                                 <td className="py-2 px-4 border border-gray-300">{laporan.teknisi}</td>
-                                <td className="py-2 px-4 border border-gray-300">{laporan.note}</td>
                                 <td className="py-2 px-4 border border-gray-300">
                                     <img src={sign} className="w-24 h-12" alt="Paraf" />
                                 </td>
@@ -134,13 +145,31 @@ const LaporanKegiatanCNS = () => {
             <div className="container mx-auto p-4">
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <div className="flex justify-between items-center text-black">
-                        <p>Showing 1 to {entriesPerPage} of {filteredLaporan.length} entries</p>
+                        <p>Showing {(currentPage - 1) * entriesPerPage + 1} to {Math.min(currentPage * entriesPerPage, filteredLaporan.length)} of {filteredLaporan.length} entries</p>
                         <div className="flex items-center space-x-2">
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
+                            <button 
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" 
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </button>
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button 
+                                    key={i} 
+                                    onClick={() => handlePageChange(i + 1)} 
+                                    className={`px-3 py-1 border border-blue-300 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-blue-600 hover:bg-blue-50'}`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button 
+                                onClick={() => handlePageChange(currentPage + 1)} 
+                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" 
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </button>
                         </div>
                     </div>
                 </div>

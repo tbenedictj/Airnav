@@ -69,7 +69,7 @@ export default function Sidebar({ onToggle }) {
   const handleCnsSubmenuItemClick = (path) => {
     navigate(path);
     setActiveItem('CNS');
-    setHoveredItem(null);
+    setHoveredItem(null); 
   };
 
   const handleSupportSubmenuItemClick = (path) => {

@@ -135,9 +135,17 @@ const TambahCatatan = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="container-fluid flex-col sticky max-w-4xl w-screen sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="max-w-3xl mx-auto">
                 <h1 className="text-2xl font-bold mb-4">Tambah Laporan Kegiatan & Kerusakan Support</h1>
+                    <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                          <nav className="text-gray-600">
+                            <span className="mx-2">/</span>
+                            <Link to="/lk-sup" className="text-blue-500">List Laporan Kegiatan & Kerusakan Support</Link>
+                            <span className="mx-2">/</span>
+                            <span>Tambah Laporan Kegiatan & Kerusakan</span>
+                          </nav>
+                    </div>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>

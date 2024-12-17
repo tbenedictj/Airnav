@@ -154,7 +154,7 @@ const handleCheckboxChange = (e) => {
   };
 
   return (
-    <div className="container-fluid flex-col w-screen max-w-4xl sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
       <div className="bg-white rounded-lg shadow p-6 sm:p-8">
         <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Laporan Kegiatan & Kerusakan Baru</h1>
 

@@ -135,7 +135,7 @@ const TambahCatatan = () => {
 
             // Upload image if exists
             if (formData.bukti) {
-                const buktiRef = ref(storage, `bukti/${Date.now()}-${formData.bukti.name}`);
+                const buktiRef = ref(storage, `bukti${Date.now()}-${formData.bukti.name}`);
                 await uploadBytes(buktiRef, formData.bukti);
                 buktiUrl = await getDownloadURL(buktiRef);
             }
@@ -159,7 +159,7 @@ const TambahCatatan = () => {
     };
 
     return (
-        <div className="container shadow w-screen max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 mt-96">
+        <div className="container-fluid flex-col sticky h-screen sticky max-w-4xl w-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div className="bg-white rounded-lg shadow p-6 sm:p-8">
                 <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Catatan Harian</h1>
 
@@ -274,7 +274,7 @@ const TambahCatatan = () => {
                                         {formData.teknisi.map((teknisi, index) => (
                                             <span
                                                 key={index}
-                                                className="inline-flex items-center bg-gray-100 rounded px-2 py-1 text-sm"
+                                                className="inline-flex items-center bg-transparent text-black rounded px-2 py-1 text-sm"
                                                 onClick={(e) => e.stopPropagation()}
                                             >
                                                 {teknisi}
@@ -284,7 +284,7 @@ const TambahCatatan = () => {
                                                         e.stopPropagation();
                                                         handleTeknisiChange(teknisi);
                                                     }}
-                                                    className="ml-1 text-gray-400 hover:text-gray-600"
+                                                    className="ml-1 text-gray-400 hover:text-gray-600 text-xs p-0 border border-gray-300 rounded"
                                                 >
                                                     ×
                                                 </button>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../../config/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import sign from '../../../assets/Icon/p1.png';
 import sign2 from '../../../assets/Icon/p2.png';
 
@@ -12,25 +12,54 @@ const LaporanKegiatanCNS = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [entriesPerPage, setEntriesPerPage] = useState(10);
+    const [expandedRows, setExpandedRows] = useState({});
+    const [expandedTeknisi, setExpandedTeknisi] = useState({});
+
+    const toggleRowExpansion = (id, type) => {
+        if (type === 'aktivitas') {
+            setExpandedRows(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        } else if (type === 'teknisi') {
+            setExpandedTeknisi(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        }
+    };
+
+    const fetchLaporan = async () => {
+        try {
+            const laporanRef = collection(db, 'LaporanCNS');
+            const q = query(laporanRef, orderBy('createdAt', 'desc'));
+            const querySnapshot = await getDocs(q);
+            const laporan = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setLaporanList(laporan);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching laporan:', error);
+            setLoading(false);
+        }
+    };
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+            try {
+                await deleteDoc(doc(db, 'LaporanCNS', id));
+                await fetchLaporan(); // Refresh data after deletion
+                alert('Data berhasil dihapus');
+            } catch (error) {
+                console.error('Error deleting document:', error);
+                alert('Terjadi kesalahan saat menghapus data');
+            }
+        }
+    };
 
     useEffect(() => {
-        const fetchLaporan = async () => {
-            try {
-                const laporanRef = collection(db, 'LaporanCNS');
-                const q = query(laporanRef, orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-                const laporan = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setLaporanList(laporan);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching laporan:', error);
-                setLoading(false);
-            }
-        };
-
         fetchLaporan();
     }, []);
 
@@ -85,41 +114,91 @@ const LaporanKegiatanCNS = () => {
                 </div>
 
                 {/* Table Section */}
-                <table className="min-w-full border border-gray-300 border-collapse bg-white">
+                <table className="min-w-full border border-gray-300 border-collapse bg-white table-fixed">
                     <thead>
                         <tr className="text-black">
-                            <th className="py-2 px-4 border border-gray-300">Tanggal / Jam</th>
-                            <th className="py-2 px-4 border border-gray-300">Alat</th>
-                            <th className="py-2 px-4 border border-gray-300" style={{ width: '300px' }}>Kegiatan</th>
-                            <th className="py-2 px-4 border border-gray-300">Teknisi</th>
-                            <th className="py-2 px-4 border border-gray-300">Note</th>
-                            <th className="py-2 px-4 border border-gray-300">Paraf</th>
-                            <th className="py-2 px-4 border border-gray-300">Aksi</th>
+                            <th className="py-2 px-4 border border-gray-300 w-32">Tanggal / Jam</th>
+                            <th className="py-2 px-4 border border-gray-300 w-40">Alat</th>
+                            <th className="py-2 px-4 border border-gray-300 w-96">Kegiatan</th>
+                            <th className="py-2 px-4 border border-gray-300 w-32">Teknisi</th>
+                            <th className="py-2 px-4 border border-gray-300 w-40">Status</th>
+                            <th className="py-2 px-4 border border-gray-300 w-24">Paraf</th>
+                            <th className="py-2 px-4 border border-gray-300 w-28">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">
-                        {filteredLaporan.slice(0, entriesPerPage).map((laporan, index) => (
-                            <tr key={index}>
-                                <td className="py-2 px-4 border border-gray-300">{laporan.tanggal}</td>
-                                <td className="py-2 px-4 border border-gray-300">{laporan.peralatan}</td>
-                                <td className="py-2 px-4 border border-gray-300">
-                                    - {laporan.aktivitas} <br />
-                                    <a href="#" className="text-blue-600">Selengkapnya</a>
+                        {filteredLaporan.slice(0, entriesPerPage).map((laporan) => (
+                            <tr key={laporan.id}>
+                                <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                    {laporan.tanggal}
                                 </td>
-                                <td className="py-2 px-4 border border-gray-300">{laporan.teknisi}</td>
-                                <td className="py-2 px-4 border border-gray-300">{laporan.note}</td>
+                                <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                    {laporan.peralatan}
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300 max-w-[384px]">
+                                    <div className="break-words whitespace-pre-wrap">
+                                        {laporan.aktivitas?.length > 100 ? (
+                                            <>
+                                                <span>
+                                                    {expandedRows[laporan.id] 
+                                                        ? laporan.aktivitas
+                                                        : `${laporan.aktivitas.substring(0, 100)}...`
+                                                    }
+                                                </span>
+                                                <button 
+                                                    className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                    onClick={() => toggleRowExpansion(laporan.id, 'aktivitas')}
+                                                >
+                                                    {expandedRows[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <span>{laporan.aktivitas}</span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300 max-w-[128px]">
+                                    <div className="break-words whitespace-pre-wrap">
+                                        {laporan.teknisi?.length > 20 ? (
+                                            <>
+                                                <span>
+                                                    {expandedTeknisi[laporan.id] 
+                                                        ? laporan.teknisi
+                                                        : `${laporan.teknisi.substring(0, 20)}...`
+                                                    }
+                                                </span>
+                                                <button 
+                                                    className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                    onClick={() => toggleRowExpansion(laporan.id, 'teknisi')}
+                                                >
+                                                    {expandedTeknisi[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                </button>
+                                            </>
+                                        ) : (
+                                            <span>{laporan.teknisi}</span>
+                                        )}
+                                    </div>
+                                </td>
                                 <td className="py-2 px-4 border border-gray-300">
-                                    <img src={sign} className="w-24 h-12" alt="Paraf" />
+                                    <div className="max-h-20 overflow-y-auto break-words">
+                                        {laporan.status || '-'}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300 text-center">
+                                    <img src={sign} className="w-12 h-12 object-contain mx-auto" alt="Paraf" />
                                 </td>
                                 <td className="py-2 px-4 border border-gray-300">
                                     <div className="flex space-x-2">
                                         <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
                                             <i className="fas fa-edit text-white text-sm"></i>
                                         </button>
-                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                        <button className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center">
                                             <i className="fas fa-file text-white text-sm"></i>
                                         </button>
-                                        <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
+                                        <button 
+                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
+                                            onClick={() => handleDelete(laporan.id)}
+                                        >
                                             <i className="fas fa-trash text-white text-sm"></i>
                                         </button>
                                     </div>

@@ -197,6 +197,19 @@ function App() {
             }
           />
           <Route
+            path="/tambah-lk-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TambahLKSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/tambah-ch-cns"
             element={
               <PrivateRoute>

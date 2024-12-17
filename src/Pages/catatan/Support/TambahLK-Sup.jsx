@@ -1,26 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { storage, db } from "../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs } from "firebase/firestore";
 import { useAuth } from "../../../config/AuthContext";
-import Tandatangan from "../../../Component/Signature/Tandatangan";
 
 const TambahCatatan = () => {
     const navigate = useNavigate();
     const { currentUser } = useAuth();
+    const [peralatanOptions, setPeralatanOptions] = useState([]);
+    const [teknisiOptions, setTeknisiOptions] = useState([]);
     const [formData, setFormData] = useState({
         tanggal: '',
         jamSelesai: '',
         peralatan: '',
         aktivitas: '',
-        teknisi: '',
+        teknisi: [],
         status: 'open',
         bukti: null
     });
     const [imagePreview, setImagePreview] = useState(null);
-    const [signatureData, setSignatureData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [showTeknisiDropdown, setShowTeknisiDropdown] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                // Fetch Peralatan
+                const peralatanCollection = collection(db, "PeralatanSupport");
+                const peralatanSnapshot = await getDocs(peralatanCollection);
+                const peralatanList = peralatanSnapshot.docs.map(doc => doc.data().namaAlat);
+                setPeralatanOptions(peralatanList);
+
+                // Fetch Teknisi Support
+                const teknisiCollection = collection(db, "teknisi");
+                const teknisiSnapshot = await getDocs(teknisiCollection);
+                
+                const teknisiList = teknisiSnapshot.docs
+                    .filter(doc => {
+                        const data = doc.data();
+                        return data.category?.toUpperCase() === 'SUPPORT';
+                    })
+                    .map(doc => {
+                        const data = doc.data();
+                        return data.name || data.nama;
+                    })
+                    .filter(name => name);
+                
+                setTeknisiOptions(teknisiList);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setShowTeknisiDropdown(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -45,209 +91,181 @@ const TambahCatatan = () => {
         }
     };
 
-    const handleCancelImage = () => {
-        setImagePreview(null);
+    const handleTeknisiSelect = (teknisi) => {
         setFormData(prev => ({
             ...prev,
-            bukti: null
+            teknisi: prev.teknisi.includes(teknisi)
+                ? prev.teknisi.filter(t => t !== teknisi)
+                : [...prev.teknisi, teknisi]
         }));
-        // Reset the file input
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput) {
-            fileInput.value = '';
-        }
-    };
-
-    const handleSignatureChange = (data) => {
-        setSignatureData(data);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!signatureData) {
-            alert('Tanda tangan diperlukan');
-            return;
-        }
         setLoading(true);
 
         try {
             let buktiUrl = '';
-            let signatureUrl = '';
-
-            // Upload image if exists
             if (formData.bukti) {
-                const buktiRef = ref(storage, `bukti/${Date.now()}-${formData.bukti.name}`);
-                await uploadBytes(buktiRef, formData.bukti);
-                buktiUrl = await getDownloadURL(buktiRef);
+                const storageRef = ref(storage, `bukti_support/${formData.bukti.name + Date.now()}`);
+                const snapshot = await uploadBytes(storageRef, formData.bukti);
+                buktiUrl = await getDownloadURL(snapshot.ref);
             }
 
-            // Upload signature
-            const signatureBlob = await (await fetch(signatureData)).blob();
-            const signatureRef = ref(storage, `signatures/${Date.now()}-signature.png`);
-            await uploadBytes(signatureRef, signatureBlob);
-            signatureUrl = await getDownloadURL(signatureRef);
-
-            // Save to Firestore
-            await addDoc(collection(db, 'catatan'), {
-                ...formData,
-                buktiUrl,
-                signatureUrl,
-                userId: currentUser.uid,
-                createdAt: new Date().toISOString()
+            await addDoc(collection(db, "LaporanSupport"), {
+                tanggal: formData.tanggal,
+                jamSelesai: formData.jamSelesai,
+                peralatan: formData.peralatan,
+                aktivitas: formData.aktivitas,
+                teknisi: formData.teknisi,
+                status: formData.status,
+                bukti: buktiUrl,
+                createdAt: new Date(),
+                userId: currentUser.uid
             });
 
-            navigate(-1); // Go back to previous page
+            alert("Data berhasil ditambahkan!");
+            navigate('/lk-sup');
         } catch (error) {
-            console.error('Error saving data:', error);
-            alert('Terjadi kesalahan saat menyimpan data');
+            console.error("Error adding document: ", error);
+            alert("Terjadi kesalahan saat menambahkan data");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-    <div className="container shadow w-screen max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 mt-96">
-        <div className="bg-white rounded-lg shadow p-6 sm:p-8">
-            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Laporan Kegiatan & Kerusakan Baru</h1>
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-3xl mx-auto">
+                <h1 className="text-2xl font-bold mb-4">Tambah Laporan Kegiatan & Kerusakan Support</h1>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Tanggal</label>
+                            <input
+                                type="date"
+                                name="tanggal"
+                                value={formData.tanggal}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                                required
+                            />
+                        </div>
 
-            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
-                <nav className="text-gray-600">
-                    <span className="mx-2">/</span>
-                    <Link to="/lk-sup" className="text-blue-500">List Laporan Kegiatan & Kerusakan Support</Link>
-                    <span className="mx-2">/</span>
-                    <span>Tambah Laporan Kegiatan & Kerusakan</span>
-                </nav>
-            </div>
-            <form onSubmit={handleSubmit} className="shadow space-y-6">
-                <div className="shadow space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Tanggal</label>
-                        <input
-                            type="date"
-                            name="tanggal"
-                            value={formData.tanggal}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        />
-                    </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Jam Selesai</label>
+                            <input
+                                type="time"
+                                name="jamSelesai"
+                                value={formData.jamSelesai}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                                required
+                            />
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Jam Selesai</label>
-                        <input
-                            type="time"
-                            name="jamSelesai"
-                            value={formData.jamSelesai}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        />
-                    </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Peralatan</label>
+                            <select
+                                name="peralatan"
+                                value={formData.peralatan}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                                required
+                            >
+                                <option value="">Pilih Peralatan</option>
+                                {peralatanOptions.map((alat, index) => (
+                                    <option key={index} value={alat}>{alat}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Peralatan</label>
-                        <input
-                            type="text"
-                            name="peralatan"
-                            value={formData.peralatan}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        />
-                    </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Aktivitas</label>
+                            <textarea
+                                name="aktivitas"
+                                value={formData.aktivitas}
+                                onChange={handleInputChange}
+                                rows={4}
+                                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                                required
+                            />
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Aktivitas</label>
-                        <textarea
-                            name="aktivitas"
-                            value={formData.aktivitas}
-                            onChange={handleInputChange}
-                            rows={4}
-                            className= "mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        />
-                    </div>
+                        <div className="relative" ref={dropdownRef}>
+                            <label className="block text-sm font-medium text-gray-700">Teknisi</label>
+                            <div className="mt-1">
+                                <div
+                                    className="min-h-[2.5rem] p-2 border-[1px] border-black rounded-md cursor-pointer flex flex-wrap gap-1"
+                                    onClick={() => setShowTeknisiDropdown(!showTeknisiDropdown)}
+                                >
+                                    {formData.teknisi.length > 0 ? (
+                                        formData.teknisi.map((teknisi, index) => (
+                                            <span
+                                                key={index}
+                                                className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-sm"
+                                            >
+                                                {teknisi}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="text-gray-500">Pilih Teknisi</span>
+                                    )}
+                                </div>
+                                {showTeknisiDropdown && (
+                                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
+                                        {teknisiOptions.map((teknisi, index) => (
+                                            <div
+                                                key={index}
+                                                className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                                                    formData.teknisi.includes(teknisi) ? 'bg-blue-50' : ''
+                                                }`}
+                                                onClick={() => handleTeknisiSelect(teknisi)}
+                                            >
+                                                {teknisi}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-                        <input
-                            type="text"
-                            name="teknisi"
-                            value={formData.teknisi}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Status</label>
-                        <select
-                            name="status"
-                            value={formData.status}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        >
-                            <option value="open">Open</option>
-                            <option value="close">Close</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Upload Bukti</label>
-                        <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="mt-1 block w-full"
-                        />
-                        {imagePreview && (
-                            <div className="relative mt-2">
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700">Upload Bukti</label>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="mt-1 block w-full"
+                            />
+                            {imagePreview && (
                                 <img
                                     src={imagePreview}
                                     alt="Preview"
-                                    className="h-40 object-contain"
+                                    className="mt-2 h-32 object-contain"
                                 />
-                                <button
-                                    type="button"
-                                    onClick={handleCancelImage}
-                                    className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transform translate-x-1/2 -translate-y-1/2"
-                                >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                                    </svg>
-                                </button>
-                            </div>
-                        )}
-                    </div>
+                            )}
+                        </div>
 
-                    {/* Signature Component */}
-                    <div className="mb-4">
-                        <Tandatangan onSignatureChange={handleSignatureChange} />
-                    </div>
+                        <div className="flex justify-end space-x-4">
+                            <Link
+                                to="/lk-sup"
+                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                            >
+                                Kembali
+                            </Link>
+                            <button
+                                type="submit"
+                                disabled={loading}
+                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:bg-blue-300"
+                            >
+                                {loading ? 'Menyimpan...' : 'Simpan'}
+                            </button>
+                        </div>
+                    </form>
                 </div>
-
-                <div className="flex flex-col sm:flex-row justify-between pt-4">
-                    <button
-                        type="button"
-                        onClick={() => navigate(-1)}
-                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
-                        disabled={loading}
-                    >
-                        Kembali
-                    </button>
-                    <button
-                        type="submit"
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                        disabled={loading}
-                    >
-                        {loading ? 'Menyimpan...' : 'Simpan'}
-                    </button>
-                </div>
-            </form>
+            </div>
         </div>
-    </div>
     );
 };
 

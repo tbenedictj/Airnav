@@ -159,12 +159,12 @@ const CatatanHarian = () => {
                                         </td>
                                         <td className="py-2 px-4 border border-gray-300 max-w-[384px]">
                                             <div className="break-words whitespace-pre-wrap">
-                                                {item.aktivitas?.length > 100 ? (
+                                                {item.aktivitas?.length > 50 ? (
                                                     <>
                                                         <span>
                                                             {expandedRows[item.id] 
                                                                 ? item.aktivitas
-                                                                : `${item.aktivitas.substring(0, 100)}...`
+                                                                : `${item.aktivitas.substring(0, 50)}...`
                                                             }
                                                         </span>
                                                         <button 

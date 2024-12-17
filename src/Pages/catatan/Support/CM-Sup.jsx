@@ -6,7 +6,7 @@ const CatatanMingguan = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Mingguan Support</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan Support</h2>
@@ -43,29 +43,29 @@ const CatatanMingguan = () => {
                 <table className="min-w-full bg-white">
                     <thead>
                         <tr className="text-black">
-                            <th className="py-2 px-4 border-b">Tanggal / Jam</th>
-                            <th className="py-2 px-4 border-b">Alat</th>
-                            <th className="py-2 px-4 border-b">Kegiatan</th>
-                            <th className="py-2 px-4 border-b">Teknisi</th>
-                            <th className="py-2 px-4 border-b">Note</th>
-                            <th className="py-2 px-4 border-b">Paraf</th>
-                            <th className="py-2 px-4 border-b">Aksi</th>
+                            <th className="py-2 px-4 border border-gray-300">Tanggal / Jam</th>
+                            <th className="py-2 px-4 border border-gray-300">Alat</th>
+                            <th className="py-2 px-4 border border-gray-300">Kegiatan</th>
+                            <th className="py-2 px-4 border border-gray-300">Teknisi</th>
+                            <th className="py-2 px-4 border border-gray-300">Note</th>
+                            <th className="py-2 px-4 border border-gray-300">Paraf</th>
+                            <th className="py-2 px-4 border border-gray-300">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">
                         <tr>
-                            <td className="py-2 px-4 border-b">2024-07-31 09:00:00 - 2024-07-31 09:30:00</td>
-                            <td className="py-2 px-4 border-b">DVOR MWB</td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border border-gray-300">2024-07-31 09:00:00 - 2024-07-31 09:30:00</td>
+                            <td className="py-2 px-4 border border-gray-300">DVOR MWB</td>
+                            <td className="py-2 px-4 border border-gray-300">
                                 - Inspeksi mingguan..<br />
                                 <a href="#" className="text-blue-600">Selengkapnya</a>
                             </td>
-                            <td className="py-2 px-4 border-b">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
-                            <td className="py-2 px-4 border-b">Normal ops</td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border border-gray-300">DEIVI TUMIIR <br /> ALLAN LENGKONG</td>
+                            <td className="py-2 px-4 border border-gray-300">Normal ops</td>
+                            <td className="py-2 px-4 border border-gray-300">
                                 <img src="https://placehold.co/20x20" alt="Paraf" />
                             </td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border border-gray-300">
                                 <div className="flex space-x-2">
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
                                         <i className="fas fa-edit text-white text-sm"></i>
@@ -80,18 +80,18 @@ const CatatanMingguan = () => {
                             </td>
                         </tr>
                         <tr>
-                            <td className="py-2 px-4 border-b">2024-08-01 10:00:00 - 2024-08-01 10:30:00</td>
-                            <td className="py-2 px-4 border-b">ILS MWB</td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border border-gray-300">2024-08-01 10:00:00 - 2024-08-01 10:30:00</td>
+                            <td className="py-2 px-4 border border-gray-300">ILS MWB</td>
+                            <td className="py-2 px-4 border border-gray-300">
                                 - Perawatan mingguan..<br />
                                 <a href="#" className="text-blue-600">Selengkapnya</a>
                             </td>
-                            <td className="py-2 px-4 border-b">JERRY MOKOGINTA</td>
-                            <td className="py-2 px-4 border-b">Stabil</td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border border-gray-300">JERRY MOKOGINTA</td>
+                            <td className="py-2 px-4 border border-gray-300">Stabil</td>
+                            <td className="py-2 px-4 border border-gray-300">
                                 <img src="https://placehold.co/20x20" alt="Paraf" />
                             </td>
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border border-gray-300">
                                 <div className="flex space-x-2">
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
                                         <i className="fas fa-edit text-white text-sm"></i>

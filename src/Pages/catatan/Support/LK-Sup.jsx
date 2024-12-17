@@ -13,20 +13,27 @@ const LaporanKegiatanSup = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [entriesPerPage, setEntriesPerPage] = useState(10);
     const [expandedRows, setExpandedRows] = useState({});
+    const [expandedAlat, setExpandedAlat] = useState({});
     const [expandedTeknisi, setExpandedTeknisi] = useState({});
 
     const toggleRowExpansion = (id, type) => {
-        if (type === 'aktivitas') {
+        if (type === 'peralatan') {
+            setExpandedAlat(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        } else if (type === 'aktivitas') {
             setExpandedRows(prev => ({
                 ...prev,
                 [id]: !prev[id]
             }));
-        } else if (type === 'teknisi') {
+        }
+        else if (type === 'teknisi') {
             setExpandedTeknisi(prev => ({
                 ...prev,
                 [id]: !prev[id]
             }));
-        }
+    }
     };
 
     const fetchLaporan = async () => {
@@ -73,7 +80,7 @@ const LaporanKegiatanSup = () => {
     );
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Title Section */}
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Laporan Kegiatan & Kerusakan Support</h1>
             
@@ -119,13 +126,13 @@ const LaporanKegiatanSup = () => {
                 <table className="min-w-full border border-gray-300 border-collapse bg-white table-fixed">
                     <thead>
                         <tr className="text-black">
-                            <th className="py-2 px-4 border border-gray-300 w-32">Tanggal / Jam</th>
-                            <th className="py-2 px-4 border border-gray-300 w-40">Alat</th>
-                            <th className="py-2 px-4 border border-gray-300 w-96">Kegiatan</th>
-                            <th className="py-2 px-4 border border-gray-300 w-32">Teknisi</th>
-                            <th className="py-2 px-4 border border-gray-300 w-40">Status</th>
-                            <th className="py-2 px-4 border border-gray-300 w-24">Paraf</th>
-                            <th className="py-2 px-4 border border-gray-300 w-28">Aksi</th>
+                            <th className="py-2 px-4 border border-gray-300 ">Tanggal / Jam</th>
+                            <th className="py-2 px-4 border border-gray-300 ">Alat</th>
+                            <th className="py-2 px-4 border border-gray-300 ">Kegiatan</th>
+                            <th className="py-2 px-4 border border-gray-300 ">Teknisi</th>
+                            <th className="py-2 px-4 border border-gray-300 ">Status</th>
+                            <th className="py-2 px-4 border border-gray-300 ">Paraf</th>
+                            <th className="py-2 px-4 border border-gray-300 ">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">
@@ -134,25 +141,44 @@ const LaporanKegiatanSup = () => {
                                 <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
                                     {laporan.tanggal} {laporan.jamSelesai}
                                 </td>
-                                <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                    {laporan.peralatan}
-                                </td>
-                                <td className="py-2 px-4 border border-gray-300 max-w-[384px]">
+                                <td className="py-2 px-4 border max-w-[150px] border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
                                     <div className="break-words whitespace-pre-wrap">
-                                        {laporan.aktivitas?.length > 100 ? (
+                                        {laporan.peralatan?.length > 20 ? (
+                                            <>
+                                                <span>
+                                                    {expandedAlat[laporan.id]
+                                                        ? laporan.peralatan
+                                                        : `${laporan.peralatan.substring(0, 20)}...`
+                                                    }
+                                                </span>
+                                                <span
+                                                    className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
+                                                    onClick={() => toggleRowExpansion(laporan.id, 'peralatan')}
+                                                >
+                                                    {expandedAlat[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                </span>    
+                                            </>
+                                        ) : (
+                                            <span>{laporan.peralatan}</span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300 max-w-[300px]">
+                                    <div className="break-words whitespace-pre-wrap">
+                                        {laporan.aktivitas?.length > 50 ? (
                                             <>
                                                 <span>
                                                     {expandedRows[laporan.id] 
                                                         ? laporan.aktivitas
-                                                        : `${laporan.aktivitas.substring(0, 100)}...`
+                                                        : `${laporan.aktivitas.substring(0, 50)}...`
                                                     }
                                                 </span>
-                                                <button 
-                                                    className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                <span 
+                                                    className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
                                                     onClick={() => toggleRowExpansion(laporan.id, 'aktivitas')}
                                                 >
                                                     {expandedRows[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                </button>
+                                                </span>
                                             </>
                                         ) : (
                                             <span>{laporan.aktivitas}</span>
@@ -170,12 +196,12 @@ const LaporanKegiatanSup = () => {
                                                             : `${laporan.teknisi.join(', ').substring(0, 20)}...`
                                                         }
                                                     </span>
-                                                    <button 
-                                                        className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                    <span 
+                                                        className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
                                                         onClick={() => toggleRowExpansion(laporan.id, 'teknisi')}
                                                     >
                                                         {expandedTeknisi[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                    </button>
+                                                    </span>
                                                 </>
                                             ) : (
                                                 <span>{laporan.teknisi.join(', ')}</span>

@@ -13,6 +13,7 @@ const CatatanHarian = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [expandedRows, setExpandedRows] = useState({});
     const [expandedTeknisi, setExpandedTeknisi] = useState({});
+    const [expandedAlat, setExpandedAlat] = useState({});
 
     useEffect(() => {
         fetchData();
@@ -58,6 +59,11 @@ const CatatanHarian = () => {
                 ...prev,
                 [id]: !prev[id]
             }));
+        } else if (type === 'peralatan') {
+            setExpandedAlat(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
         }
     };
 
@@ -80,7 +86,7 @@ const CatatanHarian = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Harian CNS</h1>
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg md:text-xl font-semibold text-blue-600 mb-4">Pemeliharaan Harian CNS</h2>
@@ -130,13 +136,13 @@ const CatatanHarian = () => {
                     <table className="min-w-full border border-gray-300 border-collapse bg-white table-fixed">
                         <thead>
                             <tr className="text-black">
-                                <th className="py-2 px-4 border border-gray-300 w-32">Tanggal / Jam</th>
-                                <th className="py-2 px-4 border border-gray-300 w-40">Alat</th>
-                                <th className="py-2 px-4 border border-gray-300 w-96">Kegiatan</th>
-                                <th className="py-2 px-4 border border-gray-300 w-32">Teknisi</th>
-                                <th className="py-2 px-4 border border-gray-300 w-40">Note</th>
-                                <th className="py-2 px-4 border border-gray-300 w-24">Paraf</th>
-                                <th className="py-2 px-4 border border-gray-300 w-28">Aksi</th>
+                                <th className="py-2 px-4 border border-gray-300 ">Tanggal / Jam</th>
+                                <th className="py-2 px-4 border border-gray-300 ">Alat</th>
+                                <th className="py-2 px-4 border border-gray-300 ">Kegiatan</th>
+                                <th className="py-2 px-4 border border-gray-300 ">Teknisi</th>
+                                <th className="py-2 px-4 border border-gray-300 ">Note</th>
+                                <th className="py-2 px-4 border border-gray-300 ">Paraf</th>
+                                <th className="py-2 px-4 border border-gray-300 ">Aksi</th>
                             </tr>
                         </thead>
                         <tbody className="text-black">
@@ -154,10 +160,29 @@ const CatatanHarian = () => {
                                         <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
                                             {formatDateTime(item.tanggal, item.jamSelesai)}
                                         </td>
-                                        <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
-                                            {item.peralatan}
+                                        <td className="py-2 px-4 border border-gray-300 max-w-[150px] whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                            <div className="break-words whitespace-pre-wrap">
+                                            {item.peralatan?.length > 20 ? (
+                                                <>
+                                                    <span>
+                                                        {expandedAlat[item.id]
+                                                            ? item.peralatan
+                                                            : `${item.peralatan.substring(0, 20)}...`
+                                                        }
+                                                    </span>
+                                                    <span
+                                                        className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm block mt-1"
+                                                        onClick={() => toggleRowExpansion(item.id, 'peralatan')}
+                                                    >
+                                                        {expandedRows[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <span>{item.peralatan}</span>
+                                            )}
+                                            </div>
                                         </td>
-                                        <td className="py-2 px-4 border border-gray-300 max-w-[384px]">
+                                        <td className="py-2 px-4 border border-gray-300 max-w-[300px]">
                                             <div className="break-words whitespace-pre-wrap">
                                                 {item.aktivitas?.length > 50 ? (
                                                     <>
@@ -167,12 +192,12 @@ const CatatanHarian = () => {
                                                                 : `${item.aktivitas.substring(0, 50)}...`
                                                             }
                                                         </span>
-                                                        <button 
-                                                            className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                        <span 
+                                                            className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm block mt-1"
                                                             onClick={() => toggleRowExpansion(item.id, 'aktivitas')}
                                                         >
                                                             {expandedRows[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                        </button>
+                                                        </span>
                                                     </>
                                                 ) : (
                                                     <span>{item.aktivitas}</span>
@@ -189,12 +214,12 @@ const CatatanHarian = () => {
                                                                 : `${item.teknisi.substring(0, 20)}...`
                                                             }
                                                         </span>
-                                                        <button 
-                                                            className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                        <span 
+                                                            className="text-blue-600 cursor-pointer hover:text-blue-800 text-sm block mt-1"
                                                             onClick={() => toggleRowExpansion(item.id, 'teknisi')}
                                                         >
                                                             {expandedTeknisi[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                        </button>
+                                                        </span>
                                                     </>
                                                 ) : (
                                                     <span>{item.teknisi}</span>

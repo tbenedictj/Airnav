@@ -75,7 +75,7 @@ const PeralatanSup = () => {
     }
 
     return (
-        <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="container-fluid mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Peralatan Support</h1>
             <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-blue-600 text-lg font-semibold mb-4">Peralatan Support</h2>
@@ -113,43 +113,37 @@ const PeralatanSup = () => {
                         </div>
                     </div>
                 </div>
+
                 <div className="overflow-x-auto">
                     <table className="min-w-full border border-gray-300">
                         <thead>
                             <tr className="text-black border-b border-gray-300 bg-gray-100">
-                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Nama Alat
-                                    <button onClick={() => handleSort('namaAlat')} className="ml-2 text-blue-500 hover:text-blue-700">
-                                        ↕
+                                <th className="text-center border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
+                                    <button onClick={() => handleSort('namaAlat')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Nama&nbsp;↕
                                     </button>
                                 </th>
                                 <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Kategori
-                                    <button onClick={() => handleSort('kategoriAlat')} className="ml-2 text-blue-500 hover:text-blue-700">
-                                        ↕
+                                    <button onClick={() => handleSort('kategoriAlat')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Kategori&nbsp;↕
                                     </button>
                                 </th>
                                 <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    SN Outdoor
-                                    <button onClick={() => handleSort('SNOutdoor')} className="ml-2 text-blue-500 hover:text-blue-700">
-                                        ↕
+                                    <button onClick={() => handleSort('SNOutdoor')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        SN Outdoor&nbsp;↕
                                     </button>
                                 </th>
                                 <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    SN Indoor
-                                    <button onClick={() => handleSort('SNIndoor')} className="ml-2 text-blue-500 hover:text-blue-700">
-                                        ↕
+                                    <button onClick={() => handleSort('SNIndoor')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        SN Indoor&nbsp;↕
                                     </button>
                                 </th>
                                 <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Tahun
-                                    <button onClick={() => handleSort('Tahun')} className="ml-2 text-blue-500 hover:text-blue-700">
-                                        ↕
+                                    <button onClick={() => handleSort('Tahun')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Tahun&nbsp;↕
                                     </button>
                                 </th>
-                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Status
-                                </th>
+                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">Status</th>
                                 <th className="px-4 py-2 text-center text-sm sm:text-base">Action</th>
                             </tr>
                         </thead>
@@ -170,7 +164,10 @@ const PeralatanSup = () => {
                                         <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 text-white text-sm rounded flex items-center justify-center">
                                             <i className="fas fa-edit"></i>
                                         </button>
-                                        <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 text-white text-sm rounded flex items-center justify-center" onClick={() => handleDelete(alat.id)}>
+                                        <button
+                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 text-white text-sm rounded flex items-center justify-center"
+                                            onClick={() => handleDelete(alat.id)}
+                                        >
                                             <i className="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -182,6 +179,6 @@ const PeralatanSup = () => {
             </div>
         </div>
     );
-}
+};
 
 export default PeralatanSup;

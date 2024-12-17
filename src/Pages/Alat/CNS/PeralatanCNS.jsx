@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const PeralatanCNS = () => {
     const navigate = useNavigate();
@@ -125,43 +127,70 @@ const PeralatanCNS = () => {
                             <tr className="text-black border-b border-gray-300 bg-gray-100">
                                 <th className="border-gray-300 w-[300px] border-r px-4 py-2 text-left text-sm sm:text-base">
                                     Nama Alat
-                                    <button onClick={() => handleSort('namaAlat')} className="ml-2 text-blue-500 hover:text-blue-700">
+                                    <button
+                                        onClick={() => handleSort('namaAlat')}
+                                        className="ml-2 text-blue-500 hover:text-blue-700"
+                                    >
                                         ↕
                                     </button>
                                 </th>
                                 <th className="border-gray-300 w-[200px] border-r px-4 py-2 text-left text-sm sm:text-base">
                                     Kategori
-                                    <button onClick={() => handleSort('kategoriAlat')} className="ml-2 text-blue-500 hover:text-blue-700">
+                                    <button
+                                        onClick={() => handleSort('kategoriAlat')}
+                                        className="ml-2 text-blue-500 hover:text-blue-700"
+                                    >
                                         ↕
                                     </button>
                                 </th>
                                 <th className="border-gray-300 w-[150px] border-r px-4 py-2 text-left text-sm sm:text-base">
                                     Frekuensi
-                                    <button onClick={() => handleSort('frekuensi')} className="ml-2 text-blue-500 hover:text-blue-700">
+                                    <button
+                                        onClick={() => handleSort('frekuensi')}
+                                        className="ml-2 text-blue-500 hover:text-blue-700"
+                                    >
                                         ↕
                                     </button>
                                 </th>
-                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">Status </th>
-                                <th className="px-4 py-2 text-center text-sm sm:text-base">Action </th>
+                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
+                                    Status
+                                </th>
+                                <th className="px-4 py-2 text-center text-sm sm:text-base">
+                                    Action
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
                             {sortedPeralatan().map((alat) => (
                                 <tr key={alat.id} className="hover:bg-gray-50 border-b border-gray-300">
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.namaAlat}</td>
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.kategoriAlat}</td>
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.frekuensi}</td>
+                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">
+                                        {alat.namaAlat}
+                                    </td>
+                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">
+                                        {alat.kategoriAlat}
+                                    </td>
+                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">
+                                        {alat.frekuensi}
+                                    </td>
                                     <td className="border-gray-300 border-r px-4 py-2">
-                                        <span className={`bg-${alat.status === 'open' ? 'yellow-500' : 'green-600'} text-white px-2 py-1 rounded text-xs sm:text-sm`}>
+                                        <span
+                                            className={`px-2 py-1 rounded text-xs sm:text-sm ${
+                                                alat.status === 'open' ? 'bg-yellow-500' : 'bg-green-600'
+                                            } text-white`}
+                                        >
                                             {alat.status === 'open' ? 'Maintenance' : 'Normal ops'}
                                         </span>
                                     </td>
                                     <td className="px-4 py-2 w-[110px] space-x-1 flex">
-                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 text-white text-sm rounded flex items-center justify-center">
-                                            <i className="fas fa-edit"></i>
+                                        <button
+                                            onClick={() => navigate(`/edit-alat-cns/${alat.id}`)}
+                                            className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                            <FontAwesomeIcon icon={faEdit} className="text-white text-sm" />
                                         </button>
-                                        <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 text-white text-sm rounded flex items-center justify-center" onClick={() => handleDelete(alat.id)}>
-                                            <i className="fas fa-trash"></i>
+                                        <button
+                                            onClick={() => handleDelete(alat.id)}
+                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
+                                            <FontAwesomeIcon icon={faTrash} className="text-white text-sm" />
                                         </button>
                                     </td>
                                 </tr>

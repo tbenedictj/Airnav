@@ -10,15 +10,16 @@ import CBCNS from './Pages/catatan/CNS/CB-CNS';
 import CBSup from './Pages/catatan/Support/CB-Sup';
 import LKCNS from './Pages/catatan/CNS/LK-CNS';
 import LKSup from './Pages/catatan/Support/LK-Sup';
-import TambahLKCNS from './Pages/Catatan/CNS/TambahLK-CNS';
-import TambahLKSup from './Pages/Catatan/Support/TambahLK-Sup';
-import TambahCHCNS from './Pages/Catatan/CNS/TambahCH-CNS';
-import TambahCHSup from './Pages/Catatan/Support/TambahCHSup';
-import TambahCMCNS from './Pages/Catatan/CNS/TambahCM-CNS';
-import TambahCMSup from './Pages/Catatan/Support/TambahCMSup';
-import TambahCBsup from './Pages/Catatan/Support/TambahCBSup';
-import Tambahcbcns from './Pages/Catatan/CNS/TambahCB-CNS';
+import TambahLKCNS from './Pages/catatan/CNS/TambahLK-CNS';
+import TambahLKSup from './Pages/catatan/Support/TambahLK-Sup';
+import TambahCHCNS from './Pages/catatan/CNS/TambahCH-CNS';
+import TambahCHSup from './Pages/catatan/Support/TambahCHSup';
+import TambahCMCNS from './Pages/catatan/CNS/TambahCM-CNS';
+import TambahCMSup from './Pages/catatan/Support/TambahCMSup';
+import TambahCBsup from './Pages/catatan/Support/TambahCBSup';
+import Tambahcbcns from './Pages/catatan/CNS/TambahCB-CNS';
 import Navigation from './Component/Nav/Navigation';
+import EditTeknisi from './Pages/Teknisi/EditTeknisi/EditTeknisi';
 import { AuthProvider, useAuth } from './config/AuthContext';
 import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
 import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
@@ -28,6 +29,18 @@ import TambahAlatCNS from './Pages/Alat/CNS/TambahAlatCNS';
 import TambahAlatSup from './Pages/Alat/Support/TambahAlatSupport';
 import AddTeknisi from './Pages/Teknisi/TambahTeknisi/TambahTeknisi';
 import Dashboard from './Pages/Dashboard/dashboard';
+import EditAlatCNS from './Pages/Alat/CNS/EditAlatCNS';
+import EditAlatSup from './Pages/Alat/Support/EditAlatSup';
+import EditCHCNS from './Pages/catatan/CNS/EditCatatanCNS/EditCH-CNS';
+import EditCMCNS from './Pages/catatan/CNS/EditCatatanCNS/EditCM-CNS';
+import EditLKCNS from './Pages/catatan/CNS/EditCatatanCNS/EditLK-CNS';
+import EditCBCNS from './Pages/catatan/CNS/EditCatatanCNS/EditCB-CNS';
+import EditLKSup from './Pages/catatan/Support/EditCatatanSup/EditLK-Sup';
+import EditCHSup from './Pages/catatan/Support/EditCatatanSup/EditCH-Sup';
+import EditCMSup from './Pages/catatan/Support/EditCatatanSup/EditCM-Sup';
+import EditCBSup from './Pages/catatan/Support/EditCatatanSup/EditCB-Sup';
+import PeralatanOpenStatus from './Pages/Dashboard/Maintenance';
+import PeralatanOpenStatusSup from './Pages/Dashboard/MaintenanceSup';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -360,6 +373,175 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <TambahAlatSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-teknisi/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditTeknisi />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-alat-cns/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditAlatCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-alat-sup/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditAlatSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-ch-cns/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditCHCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-cm-cns/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditCMCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-cb-cns/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditCBCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-lk-cns/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditLKCNS />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-lk-sup/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditLKSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-ch-sup/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditCHSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-cm-sup/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditCMSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-cb-sup/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditCBSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/alat-mt-cns"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <PeralatanOpenStatus />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/alat-mt-sup"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <PeralatanOpenStatusSup />
                   </main>
                 </div>
               </PrivateRoute>

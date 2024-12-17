@@ -135,12 +135,11 @@ const CatatanBulanan = () => {
                                 <td className="py-2 px-4 border-b">{catatan.peralatan}</td>
                                 <td className="py-2 px-4 border-b">
                                     {catatan.aktivitas?.length > 100 ? (
-                                        <>
+                                        <div>
                                             <span>
                                                 {expandedRows[catatan.id] 
                                                     ? catatan.aktivitas
-                                                    : `${catatan.aktivitas.substring(0, 100)}...`
-                                                }
+                                                    : `${catatan.aktivitas.substring(0, 100)}...`}
                                             </span>
                                             <button 
                                                 className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
@@ -148,7 +147,7 @@ const CatatanBulanan = () => {
                                             >
                                                 {expandedRows[catatan.id] ? 'Sembunyikan' : 'Selengkapnya'}
                                             </button>
-                                        </>
+                                        </div>
                                     ) : (
                                         catatan.aktivitas
                                     )}
@@ -156,12 +155,11 @@ const CatatanBulanan = () => {
                                 <td className="py-2 px-4 border-b">
                                     {Array.isArray(catatan.teknisi) ? (
                                         catatan.teknisi.join(', ').length > 20 ? (
-                                            <>
+                                            <div>
                                                 <span>
                                                     {expandedTeknisi[catatan.id] 
                                                         ? catatan.teknisi.join(', ')
-                                                        : `${catatan.teknisi.join(', ').substring(0, 20)}...`
-                                                    }
+                                                        : `${catatan.teknisi.join(', ').substring(0, 20)}...`}
                                                 </span>
                                                 <button 
                                                     className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
@@ -169,7 +167,7 @@ const CatatanBulanan = () => {
                                                 >
                                                     {expandedTeknisi[catatan.id] ? 'Sembunyikan' : 'Selengkapnya'}
                                                 </button>
-                                            </>
+                                            </div>
                                         ) : (
                                             catatan.teknisi.join(', ')
                                         )
@@ -185,10 +183,16 @@ const CatatanBulanan = () => {
                                 </td>
                                 <td className="py-2 px-4 border-b">
                                     <div className="flex space-x-2">
-                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                        <button 
+                                            className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                                            onClick={() => navigate(`/edit-cb-cns/${catatan.id}`)}
+                                        >
                                             <i className="fas fa-edit text-white text-sm"></i>
                                         </button>
-                                        <button className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center">
+                                        <button 
+                                            className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
+                                            onClick={() => navigate(`/detail-cb-cns/${catatan.id}`)}
+                                        >
                                             <i className="fas fa-file text-white text-sm"></i>
                                         </button>
                                         <button 

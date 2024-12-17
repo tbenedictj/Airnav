@@ -121,7 +121,7 @@ export default function Sidebar({ onToggle }) {
           <div className="sidebar-logo flex justify-center items-center py-6">
             <button 
               onClick={toggleSidebar} 
-              className="bg-[#0080FF] p-1.5 rounded-lg focus:outline-none focus:ring-0"
+              className="bg-[#0066CC] p-1.5 rounded-lg focus:outline-none focus:ring-0"
             >
               {expanded ? 
                 <img src={logo} className={`transition-all overflow-hidden w-32`} alt="Logo"/> : 

@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const PeralatanSup = () => {
     const navigate = useNavigate();
@@ -161,14 +163,15 @@ const PeralatanSup = () => {
                                         </span>
                                     </td>
                                     <td className="px-4 py-2 w-[110px] space-x-1 flex">
-                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 text-white text-sm rounded flex items-center justify-center">
-                                            <i className="fas fa-edit"></i>
+                                        <button
+                                            onClick={() => navigate(`/edit-alat-sup/${alat.id}`)}
+                                            className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                            <FontAwesomeIcon icon={faEdit} className="text-white text-sm" />
                                         </button>
                                         <button
-                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 text-white text-sm rounded flex items-center justify-center"
                                             onClick={() => handleDelete(alat.id)}
-                                        >
-                                            <i className="fas fa-trash"></i>
+                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
+                                            <FontAwesomeIcon icon={faTrash} className="text-white text-sm" />
                                         </button>
                                     </td>
                                 </tr>

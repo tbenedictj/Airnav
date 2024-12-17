@@ -135,12 +135,11 @@ const CatatanMingguan = () => {
                                 <td className="py-2 px-4 border-b">{catatan.peralatan}</td>
                                 <td className="py-2 px-4 border-b">
                                     {catatan.aktivitas?.length > 100 ? (
-                                        <>
+                                        <div>
                                             <span>
                                                 {expandedRows[catatan.id] 
                                                     ? catatan.aktivitas
-                                                    : `${catatan.aktivitas.substring(0, 100)}...`
-                                                }
+                                                    : `${catatan.aktivitas.substring(0, 100)}...`}
                                             </span>
                                             <button 
                                                 className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
@@ -148,7 +147,7 @@ const CatatanMingguan = () => {
                                             >
                                                 {expandedRows[catatan.id] ? 'Sembunyikan' : 'Selengkapnya'}
                                             </button>
-                                        </>
+                                        </div>
                                     ) : (
                                         catatan.aktivitas
                                     )}
@@ -156,12 +155,11 @@ const CatatanMingguan = () => {
                                 <td className="py-2 px-4 border-b">
                                     {Array.isArray(catatan.teknisi) ? (
                                         catatan.teknisi.join(', ').length > 20 ? (
-                                            <>
+                                            <div>
                                                 <span>
                                                     {expandedTeknisi[catatan.id] 
                                                         ? catatan.teknisi.join(', ')
-                                                        : `${catatan.teknisi.join(', ').substring(0, 20)}...`
-                                                    }
+                                                        : `${catatan.teknisi.join(', ').substring(0, 20)}...`}
                                                 </span>
                                                 <button 
                                                     className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
@@ -169,7 +167,7 @@ const CatatanMingguan = () => {
                                                 >
                                                     {expandedTeknisi[catatan.id] ? 'Sembunyikan' : 'Selengkapnya'}
                                                 </button>
-                                            </>
+                                            </div>
                                         ) : (
                                             catatan.teknisi.join(', ')
                                         )

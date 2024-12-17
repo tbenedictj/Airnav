@@ -29,6 +29,7 @@ import TambahAlatCNS from './Pages/Alat/CNS/TambahAlatCNS';
 import TambahAlatSup from './Pages/Alat/Support/TambahAlatSupport';
 import AddTeknisi from './Pages/Teknisi/TambahTeknisi/TambahTeknisi';
 import Dashboard from './Pages/Dashboard/dashboard';
+import EditAlatCNS from './Pages/Alat/CNS/EditAlatCNS';
 
 function PrivateRoute({ children }) {
   const { currentUser, loading } = useAuth();
@@ -374,6 +375,19 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <EditTeknisi />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-alat-cns/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditAlatCNS />
                   </main>
                 </div>
               </PrivateRoute>

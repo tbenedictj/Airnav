@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
+import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
     const [openCNSCount, setOpenCNSCount] = useState(0);
     const [supportCount, setSupportCount] = useState(0);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOpenCNSCount = async () => {
@@ -33,13 +35,24 @@ const Dashboard = () => {
         fetchSupportCount();
     }, []);
 
+    const handleNavigateCNS = () => {
+        // Navigasi ke halaman Peralatan Maintenance CNS
+        navigate('/alat-mt-cns');
+    };
+
+    const handleNavigateSupport = () => {
+        // Navigasi ke halaman Peralatan Maintenance Support
+        navigate('/alat-mt-sup');
+    };
+    
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {/* Card Peralatan Maintenance CNS */}
                 <div
-                    className={`p-4 bg-white shadow rounded border-l-4 ${
+                    onClick={handleNavigateCNS}
+                    className={`cursor-pointer p-4 bg-white shadow rounded border-l-4 ${
                         openCNSCount === 0 ? 'border-green-500' : 'border-red-500'
                     }`}
                 >
@@ -56,7 +69,8 @@ const Dashboard = () => {
 
                 {/* Card Peralatan Maintenance Support */}
                 <div
-                    className={`p-4 bg-white shadow rounded border-l-4 ${
+                    onClick={handleNavigateSupport}
+                    className={`cursor-pointer p-4 bg-white shadow rounded border-l-4 ${
                         supportCount === 0 ? 'border-green-500' : 'border-red-500'
                     }`}
                 >

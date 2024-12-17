@@ -96,15 +96,24 @@ const CatatanBulanan = () => {
                                 </td>
                                 <td className="py-2 px-4 border border-gray-300">
                                     <div className="flex space-x-2 justify-center">
-                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                            <i className="fas fa-edit text-white text-sm"></i>
-                                        </button>
-                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                            <i className="fas fa-file text-white text-sm"></i>
-                                        </button>
-                                        <button className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
-                                            <i className="fas fa-trash text-white text-sm"></i>
-                                        </button>
+                                    <button 
+                                                    className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                                                    onClick={() => navigate(`/edit-cb-cns/${item.id}`)}
+                                                >
+                                                    <i className="fas fa-edit text-white text-sm"></i>
+                                                </button>
+                                                <button 
+                                                    className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
+                                                    onClick={() => navigate(`/detail-cb-cns/${item.id}`)}
+                                                >
+                                                    <i className="fas fa-file text-white text-sm"></i>
+                                                </button>
+                                                <button 
+                                                    className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
+                                                    onClick={() => handleDelete(item.id)}
+                                                >
+                                                    <i className="fas fa-trash text-white text-sm"></i>
+                                                </button>
                                     </div>
                                 </td>
                             </tr>

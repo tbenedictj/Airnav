@@ -33,7 +33,7 @@ const CatatanBulanan = () => {
                         <span className="ml-2">entries</span>
                     </div>
                 </div>
-                <div className="flex items-center text-black">
+                <div className="flex justify-between mb-4">
                     <div></div>
                     <div className="text-black">
                         <label className="mr-2">Search:</label>
@@ -67,9 +67,12 @@ const CatatanBulanan = () => {
                             </td>
                             <td className="py-2 px-4 border border-gray-300">
                                 <div className="flex space-x-2">
-                                    <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                        <i className="fas fa-edit text-white text-sm"></i>
-                                    </button>
+                                <button 
+                                    className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                                    onClick={() => navigate(`/edit-cb-sup/${laporan.id}`)}
+                                >
+                                    <i className="fas fa-edit text-white text-sm"></i>
+                                </button>
                                     <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
                                         <i className="fas fa-file text-white text-sm"></i>
                                     </button>

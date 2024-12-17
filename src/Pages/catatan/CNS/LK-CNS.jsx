@@ -13,6 +13,29 @@ const LaporanKegiatanCNS = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [entriesPerPage, setEntriesPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
+    const [expandedRows, setExpandedRows] = useState({});
+    const [expandedAlat, setExpandedAlat] = useState({});
+    const [expandedTeknisi, setExpandedTeknisi] = useState({});
+
+    const toggleRowExpansion = (id, type) => {
+        if (type === 'peralatan') {
+            setExpandedAlat(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        } else if (type === 'aktivitas') {
+            setExpandedRows(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        }
+        else if (type === 'teknisi') {
+            setExpandedTeknisi(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+    }
+    };
 
     useEffect(() => {
         const fetchLaporan = async () => {
@@ -39,7 +62,8 @@ const LaporanKegiatanCNS = () => {
     const filteredLaporan = laporanList.filter(laporan =>
         laporan.peralatan.toLowerCase().includes(searchTerm.toLowerCase()) ||
         laporan.aktivitas.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        laporan.teknisi.toLowerCase().includes(searchTerm.toLowerCase())
+        laporan.teknisi.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        laporan.status.toLowerCase().includes(searchTerm.toLocaleLowerCase()) 
     );
 
     // Calculate start and end indices for pagination
@@ -104,21 +128,94 @@ const LaporanKegiatanCNS = () => {
                         <tr className="text-black">
                             <th className="py-2 px-4 border border-gray-300">Tanggal / Jam</th>
                             <th className="py-2 px-4 border border-gray-300">Alat</th>
-                            <th className="py-2 px-4 border border-gray-300" style={{ width: '300px' }}>Kegiatan</th>
+                            <th className="py-2 px-4 border border-gray-300">Kegiatan</th>
                             <th className="py-2 px-4 border border-gray-300">Teknisi</th>
+                            <th className="py-2 px-4 border border-gray-300">Status</th>
                             <th className="py-2 px-4 border border-gray-300">Paraf</th>
                             <th className="py-2 px-4 border border-gray-300">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">
-                        {paginatedLaporan.map((laporan, index) => (
-                            <tr key={index}>
-                                <td className="py-2 px-4 border border-gray-300">{laporan.tanggal}</td>
-                                <td className="py-2 px-4 border border-gray-300">{laporan.peralatan}</td>
-                                <td className="py-2 px-4 border border-gray-300">
-                                     {laporan.aktivitas} <br />
+                        {paginatedLaporan.map((laporan) => (
+                            <tr key={laporan.id}>
+                                <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                    {laporan.tanggal} {laporan.jamSelesai}
                                 </td>
-                                <td className="py-2 px-4 border border-gray-300">{laporan.teknisi}</td>
+                                <td className="py-2 px-4 max-w-[150px] border border-gray-300">
+                                    <div>
+                                        {laporan.peralatan?.length > 20 ? (
+                                            <>
+                                            <span>
+                                                {expandedAlat[laporan.id]
+                                                    ? laporan.peralatan
+                                                    : `${laporan.peralatan.substring(0, 20)}...`
+                                                }
+                                            </span>
+                                            <span
+                                                className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
+                                                onClick={() => toggleRowExpansion(laporan.id, 'peralatan')}
+                                            >
+                                                {expandedAlat[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                            </span>    
+                                        </>
+                                    ) : (
+                                        <span>{laporan.peralatan}</span>
+                                    )}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 border max-w-[300px] border-gray-300">
+                                    <div className="break-words whitespace-pre-wrap">
+                                        {laporan.aktivitas?.length > 50 ? (
+                                            <>
+                                                <span>
+                                                    {expandedRows[laporan.id] 
+                                                        ? laporan.aktivitas
+                                                        : `${laporan.aktivitas.substring(0, 50)}...`
+                                                    }
+                                                </span>
+                                                <span 
+                                                    className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
+                                                    onClick={() => toggleRowExpansion(laporan.id, 'aktivitas')}
+                                                >
+                                                    {expandedRows[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span>{laporan.aktivitas}</span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 max-w-[128px] border border-gray-300">
+                                    <div className="break-words whitespace-pre-wrap">
+                                        {Array.isArray(laporan.teknisi) ? (
+                                            laporan.teknisi.join(', ').length > 20 ? (
+                                                <>
+                                                    <span>
+                                                        {expandedTeknisi[laporan.id] 
+                                                            ? laporan.teknisi.join(', ')
+                                                            : `${laporan.teknisi.join(', ').substring(0, 20)}...`
+                                                        }
+                                                    </span>
+                                                    <span 
+                                                        className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
+                                                        onClick={() => toggleRowExpansion(laporan.id, 'teknisi')}
+                                                    >
+                                                        {expandedTeknisi[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <span>{laporan.teknisi.join(', ')}</span>
+                                            )
+                                        ) : (
+                                            <span>{laporan.teknisi || '-'}</span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300">
+                                    <span className={`px-2 py-1 rounded text-xs sm:text-sm ${laporan.status === 'open' ? 'bg-yellow-500 text-white' : 'bg-green-600 text-white'}`}>
+                                        {laporan.status === 'open' ? 'Maintenance' : 'Normal Ops'}
+                                    </span>
+                                </td>
                                 <td className="py-2 px-4 border border-gray-300">
                                     <img src={sign} className="w-24 h-12" alt="Paraf" />
                                 </td>

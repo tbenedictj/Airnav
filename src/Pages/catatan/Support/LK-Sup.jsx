@@ -47,6 +47,7 @@ const LaporanKegiatanSup = () => {
             }));
             setLaporanList(laporan);
             setLoading(false);
+            setPeralatanSup(peralatanData);
         } catch (error) {
             console.error('Error fetching laporan:', error);
             setLoading(false);
@@ -73,6 +74,7 @@ const LaporanKegiatanSup = () => {
     // Filter laporan based on search term
     const filteredLaporan = laporanList.filter(laporan =>
         laporan.peralatan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        laporan.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         laporan.aktivitas?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         (Array.isArray(laporan.teknisi) ? 
             laporan.teknisi.join(' ').toLowerCase().includes(searchTerm.toLowerCase()) :
@@ -212,9 +214,9 @@ const LaporanKegiatanSup = () => {
                                     </div>
                                 </td>
                                 <td className="py-2 px-4 border border-gray-300">
-                                    <div className="max-h-20 overflow-y-auto break-words">
-                                        {laporan.status || '-'}
-                                    </div>
+                                    <span className={`px-2 py-1 rounded text-xs sm:text-sm ${laporan.status === 'open' ? 'bg-yellow-500 text-white' : 'bg-green-600 text-white'}`}>
+                                            {laporan.status === 'open' ? 'Maintenance' : 'Normal Ops'}
+                                    </span>
                                 </td>
                                 <td className="py-2 px-4 border border-gray-300 text-center">
                                     {laporan.signature && (

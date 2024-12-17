@@ -63,10 +63,6 @@ const TambahCatatan = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!signatureData) {
-            alert('Tanda tangan diperlukan');
-            return;
-        }
         setLoading(true);
 
         try {
@@ -80,14 +76,16 @@ const TambahCatatan = () => {
                 buktiUrl = await getDownloadURL(buktiRef);
             }
 
-            // Upload signature
-            const signatureBlob = await (await fetch(signatureData)).blob();
-            const signatureRef = ref(storage, `signatures/${Date.now()}-signature.png`);
-            await uploadBytes(signatureRef, signatureBlob);
-            signatureUrl = await getDownloadURL(signatureRef);
+            // Upload signature if exists
+            if (signatureData) {
+                const signatureBlob = await (await fetch(signatureData)).blob();
+                const signatureRef = ref(storage, `signatures/${Date.now()}-signature.png`);
+                await uploadBytes(signatureRef, signatureBlob);
+                signatureUrl = await getDownloadURL(signatureRef);
+            }
 
             // Save to Firestore
-            await addDoc(collection(db, 'catatan'), {
+            await addDoc(collection(db, 'CB-Sup'), {
                 ...formData,
                 buktiUrl,
                 signatureUrl,
@@ -95,7 +93,7 @@ const TambahCatatan = () => {
                 createdAt: new Date().toISOString()
             });
 
-            navigate(-1); // Go back to previous page
+            navigate('/cb-sup'); // Go to CB-Sup page
         } catch (error) {
             console.error('Error saving data:', error);
             alert('Terjadi kesalahan saat menyimpan data');

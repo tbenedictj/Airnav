@@ -10,15 +10,16 @@ import CBCNS from './Pages/catatan/CNS/CB-CNS';
 import CBSup from './Pages/catatan/Support/CB-Sup';
 import LKCNS from './Pages/catatan/CNS/LK-CNS';
 import LKSup from './Pages/catatan/Support/LK-Sup';
-import TambahLKCNS from './Pages/Catatan/CNS/TambahLK-CNS';
-import TambahLKSup from './Pages/Catatan/Support/TambahLK-Sup';
-import TambahCHCNS from './Pages/Catatan/CNS/TambahCH-CNS';
-import TambahCHSup from './Pages/Catatan/Support/TambahCHSup';
-import TambahCMCNS from './Pages/Catatan/CNS/TambahCM-CNS';
-import TambahCMSup from './Pages/Catatan/Support/TambahCMSup';
-import TambahCBsup from './Pages/Catatan/Support/TambahCBSup';
-import Tambahcbcns from './Pages/Catatan/CNS/TambahCB-CNS';
+import TambahLKCNS from './Pages/catatan/CNS/TambahLK-CNS';
+import TambahLKSup from './Pages/catatan/Support/TambahLK-Sup';
+import TambahCHCNS from './Pages/catatan/CNS/TambahCH-CNS';
+import TambahCHSup from './Pages/catatan/Support/TambahCHSup';
+import TambahCMCNS from './Pages/catatan/CNS/TambahCM-CNS';
+import TambahCMSup from './Pages/catatan/Support/TambahCMSup';
+import TambahCBsup from './Pages/catatan/Support/TambahCBSup';
+import Tambahcbcns from './Pages/catatan/CNS/TambahCB-CNS';
 import Navigation from './Component/Nav/Navigation';
+import EditTeknisi from './Pages/Teknisi/EditTeknisi/EditTeknisi';
 import { AuthProvider, useAuth } from './config/AuthContext';
 import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
 import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
@@ -360,6 +361,19 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <TambahAlatSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/edit-teknisi/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <EditTeknisi />
                   </main>
                 </div>
               </PrivateRoute>

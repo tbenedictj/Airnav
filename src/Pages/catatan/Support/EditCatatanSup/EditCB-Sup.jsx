@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, Link } from "react-router-dom";
 import { storage, db } from "../../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
@@ -8,7 +8,7 @@ import Tandatangan from "../../../../Component/Signature/Tandatangan";
 
 const EditCBSup = () => {
     const navigate = useNavigate();
-    const { id } = useParams();  // Capture the record ID from the URL
+    const { id } = useParams();
     const { currentUser } = useAuth();
     const [formData, setFormData] = useState({
         tanggal: '',
@@ -16,33 +16,42 @@ const EditCBSup = () => {
         peralatan: '',
         aktivitas: '',
         teknisi: '',
-        bukti: null
+        bukti: null,
+        buktiUrl: null
     });
     const [imagePreview, setImagePreview] = useState(null);
     const [signatureData, setSignatureData] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    // Fetch existing data when the component mounts
     useEffect(() => {
         const fetchData = async () => {
-            const docRef = doc(db, "CB-Sup", id);
-            const docSnap = await getDoc(docRef);
-            if (docSnap.exists()) {
-                const data = docSnap.data();
-                setFormData({
-                    tanggal: data.tanggal,
-                    jamSelesai: data.jamSelesai,
-                    peralatan: data.peralatan,
-                    aktivitas: data.aktivitas,
-                    teknisi: data.teknisi,
-                    bukti: data.buktiUrl ? data.buktiUrl : null
-                });
-                if (data.buktiUrl) {
-                    setImagePreview(data.buktiUrl);  // Preview the existing image if available
+            try {
+                const docRef = doc(db, "CB-Sup", id);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    setFormData({
+                        tanggal: data.tanggal || '',
+                        jamSelesai: data.jamSelesai || '',
+                        peralatan: data.peralatan || '',
+                        aktivitas: data.aktivitas || '',
+                        teknisi: data.teknisi || '',
+                        bukti: null,
+                        buktiUrl: data.buktiUrl || null
+                    });
+                    if (data.buktiUrl) {
+                        setImagePreview(data.buktiUrl);
+                    }
+                    if (data.signatureUrl) {
+                        setSignatureData(data.signatureUrl);
+                    }
+                } else {
+                    alert("Catatan tidak ditemukan!");
+                    navigate('/cb-sup');
                 }
-                setSignatureData(data.signatureUrl);  // Set the existing signature
-            } else {
-                alert("Catatan tidak ditemukan!");
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                alert("Terjadi kesalahan saat mengambil data");
                 navigate('/cb-sup');
             }
         };
@@ -97,32 +106,34 @@ const EditCBSup = () => {
             let buktiUrl = formData.buktiUrl;
             let signatureUrl = signatureData;
 
-            // Upload image if updated
-            if (formData.bukti) {
+            if (formData.bukti instanceof File) {
                 const buktiRef = ref(storage, `bukti/${Date.now()}-${formData.bukti.name}`);
                 await uploadBytes(buktiRef, formData.bukti);
                 buktiUrl = await getDownloadURL(buktiRef);
             }
 
-            // Upload signature if updated
-            if (signatureData) {
+            if (signatureData && signatureData.startsWith('data:')) {
                 const signatureBlob = await (await fetch(signatureData)).blob();
                 const signatureRef = ref(storage, `signatures/${Date.now()}-signature.png`);
                 await uploadBytes(signatureRef, signatureBlob);
                 signatureUrl = await getDownloadURL(signatureRef);
             }
 
-            // Update Firestore document
             const docRef = doc(db, "CB-Sup", id);
-            await updateDoc(docRef, {
-                ...formData,
-                buktiUrl,
-                signatureUrl,
+            const updateData = {
+                tanggal: formData.tanggal,
+                jamSelesai: formData.jamSelesai,
+                peralatan: formData.peralatan,
+                aktivitas: formData.aktivitas,
+                teknisi: formData.teknisi,
+                buktiUrl: buktiUrl,
+                signatureUrl: signatureUrl,
                 userId: currentUser.uid,
-                updatedAt: new Date().toISOString()  // Include an updated timestamp
-            });
+                updatedAt: new Date().toISOString()
+            };
 
-            navigate('/cb-sup');  // Redirect to the list page after successful update
+            await updateDoc(docRef, updateData);
+            navigate('/cb-sup');
         } catch (error) {
             console.error("Error updating data:", error);
             alert("Terjadi kesalahan saat memperbarui data");
@@ -234,7 +245,6 @@ const EditCBSup = () => {
                             )}
                         </div>
 
-                        {/* Signature Component */}
                         <div className="mb-4">
                             <Tandatangan onSignatureChange={handleSignatureChange} signatureData={signatureData} />
                         </div>

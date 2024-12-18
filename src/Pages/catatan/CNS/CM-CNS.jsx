@@ -183,7 +183,9 @@ const CatatanMingguan = () => {
                                 </td>
                                 <td className="py-2 px-4 border-b">
                                     <div className="flex space-x-2">
-                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                        <button className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                                        onClick={() => navigate(`/edit-cm-cns/${catatan.id}`)}
+                                        >
                                             <i className="fas fa-edit text-white text-sm"></i>
                                         </button>
                                         <button className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center">

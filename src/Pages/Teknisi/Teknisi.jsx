@@ -64,9 +64,9 @@ function Teknisi() {
   }
 
   return (
-    <div className="container-fluid mt-10 max-h-screen w-screen max-w-[1370px] mx-auto p-4">
+    <div className="container-fluid mt-40 mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Header */}
-      <div className="w-[1150px] mb-6">
+      <div className="w-screen max-w-4xl mb-6">
         <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Teknisi</h1>
         <button
           onClick={() => navigate('/tambah-teknisi')}
@@ -76,7 +76,7 @@ function Teknisi() {
       </div>
 
       {/* Table Container */}
-      <div className="w-[1150px] bg-white shadow-md rounded-lg p-4">
+      <div className="w-screen max-w-4xl bg-white shadow-md rounded-lg p-4">
         <table className="min-w-full border border-gray-300 bg-white">
           {/* Table Header */}
           <thead>
@@ -93,8 +93,8 @@ function Teknisi() {
               <tr key={index} className="hover:bg-gray-100 border-b border-gray-300">
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.name}</td>
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.category}</td>
-                <td className="py-2 px-4 w-[100px]">
-                  <div className="flex space-x-2">
+                <td className="py-2 px-4 w-[110px]">
+                  <div className="flex space-x-1">
                     <button 
                       onClick={() => navigate(`/edit-teknisi/${teknisi.id}`)}
                       className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">

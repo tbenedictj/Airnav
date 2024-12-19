@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { db } from '../../../config/firebase';
+import { db } from '../../config/firebase';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
-import sign from '../../../assets/Icon/p1.png';
-import sign2 from '../../../assets/Icon/p2.png';
 
-const LaporanKegiatanSup = () => {
+const PeralatanOpenStatusSup = () => {
     const navigate = useNavigate();
     const [laporanList, setLaporanList] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -33,7 +31,7 @@ const LaporanKegiatanSup = () => {
                 ...prev,
                 [id]: !prev[id]
             }));
-    }
+        }
     };
 
     const fetchLaporan = async () => {
@@ -41,13 +39,14 @@ const LaporanKegiatanSup = () => {
             const laporanRef = collection(db, 'LaporanSupport');
             const q = query(laporanRef, orderBy('createdAt', 'desc'));
             const querySnapshot = await getDocs(q);
-            const laporan = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            const laporan = querySnapshot.docs
+                .map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+                .filter(laporan => laporan.status === 'open'); // Filter hanya yang statusnya 'open'
             setLaporanList(laporan);
             setLoading(false);
-            setPeralatanSup(peralatanData);
         } catch (error) {
             console.error('Error fetching laporan:', error);
             setLoading(false);
@@ -58,7 +57,7 @@ const LaporanKegiatanSup = () => {
         if (window.confirm('Apakah Anda yakin ingin menghapus data ini?')) {
             try {
                 await deleteDoc(doc(db, 'LaporanSupport', id));
-                await fetchLaporan(); // Refresh data after deletion
+                await fetchLaporan(); // Refresh data setelah penghapusan
                 alert('Data berhasil dihapus');
             } catch (error) {
                 console.error('Error deleting document:', error);
@@ -84,11 +83,11 @@ const LaporanKegiatanSup = () => {
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Title Section */}
-            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Laporan Kegiatan & Kerusakan Support</h1>
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Peralatan Maintenance Support</h1>
             
             {/* Main Content Section */}
             <div className="bg-white p-4 rounded shadow">
-                <h2 className="text-lg font-semibold text-blue-600 mb-4">Laporan Kegiatan & Kerusakan Support</h2>
+                <h2 className="text-lg font-semibold text-blue-600 mb-4">Laporan Peralatan dengan Status Open</h2>
 
                 {/* Top Action Bar */}
                 <div className="flex justify-between mb-4">
@@ -215,7 +214,7 @@ const LaporanKegiatanSup = () => {
                                 </td>
                                 <td className="py-2 px-4 border border-gray-300">
                                     <span className={`px-2 py-1 rounded text-xs sm:text-sm ${laporan.status === 'open' ? 'bg-yellow-500 text-white' : 'bg-green-600 text-white'}`}>
-                                            {laporan.status === 'open' ? 'Maintenance' : 'Normal Ops'}
+                                        {laporan.status === 'open' ? 'Maintenance' : 'Normal Ops'}
                                     </span>
                                 </td>
                                 <td className="py-2 px-4 border border-gray-300 text-center">
@@ -225,24 +224,24 @@ const LaporanKegiatanSup = () => {
                                 </td>
                                 <td className="py-2 px-4 border border-gray-300">
                                     <div className="flex space-x-2">
-                                    <button 
-                                        className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
-                                        onClick={() => navigate(`/edit-lk-sup/${laporan.id}`)}
-                                    >
-                                        <i className="fas fa-edit text-white text-sm"></i>
-                                    </button>
-                                    <button 
-                                        className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
-                                        onClick={() => navigate(`/detail-lk-sup/${laporan.id}`)}
-                                    >
-                                        <i className="fas fa-file text-white text-sm"></i>
-                                    </button>
-                                    <button 
-                                        className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
-                                        onClick={() => handleDelete(item.id)}
-                                    >
-                                        <i className="fas fa-trash text-white text-sm"></i>
-                                    </button>
+                                        <button 
+                                            className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                                            onClick={() => navigate(`/edit-lk-sup/${laporan.id}`)}
+                                        >
+                                            <i className="fas fa-edit text-white text-sm"></i>
+                                        </button>
+                                        <button 
+                                            className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
+                                            onClick={() => navigate(`/detail-lk-sup/${laporan.id}`)}
+                                        >
+                                            <i className="fas fa-file text-white text-sm"></i>
+                                        </button>
+                                        <button 
+                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
+                                            onClick={() => handleDelete(laporan.id)}
+                                        >
+                                            <i className="fas fa-trash text-white text-sm"></i>
+                                        </button>
                                     </div>
                                 </td>
                             </tr>
@@ -270,4 +269,4 @@ const LaporanKegiatanSup = () => {
     );
 };
 
-export default LaporanKegiatanSup;
+export default PeralatanOpenStatusSup;

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { storage, db } from '../../config/firebase';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { collection, addDoc } from 'firebase/firestore';
-import { useAuth } from '../../config/AuthContext';
-import Tandatangan from '../../Component/Signature/Tandatangan';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { storage, db } from "../../../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, addDoc } from "firebase/firestore";
+import { useAuth } from "../../../config/AuthContext";
+import Tandatangan from "../../../Component/Signature/Tandatangan";
 
 const TambahCatatan = () => {
     const navigate = useNavigate();
@@ -15,7 +15,6 @@ const TambahCatatan = () => {
         peralatan: '',
         aktivitas: '',
         teknisi: '',
-        status: 'open',
         bukti: null
     });
     const [imagePreview, setImagePreview] = useState(null);
@@ -64,10 +63,6 @@ const TambahCatatan = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!signatureData) {
-            alert('Tanda tangan diperlukan');
-            return;
-        }
         setLoading(true);
 
         try {
@@ -81,14 +76,16 @@ const TambahCatatan = () => {
                 buktiUrl = await getDownloadURL(buktiRef);
             }
 
-            // Upload signature
-            const signatureBlob = await (await fetch(signatureData)).blob();
-            const signatureRef = ref(storage, `signatures/${Date.now()}-signature.png`);
-            await uploadBytes(signatureRef, signatureBlob);
-            signatureUrl = await getDownloadURL(signatureRef);
+            // Upload signature if exists
+            if (signatureData) {
+                const signatureBlob = await (await fetch(signatureData)).blob();
+                const signatureRef = ref(storage, `signatures/${Date.now()}-signature.png`);
+                await uploadBytes(signatureRef, signatureBlob);
+                signatureUrl = await getDownloadURL(signatureRef);
+            }
 
             // Save to Firestore
-            await addDoc(collection(db, 'catatan'), {
+            await addDoc(collection(db, 'CB-CNS'), {
                 ...formData,
                 buktiUrl,
                 signatureUrl,
@@ -96,7 +93,7 @@ const TambahCatatan = () => {
                 createdAt: new Date().toISOString()
             });
 
-            navigate(-1); // Go back to previous page
+            navigate('/cb-cns'); // Go to CB-CNS page
         } catch (error) {
             console.error('Error saving data:', error);
             alert('Terjadi kesalahan saat menyimpan data');
@@ -106,14 +103,14 @@ const TambahCatatan = () => {
     };
 
     return (
-    <div className="container shadow w-screen max-w-4xl mx-auto p-4 sm:p-6 lg:p-8 mt-96">
+    <div className="container-fluid flex-col sticky max-w-4xl w-screen sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="bg-white rounded-lg shadow p-6 sm:p-8">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Catatan Bulanan</h1>
 
             <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
                 <nav className="text-gray-600">
                     <span className="mx-2">/</span>
-                    <Link to="/cb-sup" className="text-blue-500">List Catatan Bulanan Support</Link>
+                    <Link to="/cb-cns" className="text-blue-500">List Catatan Bulanan CNS</Link>
                     <span className="mx-2">/</span>
                     <span>Tambah Catatan Bulanan</span>
                 </nav>
@@ -178,20 +175,6 @@ const TambahCatatan = () => {
                             className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
                             required
                         />
-                    </div>
-
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Status</label>
-                        <select
-                            name="status"
-                            value={formData.status}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        >
-                            <option value="open">Open</option>
-                            <option value="close">Close</option>
-                        </select>
                     </div>
 
                     <div>

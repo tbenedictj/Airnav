@@ -1,46 +1,79 @@
-/* Sidebar scrollbar styles */
-.sidebar {
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background: white;
-  transition: all 0.3s;
-  z-index: 1000;
-  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  /* Sidebar scrollbar styles */
+  .sidebar {
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #0066CC;
+    transition: all 0.3s;
+    z-index: 1000;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  }
+
+  .sidebar.collapsed {
+    width: 5rem;
+  }
+
+  /* Custom scrollbar styles */
+  .sidebar ul::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .sidebar ul::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+  }
+
+  .sidebar ul::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+  }
+
+  .sidebar ul::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+  }
+
+  /* For Firefox */
+  .sidebar ul {
+    scrollbar-width: thin;
+    scrollbar-color: #c1c1c1 #f1f1f1;
+  }
+
+  /* Ensure the content is scrollable */
+  .sidebar ul {
+    max-height: calc(100vh - 80px); /* Adjust based on your header height */
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    border: none; /* Menghapus border */
+  }
+
+  .sidebar-logo img {
+    transition: transform 0.3s ease; /* Animasi saat toggle */
+  }
+
+  .sidebar-logo img:hover {
+    transform: scale(1.05); /* Sedikit membesar saat di-hover */
+  }
+
+/* Sidebar item styles */
+.nav-item {
+  position: relative;
+  transition: background-color 0.3s ease;
 }
 
-.sidebar.collapsed {
-  width: 5rem;
+/* Hover style */
+.nav-item.hovered:hover {
+  background-color: rgba(255, 255, 255, 0.0); /* Hover hanya aktif jika item tidak aktif */
 }
 
-/* Custom scrollbar styles */
-.sidebar ul::-webkit-scrollbar {
-  width: 6px;
+/* Active style */
+.nav-item.active {
+  background-color: rgba(0, 0, 0, 0.0); /* Warna latar belakang item aktif */
 }
 
-.sidebar ul::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 3px;
-}
-
-.sidebar ul::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
-  border-radius: 3px;
-}
-
-.sidebar ul::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
-}
-
-/* For Firefox */
-.sidebar ul {
-  scrollbar-width: thin;
-  scrollbar-color: #c1c1c1 #f1f1f1;
-}
-
-/* Ensure the content is scrollable */
-.sidebar ul {
-  max-height: calc(100vh - 80px); /* Adjust based on your header height */
-  overflow-y: auto;
+/* Jangan biarkan hover tetap aktif setelah klik */
+.nav-item.active:hover {
+  background-color: rgba(0, 0, 0, 0.0); /* Hover tidak berlaku pada item yang sudah aktif */
 }

@@ -1,18 +1,44 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 
-function TambahAlatSup() {
+function EditAlatSup() {
     const navigate = useNavigate();
+    const { id } = useParams(); // Get document ID from URL params
     const [formData, setFormData] = useState({
         namaAlat: '',
         kategoriAlat: 'Elektrikal',
         SNIndoor: '',
         SNOutdoor: '',
-        Status: 'Close',
+        status: 'Close',
         Tahun: ''
     });
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const docRef = doc(db, 'PeralatanSupport', id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    setFormData(docSnap.data());
+                } else {
+                    console.error('No such document!');
+                    setError('Document not found');
+                }
+            } catch (err) {
+                console.error('Error fetching document:', err);
+                setError('Failed to fetch data');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, [id]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -25,24 +51,34 @@ function TambahAlatSup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await addDoc(collection(db, 'PeralatanSupport'), formData);
-            navigate('/peralatan-sup'); // Navigate back to equipment list
+            const docRef = doc(db, 'PeralatanSupport', id);
+            await updateDoc(docRef, formData);
+            navigate('/peralatan-sup'); // Navigate back to the equipment list
         } catch (error) {
-            console.error("Error adding equipment: ", error);
+            console.error('Error updating document:', error);
+            setError('Failed to update data');
         }
     };
 
+    if (loading) {
+        return <div className="container mt-40">Loading...</div>;
+    }
+
+    if (error) {
+        return <div className="container mt-40">Error: {error}</div>;
+    }
+
     return (
         <div className="container mt-40 w-screen max-w-4xl mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Tambah Data Peralatan CNS</h1>
-            
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Edit Data Peralatan Support</h1>
+
             {/* Breadcrumb */}
             <div className="bg-gray-100 p-3 rounded-lg mb-6">
                 <nav className="text-gray-600">
                     <span className="mx-2">/</span>
                     <Link to="/peralatan-sup" className="text-blue-500">List Peralatan Support</Link>
                     <span className="mx-2">/</span>
-                    <span>Add Peralatan Support</span>
+                    <span>Edit Peralatan Support</span>
                 </nav>
             </div>
 
@@ -85,7 +121,7 @@ function TambahAlatSup() {
                 </div>
 
                 <div>
-                    <label className="block text-gray-700 mb-2">SN outdoor</label>
+                    <label className="block text-gray-700 mb-2">SN Outdoor</label>
                     <input
                         type="text"
                         name="SNOutdoor"
@@ -138,4 +174,4 @@ function TambahAlatSup() {
     );
 }
 
-export default TambahAlatSup;
+export default EditAlatSup;

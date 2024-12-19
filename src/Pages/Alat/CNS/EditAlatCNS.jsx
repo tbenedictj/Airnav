@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore';
+import React, { useState, useEffect } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { db, auth } from '../../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 
-function TambahAlatCNS() {
+function EditAlatCNS() {
     const navigate = useNavigate();
+    const { id } = useParams();
     const [isLoading, setIsLoading] = useState(false);
     const [formData, setFormData] = useState({
         namaAlat: '',
@@ -13,6 +14,28 @@ function TambahAlatCNS() {
         status: 'Close',
         frekuensi: ''
     });
+    const [error, setError] = useState(null);
+
+    // Fetch data peralatan from Firestore
+    useEffect(() => {
+        const fetchAlatData = async () => {
+            try {
+                const docRef = doc(db, "PeralatanCNS", id);
+                const docSnap = await getDoc(docRef);
+
+                if (docSnap.exists()) {
+                    setFormData(docSnap.data());
+                } else {
+                    setError("Peralatan tidak ditemukan.");
+                }
+            } catch (error) {
+                console.error("Error fetching equipment data:", error);
+                setError("Gagal memuat data peralatan.");
+            }
+        };
+
+        fetchAlatData();
+    }, [id]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -33,27 +56,35 @@ function TambahAlatCNS() {
         }
 
         try {
-            // Add document to Firestore
-            const docRef = await addDoc(collection(db, "PeralatanCNS"), {
+            // Update document in Firestore
+            const docRef = doc(db, "PeralatanCNS", id);
+            await updateDoc(docRef, {
                 ...formData,
-                createdAt: new Date().toISOString(),
-                createdBy: auth.currentUser.uid
+                updatedAt: new Date().toISOString(),
+                updatedBy: auth.currentUser.uid
             });
 
-            console.log("Document written with ID: ", docRef.id);
-            alert(`Peralatan ${formData.namaAlat} berhasil ditambahkan ke database.`);
+            alert(`Peralatan ${formData.namaAlat} berhasil diperbarui.`);
             navigate('/peralatan-cns');
         } catch (error) {
-            console.error("Error adding equipment:", error);
-            alert(`Terjadi kesalahan saat menyimpan data peralatan: ${error.message}`);
+            console.error("Error updating equipment:", error);
+            alert(`Terjadi kesalahan saat memperbarui data peralatan: ${error.message}`);
         } finally {
             setIsLoading(false);
         }
     };
 
+    if (error) {
+        return (
+            <div className="container-fluid flex-col sticky max-w-4xl w-screen h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                <h1 className="text-2xl md:text-3xl font-bold mb-4 text-red-500">{error}</h1>
+            </div>
+        );
+    }
+
     return (
-        <div className="container-fluid flex-col sticky max-w-4xl w-screen sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-left">Tambah Data Peralatan CNS</h1>
+        <div className="container-fluid flex-col sticky max-w-4xl w-screen h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 text-black text-left">Edit Data Peralatan CNS</h1>
             
             {/* Breadcrumb */}
             <div className="bg-gray-100 p-3 rounded-lg mb-6">
@@ -61,7 +92,7 @@ function TambahAlatCNS() {
                     <span className="mx-2">/</span>
                     <Link to="/peralatan-cns" className="text-blue-500">List Peralatan CNS</Link>
                     <span className="mx-2">/</span>
-                    <span>Add Peralatan CNS</span>
+                    <span>Edit Peralatan CNS</span>
                 </nav>
             </div>
 
@@ -139,4 +170,4 @@ function TambahAlatCNS() {
     );
 }
 
-export default TambahAlatCNS;
+export default EditAlatCNS;

@@ -1,15 +1,40 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { Link, useNavigate } from 'react-router-dom';
-import { collection, addDoc } from 'firebase/firestore';
-import { db, auth } from '../../../../src/config/firebase';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { db, auth } from '../../../config/firebase';
 
-const AddTeknisi = () => {
+const EditTeknisi = () => {
   const navigate = useNavigate();
-  const [technicianName, setTechnicianName] = useState("");
-  const [category, setCategory] = useState("Supervisor");
+  const { id } = useParams();
+  const [name, setName] = useState('');
+  const [category, setCategory] = useState('Supervisor');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  // Fetch technician data from Firestore when component mounts
+  useEffect(() => {
+    const fetchTechnician = async () => {
+        console.log("Fetching technician with ID:", id);
+        try {
+            const docRef = doc(db, 'teknisi', id);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                setName(docSnap.data().name);
+                setCategory(docSnap.data().category);
+            }else {
+            setError("Teknisi tidak ditemukan.");
+            }
+        } catch (error) {
+            console.error("Error fetching technician:", error);
+            setError("Gagal memuat data teknisi.");
+        }
+    };
+    fetchTechnician();
+  }, [id]);
+
+  // Handle form submission for updating the technician
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -21,56 +46,66 @@ const AddTeknisi = () => {
     }
 
     try {
-      // Add document to Firestore
-      const docRef = await addDoc(collection(db, "teknisi"), {
-        name: technicianName,
-        category: category,
-        createdAt: new Date().toISOString(),
-        createdBy: auth.currentUser.uid
+      const docRef = doc(db, "teknisi", id);
+      await updateDoc(docRef, {
+        name,
+        category,
+        updatedAt: new Date().toISOString(),
+        updatedBy: auth.currentUser.uid,
       });
 
-      console.log("Document written with ID: ", docRef.id);
-      alert(`Teknisi ${technicianName} berhasil ditambahkan ke database.`);
-      navigate('/teknisi'); // Redirect back to technician list
+      alert(`Teknisi ${name} berhasil diperbarui.`);
+      navigate('/teknisi');  // Redirect to technician list page
     } catch (error) {
-      console.error("Error detail:", error);
-      alert(`Terjadi kesalahan saat menyimpan data teknisi: ${error.message}`);
+      console.error("Error updating technician:", error);
+      alert("Gagal memperbarui data teknisi.");
     } finally {
       setIsLoading(false);
     }
   };
 
+  // Go back to the previous page
   const goBack = () => {
     navigate(-1);
   };
+
+  if (error) {
+    return (
+      <div className="container-fluid mx-auto w-screen max-w-4xl p-4">
+        <div className="bg-red-100 p-4 rounded-md shadow-md">
+          <p className="text-red-500 text-center">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="container-fluid mx-auto w-screen max-w-4xl p-4">
       <div className="bg-white shadow-md max-w-4xl rounded-lg p-6">
         <form onSubmit={handleSubmit}>
           <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">
-            Tambah Data Teknisi
+            Edit Data Teknisi
           </h1>
 
           <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
             <nav className="text-gray-600">
-                <span className="mx-2">/</span>
-                  <Link to="/teknisi" className="text-blue-500">List Teknisi</Link>
-                  <span className="mx-2">/</span>
-                  <span>Tambah Teknisi</span>
+              <span className="mx-2">/</span>
+              <Link to="/teknisi" className="text-blue-500">List Teknisi</Link>
+              <span className="mx-2">/</span>
+              <span>Edit Teknisi</span>
             </nav>
           </div>
 
           {/* Nama Teknisi */}
           <div className="mb-4">
-            <label htmlFor="technicianName" className="block text-sm font-medium text-gray-700 mb-1">
+            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
               Nama Teknisi
             </label>
             <input
               type="text"
-              id="technicianName"
-              value={technicianName}
-              onChange={(e) => setTechnicianName(e.target.value)}
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               placeholder="Masukkan nama teknisi"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-100"
               required
@@ -86,7 +121,7 @@ const AddTeknisi = () => {
               id="category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-100 text-black "
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-gray-100 text-black"
               required
             >
               <option value="Supervisor">Supervisor</option>
@@ -121,4 +156,4 @@ const AddTeknisi = () => {
   );
 };
 
-export default AddTeknisi;
+export default EditTeknisi;

@@ -12,7 +12,7 @@ import bg5 from '../../assets/background/of1.jpg';
 import logo from '../../assets/background/logo1.jpg';
 
 const LoginForm = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -27,12 +27,21 @@ const LoginForm = () => {
     }
   }, [currentUser, navigate]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSlideIndex((prevIndex) => (prevIndex + 1) % slides.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, [slides.length]);
+
   const handleLogin = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
 
     try {
+      // Convert username to email format for Firebase
+      const email = `${username}@airnav.com`;
       await signInWithEmailAndPassword(auth, email, password);
       navigate('/menu');
     } catch (error) {
@@ -48,15 +57,15 @@ const LoginForm = () => {
   const getErrorMessage = (errorCode) => {
     switch (errorCode) {
       case 'auth/invalid-email':
-        return 'Email tidak valid.';
+        return 'Username tidak valid.';
       case 'auth/user-disabled':
-        return 'Akun ini telah dinonaktifkan.';
+        return 'Akun telah dinonaktifkan.';
       case 'auth/user-not-found':
-        return 'Email tidak ditemukan.';
+        return 'Username atau password salah.';
       case 'auth/wrong-password':
-        return 'Password salah.';
+        return 'Username atau password salah.';
       default:
-        return 'Terjadi kesalahan saat login. Silakan coba lagi.';
+        return 'Terjadi kesalahan saat login.';
     }
   };
 
@@ -89,17 +98,10 @@ const LoginForm = () => {
     };
   }, [navigate]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSlideIndex((prevIndex) => (prevIndex + 1) % slides.length);
-    }, 5000);
-    return () => clearInterval(interval);
-  }, [slides.length]);
-
   return (
-    <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden" >
-      <div className="absolute inset-0 z-0 slideshow" >
-        <img src={slides[slideIndex]} alt="background" className="w-full h-full object-cover" style={{opacity : 0.8}}/>
+    <div className="w-screen h-screen flex items-center justify-center relative overflow-hidden">
+      <div className="absolute inset-0 z-0 slideshow">
+        <img src={slides[slideIndex]} alt="background" className="w-full h-full object-cover" style={{ opacity: 0.8 }} />
       </div>
 
       <div className="bg-white p-6 md:p-8 rounded-lg shadow-md w-full max-w-sm md:max-w-md lg:max-w-lg z-10">
@@ -117,12 +119,12 @@ const LoginForm = () => {
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-gray-700 text-sm font-bold mb-2">
-              Email
+              Username
             </label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 bg-white leading-tight focus:outline-none focus:shadow-outline"
               required
             />

@@ -1,267 +1,445 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../../../config/firebase';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { storage, db } from "../../../../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { useAuth } from "../../../../config/AuthContext";
 
 const EditCHCNS = () => {
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const { id } = useParams(); // ID from URL to fetch the data
+  const [peralatanOptions, setPeralatanOptions] = useState([]);
+  const [teknisiOptions, setTeknisiOptions] = useState([]);
+  const [formData, setFormData] = useState({
+    tanggal: '',
+    jamSelesai: '',
+    peralatan: '',
+    aktivitas: [],
+    Tx: '',
+    Rx: '',
+    teknisi: [],
+    status: 'open',
+    bukti: null
+  });
+  const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    // State for form fields
-    const [formData, setFormData] = useState({
-        tanggal: '',
-        jamMulai: '',
-        jamSelesai: '',
-        peralatan: '',
-        aktivitas: '',
-        teknisi: '',
-        note: '',
-        bukti: null
-    });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch Peralatan
+        const peralatanCollection = collection(db, "PeralatanCNS");
+        const peralatanSnapshot = await getDocs(peralatanCollection);
+        const peralatanList = peralatanSnapshot.docs.map(doc => doc.data().namaAlat);
+        setPeralatanOptions(peralatanList);
 
-    // State for image upload
-    const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [loading, setLoading] = useState(true);
+        // Fetch Teknisi CNS
+        const teknisiCollection = collection(db, "teknisi");
+        const teknisiSnapshot = await getDocs(teknisiCollection);
+        const teknisiList = teknisiSnapshot.docs
+          .filter(doc => doc.data().category?.toUpperCase() === 'CNS')
+          .map(doc => doc.data().name || doc.data().nama);
+        setTeknisiOptions(teknisiList);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const docRef = doc(db, 'CH-CNS', id);
-                const docSnap = await getDoc(docRef);
-
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    setFormData({
-                        tanggal: data.tanggal || '',
-                        jamMulai: data.jamMulai || '',
-                        jamSelesai: data.jamSelesai || '',
-                        peralatan: data.peralatan || '',
-                        aktivitas: data.aktivitas || '',
-                        teknisi: data.teknisi || '',
-                        note: data.note || '',
-                        bukti: data.bukti || null
-                    });
-                    setImagePreview(data.bukti || null);
-                } else {
-                    alert('Data tidak ditemukan');
-                    navigate('/catatan-harian');
-                }
-            } catch (error) {
-                console.error('Error fetching document:', error);
-                alert('Terjadi kesalahan saat mengambil data');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, [id, navigate]);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+        // Fetch existing Laporan data to edit
+        const laporanDoc = await getDoc(doc(db, "CH-CNS", id));
+        if (laporanDoc.exists()) {
+          const data = laporanDoc.data();
+          setFormData({
+            tanggal: data.tanggal,
+            jamSelesai: data.jamSelesai,
+            peralatan: data.peralatan,
+            aktivitas: data.aktivitas.split("\n"), // Convert string to array
+            Tx: data.Tx,
+            Rx: data.Rx,
+            teknisi: data.teknisi,
+            status: data.status,
+            bukti: null
+          });
+          if (data.buktiUrl) {
+            setImagePreview(data.buktiUrl);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImageFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    fetchData();
+  }, [id]);
 
-    const uploadImage = async () => {
-        if (!imageFile) return formData.bukti;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
-        try {
-            const storageRef = ref(storage, `CH-CNS-Bukti/${Date.now()}_${imageFile.name}`);
-            const snapshot = await uploadBytes(storageRef, imageFile);
-            const downloadURL = await getDownloadURL(snapshot.ref);
-            return downloadURL;
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            alert('Gagal mengunggah gambar');
-            return null;
-        }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        // Validation
-        if (!formData.tanggal || !formData.jamSelesai || !formData.peralatan || !formData.aktivitas || !formData.teknisi) {
-            alert('Harap isi semua field yang wajib');
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const imageUrl = await uploadImage();
-
-            const updatedData = {
-                ...formData,
-                bukti: imageUrl,
-                updatedAt: new Date()
-            };
-
-            // Update document in Firestore
-            const docRef = doc(db, 'CH-CNS', id);
-            await updateDoc(docRef, updatedData);
-
-            alert('Data berhasil diperbarui');
-            navigate('/catatan-harian');
-        } catch (error) {
-            console.error('Error updating document:', error);
-            alert('Terjadi kesalahan saat memperbarui data');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (loading) {
-        return <div className="text-center mt-10">Loading...</div>;
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        bukti: file
+      }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
+  };
 
-    return (
-        <div className="container-fluid flex-col sticky h-screen sticky max-w-4xl w-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <h1 className="text-2xl font-bold mb-6 text-left">Edit Catatan Harian CNS</h1>
-            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Tanggal *</label>
-                    <input
-                        type="date"
-                        name="tanggal"
-                        value={formData.tanggal}
-                        onChange={handleInputChange}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                    />
-                </div>
-                
-                <div className="flex mb-4 space-x-4">
-                    <div className="w-1/2">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Jam Mulai</label>
-                        <input
-                            type="time"
-                            name="jamMulai"
-                            value={formData.jamMulai}
-                            onChange={handleInputChange}
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        />
-                    </div>
-                    <div className="w-1/2">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Jam Selesai *</label>
-                        <input
-                            type="time"
-                            name="jamSelesai"
-                            value={formData.jamSelesai}
-                            onChange={handleInputChange}
-                            required
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        />
-                    </div>
-                </div>
+  const handleRadioChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Peralatan *</label>
-                    <input
-                        type="text"
-                        name="peralatan"
-                        value={formData.peralatan}
-                        onChange={handleInputChange}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="Masukkan nama peralatan"
-                    />
-                </div>
+  const handleCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      aktivitas: checked
+        ? [...prev.aktivitas, value]
+        : prev.aktivitas.filter(item => item !== value)
+    }));
+  };
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Aktivitas *</label>
-                    <textarea
-                        name="aktivitas"
-                        value={formData.aktivitas}
-                        onChange={handleInputChange}
-                        required
-                        rows={4}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="Jelaskan aktivitas yang dilakukan"
-                    />
-                </div>
+  const handleCancelImage = () => {
+    setImagePreview(null);
+    setFormData(prev => ({
+      ...prev,
+      bukti: null
+    }));
+    const fileInput = document.querySelector('input[type="file"]');
+    if (fileInput) {
+      fileInput.value = '';
+    }
+  };
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Teknisi *</label>
-                    <input
-                        type="text"
-                        name="teknisi"
-                        value={formData.teknisi}
-                        onChange={handleInputChange}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="Nama teknisi"
-                    />
-                </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
-                    <textarea
-                        name="note"
-                        value={formData.note}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="Tambahkan catatan tambahan (opsional)"
-                    />
-                </div>
+    try {
+      let buktiUrl = formData.buktiUrl || '';
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Bukti/Paraf</label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                    />
-                    {imagePreview && (
-                        <div className="mt-4">
-                            <img 
-                                src={imagePreview} 
-                                alt="Preview" 
-                                className="max-w-full h-48 object-contain"
-                            />
-                        </div>
-                    )}
-                </div>
+      if (formData.bukti) {
+        const buktiRef = ref(storage, `bukti/${Date.now()}-${formData.bukti.name}`);
+        await uploadBytes(buktiRef, formData.bukti);
+        buktiUrl = await getDownloadURL(buktiRef);
+      }
 
-                <div className="flex flex-col sm:flex-row justify-between pt-4">
-                        <button
-                            type="button"
-                            onClick={() => navigate(-1)}
-                            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
-                            disabled={loading}
-                        >
-                            Kembali
-                        </button>
-                        <button
-                            type="submit"
-                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                            disabled={loading}
-                        >
-                            {loading ? 'Menyimpan...' : 'Simpan'}
-                        </button>
-                </div>
-            </form>
+      const aktivitasFinal = [...formData.aktivitas];
+      if (formData.Tx) aktivitasFinal.push(formData.Tx); // Add Tx if exists
+      if (formData.Rx) aktivitasFinal.push(formData.Rx); // Add Rx if exists
+
+      const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
+
+      // Update the Laporan data in Firestore
+      const laporanRef = doc(db, "CH-CNS", id);
+      await updateDoc(laporanRef, {
+        ...formData,
+        aktivitas: aktivitasFormatted,
+        buktiUrl,
+        userId: currentUser.uid,
+        updatedAt: new Date().toISOString(),
+      });
+
+      navigate(-1); // Go back to previous page
+    } catch (error) {
+      console.error('Error updating data:', error);
+      alert('Terjadi kesalahan saat menyimpan data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="container-fluid flex-col w-screen max-w-4xl sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="bg-white rounded-lg shadow p-6 sm:p-8">
+        <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Edit Catatan Harian CNS</h1>
+
+        <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+          <nav className="text-gray-600">
+            <span className="mx-2">/</span>
+            <Link to="/ch-cns" className="text-blue-500">List Catatan Harian CNS</Link>
+            <span className="mx-2">/</span>
+            <span>Edit Catatan Harian</span>
+          </nav>
         </div>
-    );
+
+        <form onSubmit={handleSubmit} className="shadow space-y-6">
+          <div className="shadow space-y-4">
+            {/* Form fields here (Tanggal, Jam Selesai, etc.) */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Tanggal</label>
+              <input
+                type="date"
+                name="tanggal"
+                value={formData.tanggal}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Jam Selesai</label>
+              <input
+                type="time"
+                name="jamSelesai"
+                value={formData.jamSelesai}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Peralatan</label>
+              <select
+                name="peralatan"
+                value={formData.peralatan}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                required
+              >
+                <option value="">Pilih Peralatan</option>
+                {peralatanOptions.length > 0 ? (
+                  peralatanOptions.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>Loading peralatan...</option>
+                )}
+              </select>
+            </div>
+
+            <div className="flex flex-col sm:flex-row justify-between pt-4 text-black">
+        <div className="mt-2">
+          <label className="block">
+            <input
+              className="mr-2"
+              type="checkbox"
+              name="aktivitas"
+              value="Pemeliharaan Harian"
+              checked={formData.aktivitas.includes('Pemeliharaan Harian')}
+              onChange={handleCheckboxChange}
+            />
+            Pemeliharaan Harian
+          </label>
+          <label className="block">
+            <input
+              className="mr-2"
+              type="checkbox"
+              name="aktivitas"
+              value="Memeriksa kondisi pengaturan suhu ruangan"
+              checked={formData.aktivitas.includes('Memeriksa kondisi pengaturan suhu ruangan')}
+              onChange={handleCheckboxChange}
+            />
+            Memeriksa kondisi pengaturan suhu ruangan
+          </label>
+          <label className="block">
+            <input
+              className="mr-2"
+              type="checkbox"
+              name="aktivitas"
+              value="Periksa seluruh lampu indikator"
+              checked={formData.aktivitas.includes('Periksa seluruh lampu indikator')}
+              onChange={handleCheckboxChange}
+            />
+            Periksa seluruh lampu indikator
+          </label>
+          <label className="block">
+            <input
+              className="mr-2"
+              type="checkbox"
+              name="aktivitas"
+              value="Membersihkan ruangan peralatan"
+              checked={formData.aktivitas.includes('Membersihkan ruangan peralatan')}
+              onChange={handleCheckboxChange}
+            />
+            Membersihkan ruangan peralatan
+          </label>
+          <label className="block">
+            <input
+              className="mr-2"
+              type="checkbox"
+              name="aktivitas"
+              value="Test On Load Battery"
+              checked={formData.aktivitas.includes('Test On Load Battery')}
+              onChange={handleCheckboxChange}
+            />
+            Test On Load Battery
+          </label>
+          <label className="block">
+            <input
+              className="mr-2"
+              type="checkbox"
+              name="aktivitas"
+              value="Peralatan Normal Operasi"
+              checked={formData.aktivitas.includes('Peralatan Normal Operasi')}
+              onChange={handleCheckboxChange}
+            />
+            Peralatan Normal Operasi
+          </label>
+        </div>
+      </div>
+
+      {/* Status Peralatan Tx (Radio) */}
+      <div className="mb-4">
+        <label className="block text-gray-700 font-semibold">Status Peralatan Tx</label>
+        <div className="mt-2">
+          <label className="mr-4">
+            <input
+              className="mr-2"
+              name="Tx"
+              type="radio"
+              value="Tx 1 Main | Tx 2 Standby"
+              checked={formData.Tx === 'Tx 1 Main | Tx 2 Standby'}
+              onChange={handleRadioChange}
+            />
+            Tx 1
+          </label>
+          <label>
+            <input
+              className="mr-2"
+              name="Tx"
+              type="radio"
+              value="Tx 2 Main | Tx 1 Standby"
+              checked={formData.Tx === 'Tx 2 Main | Tx 1 Standby'}
+              onChange={handleRadioChange}
+            />
+            Tx 2
+          </label>
+        </div>
+      </div>
+
+      {/* Status Peralatan Rx (Radio) */}
+      <div className="mb-4">
+        <label className="block text-gray-700 font-semibold">Status Peralatan Rx</label>
+        <div className="mt-2">
+          <label className="mr-4">
+            <input
+              className="mr-2"
+              name="Rx"
+              type="radio"
+              value="Rx 1 Main | Rx 2 Standby"
+              checked={formData.Rx === 'Rx 1 Main | Rx 2 Standby'}
+              onChange={handleRadioChange}
+            />
+            Rx 1
+          </label>
+          <label>
+            <input
+              className="mr-2"
+              name="Rx"
+              type="radio"
+              value="Rx 2 Main | Rx 1 Standby"
+              checked={formData.Rx === 'Rx 2 Main | Rx 1 Standby'}
+              onChange={handleRadioChange}
+            />
+            Rx 2
+          </label>
+        </div>
+      </div>
+
+        <div>
+            <label className="block text-sm font-medium text-gray-700">Teknisi</label>
+              <select
+                name="teknisi"
+                value={formData.teknisi}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                required
+              >
+                <option value="">Pilih Teknisi</option>
+                {teknisiOptions.length > 0 ? (
+                  teknisiOptions.map((option, index) => (
+                    <option key={index} value={option}>
+                      {option}
+                    </option>
+                  ))
+                ) : (
+                  <option value="" disabled>Loading teknisi...</option>
+                )}
+              </select>
+        </div>
+
+            {/* Image Upload section */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Upload Bukti</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mt-1 block w-full"
+              />
+              {imagePreview && (
+                <div className="relative mt-2">
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="h-40 object-contain"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCancelImage}
+                    className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full hover:bg-red-600 transform translate-x-1/2 -translate-y-1/2"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Status */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Status</label>
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                required
+              >
+                <option value="open">Open</option>
+                <option value="close">Close</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="flex flex-col sm:flex-row justify-between pt-4">
+            <button
+              type="button"
+              onClick={() => navigate(-1)}
+              className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
+              disabled={loading}
+            >
+              Kembali
+            </button>
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+              disabled={loading}
+            >
+              {loading ? 'Menyimpan...' : 'Simpan'}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default EditCHCNS;

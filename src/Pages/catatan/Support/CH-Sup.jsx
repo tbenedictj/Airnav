@@ -97,7 +97,7 @@ const CatatanHarian = () => {
                                 <th className="py-2 px-4 border">Peralatan</th>
                                 <th className="py-2 px-4 border">Aktivitas</th>
                                 <th className="py-2 px-4 border">Teknisi</th>
-                                <th className="py-2 px-4 border">Status</th>
+                                <th className="py-2 px-4 border">Note</th>
                                 <th className="py-2 px-4 border">Paraf</th>
                                 <th className="py-2 px-4 border">Aksi</th>
                             </tr>

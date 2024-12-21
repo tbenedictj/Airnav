@@ -242,21 +242,22 @@ const EditCHCNS = () => {
                     )}
                 </div>
 
-                <div className="flex items-center justify-between">
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                        {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => navigate('/catatan-harian')}
-                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    >
-                        Batalkan
-                    </button>
+                <div className="flex flex-col sm:flex-row justify-between pt-4">
+                        <button
+                            type="button"
+                            onClick={() => navigate(-1)}
+                            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
+                            disabled={loading}
+                        >
+                            Kembali
+                        </button>
+                        <button
+                            type="submit"
+                            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                            disabled={loading}
+                        >
+                            {loading ? 'Menyimpan...' : 'Simpan'}
+                        </button>
                 </div>
             </form>
         </div>

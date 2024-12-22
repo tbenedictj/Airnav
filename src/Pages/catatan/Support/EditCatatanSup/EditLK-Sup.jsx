@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { storage, db } from "../../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, doc, getDocs, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, updateDoc, getDoc } from "firebase/firestore";
 import { useAuth } from "../../../../config/AuthContext";
 
 const EditLKSup = () => {
   const navigate = useNavigate();
   const { currentUser } = useAuth();
-  const { id } = useParams(); // ID from URL to fetch the data
+  const { id } = useParams();
   const [peralatanOptions, setPeralatanOptions] = useState([]);
   const [teknisiOptions, setTeknisiOptions] = useState([]);
   const [formData, setFormData] = useState({
@@ -24,6 +24,9 @@ const EditLKSup = () => {
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showTeknisiDropdown, setShowTeknisiDropdown] = useState(false);
+  const [statusTx, setStatusTx] = useState('Tx 1'); // Initialize state for Tx
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +37,7 @@ const EditLKSup = () => {
         const peralatanList = peralatanSnapshot.docs.map(doc => doc.data().namaAlat);
         setPeralatanOptions(peralatanList);
 
-        // Fetch Teknisi CNS
+        // Fetch Teknisi Support
         const teknisiCollection = collection(db, "teknisi");
         const teknisiSnapshot = await getDocs(teknisiCollection);
         const teknisiList = teknisiSnapshot.docs
@@ -60,6 +63,7 @@ const EditLKSup = () => {
           if (data.buktiUrl) {
             setImagePreview(data.buktiUrl);
           }
+          setStatusTx(data.Tx); // Set initial Tx value
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -74,6 +78,15 @@ const EditLKSup = () => {
     setFormData(prev => ({
       ...prev,
       [name]: value
+    }));
+  };
+
+  const handleTeknisiChange = (teknisi) => {
+    setFormData(prev => ({
+      ...prev,
+      teknisi: prev.teknisi.includes(teknisi)
+        ? prev.teknisi.filter(item => item !== teknisi)
+        : [...prev.teknisi, teknisi]
     }));
   };
 
@@ -110,6 +123,10 @@ const EditLKSup = () => {
     }));
   };
 
+  const handleTxChange = (event) => {
+    setStatusTx(event.target.value); // Update state when radio button changes
+  };
+
   const handleCancelImage = () => {
     setImagePreview(null);
     setFormData(prev => ({
@@ -141,15 +158,18 @@ const EditLKSup = () => {
 
       const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
 
-      // Update the Laporan data in Firestore
-      const laporanRef = doc(db, "LaporanSupport", id);
-      await updateDoc(laporanRef, {
+      const dataToSave = {
         ...formData,
+        Tx: statusTx, // Include the Tx value
         aktivitas: aktivitasFormatted,
         buktiUrl,
         userId: currentUser.uid,
         updatedAt: new Date().toISOString(),
-      });
+      };
+
+      // Update the Laporan data in Firestore
+      const laporanRef = doc(db, "LaporanSupport", id);
+      await updateDoc(laporanRef, dataToSave);
 
       navigate(-1); // Go back to previous page
     } catch (error) {
@@ -159,6 +179,21 @@ const EditLKSup = () => {
       setLoading(false);
     }
   };
+
+  const toggleDropdown = () => {
+    setShowTeknisiDropdown(prev => !prev);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowTeknisiDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
     <div className="container-fluid flex-col w-screen max-w-4xl sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -224,154 +259,166 @@ const EditLKSup = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row justify-between pt-4 text-black">
-        <div className="mt-2">
-          <label className="block">
-            <input
-              className="mr-2"
-              type="checkbox"
-              name="aktivitas"
-              value="Pemeliharaan Harian"
-              checked={formData.aktivitas.includes('Pemeliharaan Harian')}
-              onChange={handleCheckboxChange}
-            />
-            Pemeliharaan Harian
-          </label>
-          <label className="block">
-            <input
-              className="mr-2"
-              type="checkbox"
-              name="aktivitas"
-              value="Memeriksa kondisi pengaturan suhu ruangan"
-              checked={formData.aktivitas.includes('Memeriksa kondisi pengaturan suhu ruangan')}
-              onChange={handleCheckboxChange}
-            />
-            Memeriksa kondisi pengaturan suhu ruangan
-          </label>
-          <label className="block">
-            <input
-              className="mr-2"
-              type="checkbox"
-              name="aktivitas"
-              value="Periksa seluruh lampu indikator"
-              checked={formData.aktivitas.includes('Periksa seluruh lampu indikator')}
-              onChange={handleCheckboxChange}
-            />
-            Periksa seluruh lampu indikator
-          </label>
-          <label className="block">
-            <input
-              className="mr-2"
-              type="checkbox"
-              name="aktivitas"
-              value="Membersihkan ruangan peralatan"
-              checked={formData.aktivitas.includes('Membersihkan ruangan peralatan')}
-              onChange={handleCheckboxChange}
-            />
-            Membersihkan ruangan peralatan
-          </label>
-          <label className="block">
-            <input
-              className="mr-2"
-              type="checkbox"
-              name="aktivitas"
-              value="Test On Load Battery"
-              checked={formData.aktivitas.includes('Test On Load Battery')}
-              onChange={handleCheckboxChange}
-            />
-            Test On Load Battery
-          </label>
-          <label className="block">
-            <input
-              className="mr-2"
-              type="checkbox"
-              name="aktivitas"
-              value="Peralatan Normal Operasi"
-              checked={formData.aktivitas.includes('Peralatan Normal Operasi')}
-              onChange={handleCheckboxChange}
-            />
-            Peralatan Normal Operasi
-          </label>
-        </div>
-      </div>
+              <div className="mt-2">
+                <label className="block">
+                  <input
+                    className="mr-2"
+                    type="checkbox"
+                    name="aktivitas"
+                    value="Pemeliharaan Harian"
+                    checked={formData.aktivitas.includes('Pemeliharaan Harian')}
+                    onChange={handleCheckboxChange}
+                  />
+                  Pemeliharaan Harian
+                </label>
+                <label className="block">
+                  <input
+                    className="mr-2"
+                    type="checkbox"
+                    name="aktivitas"
+                    value="Memeriksa kondisi pengaturan suhu ruangan"
+                    checked={formData.aktivitas.includes('Memeriksa kondisi pengaturan suhu ruangan')}
+                    onChange={handleCheckboxChange}
+                  />
+                  Memeriksa kondisi pengaturan suhu ruangan
+                </label>
+                <label className="block">
+                  <input
+                    className="mr-2"
+                    type="checkbox"
+                    name="aktivitas"
+                    value="Periksa seluruh lampu indikator"
+                    checked={formData.aktivitas.includes('Periksa seluruh lampu indikator')}
+                    onChange={handleCheckboxChange}
+                  />
+                  Periksa seluruh lampu indikator
+                </label>
+                <label className="block">
+                  <input
+                    className="mr-2"
+                    type="checkbox"
+                    name="aktivitas"
+                    value="Membersihkan ruangan peralatan"
+                    checked={formData.aktivitas.includes('Membersihkan ruangan peralatan')}
+                    onChange={handleCheckboxChange}
+                  />
+                  Membersihkan ruangan peralatan
+                </label>
+                <label className="block">
+                  <input
+                    className="mr-2"
+                    type="checkbox"
+                    name="aktivitas"
+                    value="Test On Load Battery"
+                    checked={formData.aktivitas.includes('Test On Load Battery')}
+                    onChange={handleCheckboxChange}
+                  />
+                  Test On Load Battery
+                </label>
+                <label className="block">
+                  <input
+                    className="mr-2"
+                    type="checkbox"
+                    name="aktivitas"
+                    value="Peralatan Normal Operasi"
+                    checked={formData.aktivitas.includes('Peralatan Normal Operasi')}
+                    onChange={handleCheckboxChange}
+                  />
+                  Peralatan Normal Operasi
+                </label>
+              </div>
+            </div>
 
-      {/* Status Peralatan Tx (Radio) */}
-      <div className="mb-4">
-        <label className="block text-gray-700 font-semibold">Status Peralatan Tx</label>
-        <div className="mt-2">
-          <label className="mr-4">
-            <input
-              className="mr-2"
-              name="Tx"
-              type="radio"
-              value="Tx 1 Main | Tx 2 Standby"
-              checked={formData.Tx === 'Tx 1 Main | Tx 2 Standby'}
-              onChange={handleRadioChange}
-            />
-            Tx 1
-          </label>
-          <label>
-            <input
-              className="mr-2"
-              name="Tx"
-              type="radio"
-              value="Tx 2 Main | Tx 1 Standby"
-              checked={formData.Tx === 'Tx 2 Main | Tx 1 Standby'}
-              onChange={handleRadioChange}
-            />
-            Tx 2
-          </label>
-        </div>
-      </div>
+            {/* Status Peralatan Tx (Radio) */}
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold">Status Peralatan Tx</label>
+              <div className="mt-2">
+                <label className="mr-4">
+                  <input
+                    className="mr-2"
+                    type="radio"
+                    value="Tx 1"
+                    checked={statusTx === 'Tx 1'}
+                    onChange={handleTxChange}
+                  />
+                  Tx 1
+                </label>
+                <label>
+                  <input
+                    className="mr-2"
+                    type="radio"
+                    value="Tx 2"
+                    checked={statusTx === 'Tx 2'}
+                    onChange={handleTxChange}
+                  />
+                  Tx 2
+                </label>
+              </div>
+            </div>
 
-      {/* Status Peralatan Rx (Radio) */}
-      <div className="mb-4">
-        <label className="block text-gray-700 font-semibold">Status Peralatan Rx</label>
-        <div className="mt-2">
-          <label className="mr-4">
-            <input
-              className="mr-2"
-              name="Rx"
-              type="radio"
-              value="Rx 1 Main | Rx 2 Standby"
-              checked={formData.Rx === 'Rx 1 Main | Rx 2 Standby'}
-              onChange={handleRadioChange}
-            />
-            Rx 1
-          </label>
-          <label>
-            <input
-              className="mr-2"
-              name="Rx"
-              type="radio"
-              value="Rx 2 Main | Rx 1 Standby"
-              checked={formData.Rx === 'Rx 2 Main | Rx 1 Standby'}
-              onChange={handleRadioChange}
-            />
-            Rx 2
-          </label>
-        </div>
-      </div>
+            {/* Status Peralatan Rx (Radio) */}
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold">Status Peralatan Rx</label>
+              <div className="mt-2">
+                <label className="mr-4">
+                  <input
+                    className="mr-2"
+                    name="Rx"
+                    type="radio"
+                    value="Rx 1 Main | Rx 2 Standby"
+                    checked={formData.Rx === 'Rx 1 Main | Rx 2 Standby'}
+                    onChange={handleRadioChange}
+                  />
+                  Rx 1
+                </label>
+                <label>
+                  <input
+                    className="mr-2"
+                    name="Rx"
+                    type="radio"
+                    value="Rx 2 Main | Rx 1 Standby"
+                    checked={formData.Rx === 'Rx 2 Main | Rx 1 Standby'}
+                    onChange={handleRadioChange}
+                  />
+                  Rx 2
+                </label>
+              </div>
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-              <select
-                name="teknisi"
-                value={formData.teknisi}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                required
-              >
-                <option value="">Pilih Teknisi</option>
-                {teknisiOptions.length > 0 ? (
-                  teknisiOptions.map((option, index) => (
-                    <option key={index} value={option}>
-                      {option}
-                    </option>
-                  ))
-                ) : (
-                  <option value="" disabled>Loading teknisi...</option>
+              <div className="relative" ref={dropdownRef}>
+                <button
+                  type="button"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  onClick={toggleDropdown}
+                >
+                  {formData.teknisi.length > 0 ? formData.teknisi.join(', ') : 'Pilih Teknisi'}
+                </button>
+                {showTeknisiDropdown && (
+                  <div className="absolute z-10 mt-2 w-full rounded-md bg-white shadow-lg">
+                    {teknisiOptions.length > 0 ? (
+                      teknisiOptions.map((option, index) => (
+                        <div key={index} className="px-4 py-2 hover:bg-gray-100">
+                          <label className="block">
+                            <input
+                              className="mr-2"
+                              type="checkbox"
+                              name="teknisi"
+                              value={option}
+                              checked={formData.teknisi.includes(option)}
+                              onChange={() => handleTeknisiChange(option)}
+                            />
+                            {option}
+                          </label>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="px-4 py-2">Loading teknisi...</div>
+                    )}
+                  </div>
                 )}
-              </select>
+              </div>
             </div>
 
             {/* Image Upload section */}

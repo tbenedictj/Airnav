@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../../config/firebase';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
@@ -73,6 +73,16 @@ const CatatanBulanan = () => {
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Bulanan CNS</h1>
+
+            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                <nav className="text-gray-600">
+                    <span className="mx-2">/</span>
+                    <Link to="/dashboard" className="text-blue-500">Dashboard</Link>
+                    <span className="mx-2">/</span>
+                    <span>List Data Pemeliharaan Bulanana CNS</span>
+                </nav>
+            </div>
+
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Bulanan CNS</h2>
                 <div className="flex justify-between mb-4">
@@ -117,29 +127,29 @@ const CatatanBulanan = () => {
                 <table className="min-w-full bg-white">
                     <thead>
                         <tr className="text-black">
-                            <th className="py-2 px-4 border-b">Tanggal / Jam</th>
-                            <th className="py-2 px-4 border-b">Alat</th>
-                            <th className="py-2 px-4 border-b">Kegiatan</th>
-                            <th className="py-2 px-4 border-b">Teknisi</th>
-                            <th className="py-2 px-4 border-b">Note</th>
-                            <th className="py-2 px-4 border-b">Paraf</th>
-                            <th className="py-2 px-4 border-b">Aksi</th>
+                            <th className="py-2 px-4 border border-gray-300">Tanggal / Jam</th>
+                            <th className="py-2 px-4 border border-gray-300">Alat</th>
+                            <th className="py-2 px-4 border border-gray-300">Kegiatan</th>
+                            <th className="py-2 px-4 border border-gray-300">Teknisi</th>
+                            <th className="py-2 px-4 border border-gray-300">Note</th>
+                            <th className="py-2 px-4 border border-gray-300">Paraf</th>
+                            <th className="py-2 px-4 border border-gray-300">Aksi</th>
                         </tr>
                     </thead>
                     <tbody className="text-black">
                         {filteredCatatan.slice(0, entriesPerPage).map((catatan) => (
                             <tr key={catatan.id}>
-                                <td className="py-2 px-4 border-b">
+                                <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
                                     {catatan.tanggal} {catatan.jamSelesai}
                                 </td>
-                                <td className="py-2 px-4 border-b">{catatan.peralatan}</td>
-                                <td className="py-2 px-4 border-b">
-                                    {catatan.aktivitas?.length > 100 ? (
+                                <td className="py-2 px-4 border border-gray-300 max-w-[150px] whitespace-nowrap overflow-hidden overflow-ellipsis">{catatan.peralatan}</td>
+                                <td className="py-2 px-4 border border-gray-300 max-w-[300px]">
+                                    {catatan.aktivitas?.length > 50 ? (
                                         <div>
                                             <span>
                                                 {expandedRows[catatan.id] 
                                                     ? catatan.aktivitas
-                                                    : `${catatan.aktivitas.substring(0, 100)}...`}
+                                                    : `${catatan.aktivitas.substring(0, 50)}...`}
                                             </span>
                                             <button 
                                                 className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
@@ -152,7 +162,7 @@ const CatatanBulanan = () => {
                                         catatan.aktivitas
                                     )}
                                 </td>
-                                <td className="py-2 px-4 border-b">
+                                <td className="py-2 px-4 border border-gray-300 max-w-[128px]">
                                     {Array.isArray(catatan.teknisi) ? (
                                         catatan.teknisi.join(', ').length > 20 ? (
                                             <div>
@@ -175,13 +185,13 @@ const CatatanBulanan = () => {
                                         catatan.teknisi || '-'
                                     )}
                                 </td>
-                                <td className="py-2 px-4 border-b">{catatan.note || '-'}</td>
-                                <td className="py-2 px-4 border-b text-center">
+                                <td className="py-2 px-4 border border-gray-300">{catatan.note || '-'}</td>
+                                <td className="py-2 px-4 border border-gray-300 text-center">
                                     {catatan.signatureUrl && (
                                         <img src={catatan.signatureUrl} className="w-12 h-12 object-contain mx-auto" alt="Paraf" />
                                     )}
                                 </td>
-                                <td className="py-2 px-4 border-b">
+                                <td className="py-2 px-4 border border-gray-300">
                                     <div className="flex space-x-2">
                                         <button 
                                             className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -79,6 +79,16 @@ const PeralatanSup = () => {
     return (
         <div className="container-fluid mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Peralatan Support</h1>
+
+            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                <nav className="text-gray-600">
+                    <span className="mx-2">/</span>
+                    <Link to="/dashboard" className="text-blue-500">Dashboard</Link>
+                    <span className="mx-2">/</span>
+                    <span>List Peralatan Support</span>
+                </nav>
+            </div>
+
             <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-blue-600 text-lg font-semibold mb-4">Peralatan Support</h2>
 

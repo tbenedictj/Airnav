@@ -1,266 +1,338 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { db, storage } from '../../../../config/firebase';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import React, { useState, useEffect, useRef } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { storage, db } from "../../../../config/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { collection, doc, getDocs, getDoc, updateDoc } from "firebase/firestore";
+import { useAuth } from "../../../../config/AuthContext";
 
 const EditCHCNS = () => {
-    const navigate = useNavigate();
-    const { id } = useParams();
+  const navigate = useNavigate();
+  const { currentUser } = useAuth();
+  const { id } = useParams();
+  const [peralatanOptions, setPeralatanOptions] = useState([]);
+  const [teknisiOptions, setTeknisiOptions] = useState([]);
+  const [formData, setFormData] = useState({
+    tanggal: '',
+    jamMulai: '',
+    jamSelesai: '',
+    peralatan: '',
+    aktivitas: [],
+    teknisi: [],
+    status: 'open',
+    bukti: null,
+    buktiUrl: ''
+  });
+  const [imagePreview, setImagePreview] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showTeknisiDropdown, setShowTeknisiDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
-    // State for form fields
-    const [formData, setFormData] = useState({
-        tanggal: '',
-        jamMulai: '',
-        jamSelesai: '',
-        peralatan: '',
-        aktivitas: '',
-        teknisi: '',
-        note: '',
-        bukti: null
-    });
+  // Handle clicks outside of dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowTeknisiDropdown(false);
+      }
+    };
 
-    // State for image upload
-    const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [loading, setLoading] = useState(true);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const docRef = doc(db, 'CH-CNS', id);
-                const docSnap = await getDoc(docRef);
+  // Fetch data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-                if (docSnap.exists()) {
-                    const data = docSnap.data();
-                    setFormData({
-                        tanggal: data.tanggal || '',
-                        jamMulai: data.jamMulai || '',
-                        jamSelesai: data.jamSelesai || '',
-                        peralatan: data.peralatan || '',
-                        aktivitas: data.aktivitas || '',
-                        teknisi: data.teknisi || '',
-                        note: data.note || '',
-                        bukti: data.bukti || null
-                    });
-                    setImagePreview(data.bukti || null);
-                } else {
-                    alert('Data tidak ditemukan');
-                    navigate('/catatan-harian');
-                }
-            } catch (error) {
-                console.error('Error fetching document:', error);
-                alert('Terjadi kesalahan saat mengambil data');
-            } finally {
-                setLoading(false);
+        // Fetch Peralatan CNS data
+        const peralatanSnapshot = await getDocs(collection(db, "PeralatanCNS"));
+        const peralatanList = peralatanSnapshot.docs.map(doc => doc.data().namaAlat);
+        setPeralatanOptions(peralatanList);
+
+        // Fetch Teknisi data
+        const teknisiSnapshot = await getDocs(collection(db, "teknisi"));
+        const teknisiList = teknisiSnapshot.docs
+          .filter(doc => doc.data().category?.toUpperCase() === 'CNS')
+          .map(doc => doc.data().name || doc.data().nama);
+        setTeknisiOptions(teknisiList);
+
+        // Fetch existing CH data if editing
+        if (id) {
+          const docRef = doc(db, "CH-CNS", id);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setFormData({
+              tanggal: data.tanggal || '',
+              jamMulai: data.jamMulai || '',
+              jamSelesai: data.jamSelesai || '',
+              peralatan: data.peralatan || '',
+              aktivitas: typeof data.aktivitas === 'string' ? 
+                data.aktivitas.split('\n').map(item => item.replace(/^- /, '')) : 
+                data.aktivitas || [],
+              teknisi: Array.isArray(data.teknisi) ? data.teknisi : 
+                data.teknisi ? [data.teknisi] : [],
+              status: data.status || 'open',
+              bukti: null,
+              buktiUrl: data.buktiUrl || ''
+            });
+
+            if (data.buktiUrl) {
+              setImagePreview(data.buktiUrl);
             }
-        };
-
-        fetchData();
-    }, [id, navigate]);
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Failed to load data");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImageFile(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+    fetchData();
+  }, [id]);
 
-    const uploadImage = async () => {
-        if (!imageFile) return formData.bukti;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
 
-        try {
-            const storageRef = ref(storage, `CH-CNS-Bukti/${Date.now()}_${imageFile.name}`);
-            const snapshot = await uploadBytes(storageRef, imageFile);
-            const downloadURL = await getDownloadURL(snapshot.ref);
-            return downloadURL;
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            alert('Gagal mengunggah gambar');
-            return null;
-        }
-    };
+  const handleTeknisiChange = (teknisi) => {
+    setFormData(prev => ({
+      ...prev,
+      teknisi: prev.teknisi.includes(teknisi)
+        ? prev.teknisi.filter(item => item !== teknisi)
+        : [...prev.teknisi, teknisi]
+    }));
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        // Validation
-        if (!formData.tanggal || !formData.jamSelesai || !formData.peralatan || !formData.aktivitas || !formData.teknisi) {
-            alert('Harap isi semua field yang wajib');
-            return;
-        }
-
-        try {
-            setLoading(true);
-            const imageUrl = await uploadImage();
-
-            const updatedData = {
-                ...formData,
-                bukti: imageUrl,
-                updatedAt: new Date()
-            };
-
-            // Update document in Firestore
-            const docRef = doc(db, 'CH-CNS', id);
-            await updateDoc(docRef, updatedData);
-
-            alert('Data berhasil diperbarui');
-            navigate('/catatan-harian');
-        } catch (error) {
-            console.error('Error updating document:', error);
-            alert('Terjadi kesalahan saat memperbarui data');
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    if (loading) {
-        return <div className="text-center mt-10">Loading...</div>;
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(prev => ({
+        ...prev,
+        bukti: file
+      }));
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result);
+      };
+      reader.readAsDataURL(file);
     }
+  };
 
-    return (
-        <div className="container-fluid flex-col sticky h-screen sticky max-w-4xl w-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <h1 className="text-2xl font-bold mb-6 text-left">Edit Catatan Harian CNS</h1>
-            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Tanggal *</label>
-                    <input
-                        type="date"
-                        name="tanggal"
-                        value={formData.tanggal}
-                        onChange={handleInputChange}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                    />
-                </div>
-                
-                <div className="flex mb-4 space-x-4">
-                    <div className="w-1/2">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Jam Mulai</label>
-                        <input
-                            type="time"
-                            name="jamMulai"
-                            value={formData.jamMulai}
-                            onChange={handleInputChange}
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        />
-                    </div>
-                    <div className="w-1/2">
-                        <label className="block text-gray-700 text-sm font-bold mb-2">Jam Selesai *</label>
-                        <input
-                            type="time"
-                            name="jamSelesai"
-                            value={formData.jamSelesai}
-                            onChange={handleInputChange}
-                            required
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        />
-                    </div>
-                </div>
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Peralatan *</label>
-                    <input
-                        type="text"
-                        name="peralatan"
-                        value={formData.peralatan}
-                        onChange={handleInputChange}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="Masukkan nama peralatan"
-                    />
-                </div>
+    try {
+      let buktiUrl = formData.buktiUrl;
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Aktivitas *</label>
-                    <textarea
-                        name="aktivitas"
-                        value={formData.aktivitas}
-                        onChange={handleInputChange}
-                        required
-                        rows={4}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="Jelaskan aktivitas yang dilakukan"
-                    />
-                </div>
+      if (formData.bukti instanceof File) {
+        const buktiRef = ref(storage, `bukti/${Date.now()}-${formData.bukti.name}`);
+        await uploadBytes(buktiRef, formData.bukti);
+        buktiUrl = await getDownloadURL(buktiRef);
+      }
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Teknisi *</label>
-                    <input
-                        type="text"
-                        name="teknisi"
-                        value={formData.teknisi}
-                        onChange={handleInputChange}
-                        required
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="Nama teknisi"
-                    />
-                </div>
+      const docRef = doc(db, "CH-CNS", id);
+      await updateDoc(docRef, {
+        ...formData,
+        buktiUrl,
+        bukti: null
+      });
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Catatan</label>
-                    <textarea
-                        name="note"
-                        value={formData.note}
-                        onChange={handleInputChange}
-                        rows={3}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                        placeholder="Tambahkan catatan tambahan (opsional)"
-                    />
-                </div>
+      navigate("/ch-cns");
+    } catch (error) {
+      console.error("Error updating document:", error);
+      setError("Failed to update data");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-                <div className="mb-4">
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Bukti/Paraf</label>
-                    <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700"
-                    />
-                    {imagePreview && (
-                        <div className="mt-4">
-                            <img 
-                                src={imagePreview} 
-                                alt="Preview" 
-                                className="max-w-full h-48 object-contain"
-                            />
-                        </div>
-                    )}
-                </div>
+  if (loading) {
+    return <div className="text-center py-4">Loading...</div>;
+  }
 
-                <div className="flex items-center justify-between">
-                    <button
-                        type="submit"
-                        disabled={loading}
-                        className={`bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                    >
-                        {loading ? 'Menyimpan...' : 'Simpan Perubahan'}
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => navigate('/catatan-harian')}
-                        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                    >
-                        Batalkan
-                    </button>
-                </div>
-            </form>
+  if (error) {
+    return <div className="text-red-500 text-center py-4">{error}</div>;
+  }
+
+  return (
+    <div className="container-fluid flex-col w-screen max-w-4xl sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <div className="bg-white rounded-lg shadow p-6 sm:p-8">
+        <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Edit Catatan Harian CNS</h1>
+
+        <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+          <nav className="text-gray-600">
+            <span className="mx-2">/</span>
+            <Link to="/ch-cns" className="text-blue-500">List Catatan Harian CNS</Link>
+            <span className="mx-2">/</span>
+            <span>Edit Catatan Harian</span>
+          </nav>
         </div>
-    );
+
+        <form onSubmit={handleSubmit} className="shadow space-y-6">
+          <div className="shadow space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Tanggal</label>
+              <input
+                type="date"
+                name="tanggal"
+                value={formData.tanggal}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Jam Mulai</label>
+              <input
+                type="time"
+                name="jamMulai"
+                value={formData.jamMulai}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Jam Selesai</label>
+              <input
+                type="time"
+                name="jamSelesai"
+                value={formData.jamSelesai}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Peralatan</label>
+              <select
+                name="peralatan"
+                value={formData.peralatan}
+                onChange={handleInputChange}
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                required
+              >
+                <option value="">Pilih Peralatan</option>
+                {peralatanOptions.map((option, index) => (
+                  <option key={index} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* Teknisi Section */}
+            <div className="mb-4 relative">
+              <label className="block text-sm font-medium text-gray-700">Teknisi</label>
+              <div
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0 p-2 cursor-pointer"
+                onClick={() => setShowTeknisiDropdown(!showTeknisiDropdown)}
+              >
+                {formData.teknisi.length > 0
+                  ? formData.teknisi.join(", ")
+                  : "Pilih Teknisi"}
+              </div>
+              <div ref={dropdownRef}>
+                {showTeknisiDropdown && (
+                  <div className="absolute z-10 w-full bg-white border-[1px] border-black rounded mt-1 max-h-60 overflow-y-auto">
+                    {teknisiOptions.map((teknisi, index) => (
+                      <div
+                        key={index}
+                        className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                          formData.teknisi.includes(teknisi) ? "bg-gray-100" : ""
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTeknisiChange(teknisi);
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.teknisi.includes(teknisi)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleTeknisiChange(teknisi);
+                          }}
+                          className="mr-2"
+                        />
+                        {teknisi}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Aktivitas</label>
+              <textarea
+                name="aktivitas"
+                value={formData.aktivitas.join('\n')}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setFormData(prev => ({
+                    ...prev,
+                    aktivitas: value.split('\n').filter(item => item.trim() !== '')
+                  }));
+                }}
+                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                rows="4"
+                required
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700">Bukti</label>
+              <input
+                type="file"
+                onChange={handleImageChange}
+                accept="image/*"
+                className="mt-1 block w-full"
+              />
+              {imagePreview && (
+                <div className="mt-2">
+                  <img src={imagePreview} alt="Preview" className="max-w-xs" />
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-between pt-4">
+              <Link
+                to="/ch-cns"
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+              >
+                Kembali
+              </Link>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                disabled={loading}
+              >
+                {loading ? "Menyimpan..." : "Simpan"}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
 };
 
 export default EditCHCNS;

@@ -98,7 +98,7 @@ const TambahCatatan = () => {
             : prev.aktivitas.filter(item => item !== value) // Hapus aktivitas jika tidak dicentang
         }));
       };
-      
+
     const handleTeknisiChange = (selectedTeknisi) => {
         setFormData(prev => {
             const updatedTeknisi = prev.teknisi.includes(selectedTeknisi)
@@ -160,10 +160,16 @@ const TambahCatatan = () => {
                 buktiUrl = await getDownloadURL(buktiRef);
             }
 
+            const aktivitasFinal = [...formData.aktivitas];
+                if (formData.Tx) aktivitasFinal.push(formData.Tx); // Tambahkan Tx
+                if (formData.Rx) aktivitasFinal.push(formData.Rx); // Tambahkan Rx
+
+                const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
             // Save to Firestore
             await addDoc(collection(db, 'CH-CNS'), {
                 ...formData,
                 teknisi: formData.teknisi.join(', '),
+                aktivitas: aktivitasFormatted,
                 buktiUrl,
                 userId: currentUser.uid,
                 createdAt: new Date().toISOString()

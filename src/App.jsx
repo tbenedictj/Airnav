@@ -41,21 +41,7 @@ import EditCMSup from './Pages/catatan/Support/EditCatatanSup/EditCM-Sup';
 import EditCBSup from './Pages/catatan/Support/EditCatatanSup/EditCB-Sup';
 import PeralatanOpenStatus from './Pages/Dashboard/Maintenance';
 import PeralatanOpenStatusSup from './Pages/Dashboard/MaintenanceSup';
-
-function PrivateRoute({ children }) {
-  const { currentUser, loading } = useAuth();
-  
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
-  
-  // Redirect to /loginform if not authenticated
-  return currentUser ? children : <Navigate to="/loginform" />;
-}
+import PrivateRoute from './config/PrivateRoute';
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);

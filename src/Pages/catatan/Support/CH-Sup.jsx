@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../../config/firebase';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
@@ -68,6 +68,16 @@ const CatatanHarian = () => {
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Harian Support</h1>
+
+            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                <nav className="text-gray-600">
+                    <span className="mx-2">/</span>
+                    <Link to="/dashboard" className="text-blue-500">Dashboard</Link>
+                    <span className="mx-2">/</span>
+                    <span>List Data Pemeliharaan Harian Support</span>
+                </nav>
+            </div>
+
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Harian Support</h2>
                 <div className="flex justify-between mb-4">
@@ -97,7 +107,7 @@ const CatatanHarian = () => {
                                 <th className="py-2 px-4 border">Peralatan</th>
                                 <th className="py-2 px-4 border">Aktivitas</th>
                                 <th className="py-2 px-4 border">Teknisi</th>
-                                <th className="py-2 px-4 border">Status</th>
+                                <th className="py-2 px-4 border">Note</th>
                                 <th className="py-2 px-4 border">Paraf</th>
                                 <th className="py-2 px-4 border">Aksi</th>
                             </tr>

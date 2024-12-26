@@ -20,66 +20,86 @@ const EditLKSup = () => {
     Rx: '',
     teknisi: [],
     status: 'open',
-    bukti: null
+    bukti: null,
+    buktiUrl: ''
   });
   const [imagePreview, setImagePreview] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [showTeknisiDropdown, setShowTeknisiDropdown] = useState(false);
-  const [statusTx, setStatusTx] = useState('Tx 1'); // Initialize state for Tx
   const dropdownRef = useRef(null);
 
+  // Handle clicks outside of dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setShowTeknisiDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  // Fetch initial data
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch Peralatan
-        const peralatanCollection = collection(db, "PeralatanSupport");
-        const peralatanSnapshot = await getDocs(peralatanCollection);
+        setLoading(true);
+        setError(null);
+
+        // Fetch Peralatan Support data
+        const peralatanSnapshot = await getDocs(collection(db, "PeralatanSupport"));
         const peralatanList = peralatanSnapshot.docs.map(doc => doc.data().namaAlat);
         setPeralatanOptions(peralatanList);
 
-        // Fetch Teknisi Support
-        const teknisiCollection = collection(db, "teknisi");
-        const teknisiSnapshot = await getDocs(teknisiCollection);
+        // Fetch Teknisi data
+        const teknisiSnapshot = await getDocs(collection(db, "teknisi"));
         const teknisiList = teknisiSnapshot.docs
           .filter(doc => doc.data().category?.toUpperCase() === 'SUPPORT')
           .map(doc => doc.data().name || doc.data().nama);
         setTeknisiOptions(teknisiList);
 
-        // Fetch existing Laporan data to edit
-        const laporanDoc = await getDoc(doc(db, "LaporanSupport", id));
-        if (laporanDoc.exists()) {
-          const data = laporanDoc.data();
-          setFormData({
-            tanggal: data.tanggal,
-            jamSelesai: data.jamSelesai,
-            peralatan: data.peralatan,
-            aktivitas: data.aktivitas.split("\n"), // Convert string to array
-            Tx: data.Tx,
-            Rx: data.Rx,
-            teknisi: data.teknisi,
-            status: data.status,
-            bukti: null
-          });
-          if (data.buktiUrl) {
-            setImagePreview(data.buktiUrl);
+        // Fetch existing laporan data
+        if (id) {
+          const docRef = doc(db, "LaporanSupport", id);
+          const docSnap = await getDoc(docRef);
+
+          if (docSnap.exists()) {
+            const data = docSnap.data();
+            setFormData({
+              tanggal: data.tanggal || '',
+              jamSelesai: data.jamSelesai || '',
+              peralatan: data.peralatan || '',
+              aktivitas: typeof data.aktivitas === 'string' ? 
+                data.aktivitas.split('\n').map(item => item.replace(/^- /, '')) : 
+                data.aktivitas || [],
+              Tx: data.Tx || '',
+              Rx: data.Rx || '',
+              teknisi: Array.isArray(data.teknisi) ? data.teknisi : 
+                data.teknisi ? [data.teknisi] : [],
+              status: data.status || 'open',
+              bukti: null,
+              buktiUrl: data.buktiUrl || ''
+            });
+
+            if (data.buktiUrl) {
+              setImagePreview(data.buktiUrl);
+            }
           }
-          setStatusTx(data.Tx); // Set initial Tx value
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+        setError("Failed to load data");
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
   }, [id]);
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
 
   const handleTeknisiChange = (teknisi) => {
     setFormData(prev => ({
@@ -87,6 +107,15 @@ const EditLKSup = () => {
       teknisi: prev.teknisi.includes(teknisi)
         ? prev.teknisi.filter(item => item !== teknisi)
         : [...prev.teknisi, teknisi]
+    }));
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+
+      ...prev,
+      [name]: value
     }));
   };
 
@@ -124,7 +153,10 @@ const EditLKSup = () => {
   };
 
   const handleTxChange = (event) => {
-    setStatusTx(event.target.value); // Update state when radio button changes
+    setFormData(prev => ({
+      ...prev,
+      Tx: event.target.value
+    }));
   };
 
   const handleCancelImage = () => {
@@ -160,7 +192,6 @@ const EditLKSup = () => {
 
       const dataToSave = {
         ...formData,
-        Tx: statusTx, // Include the Tx value
         aktivitas: aktivitasFormatted,
         buktiUrl,
         userId: currentUser.uid,
@@ -184,33 +215,20 @@ const EditLKSup = () => {
     setShowTeknisiDropdown(prev => !prev);
   };
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setShowTeknisiDropdown(false);
-      }
-    };
+  if (loading) {
+    return <div className="text-center mt-5">Loading...</div>;
+  }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  if (error) {
+    return <div className="text-center mt-5 text-red-500">{error}</div>;
+  }
 
   return (
-    <div className="container-fluid flex-col w-screen max-w-4xl sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div className="bg-white rounded-lg shadow p-6 sm:p-8">
-        <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Edit Laporan Kegiatan & Kerusakan Support</h1>
-
-        <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
-          <nav className="text-gray-600">
-            <span className="mx-2">/</span>
-            <Link to="/lk-sup" className="text-blue-500">List Laporan Kegiatan & Kerusakan Support</Link>
-            <span className="mx-2">/</span>
-            <span>Edit Laporan Kegiatan & Kerusakan</span>
-          </nav>
-        </div>
-
-        <form onSubmit={handleSubmit} className="shadow space-y-6">
-          <div className="shadow space-y-4">
+    <div className="container mx-auto p-4">
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h2 className="text-2xl font-bold mb-4">Edit Laporan Support</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="shadow space-y-6">
             {/* Form fields here (Tanggal, Jam Selesai, etc.) */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Tanggal</label>
@@ -338,7 +356,7 @@ const EditLKSup = () => {
                     className="mr-2"
                     type="radio"
                     value="Tx 1"
-                    checked={statusTx === 'Tx 1'}
+                    checked={formData.Tx === 'Tx 1'}
                     onChange={handleTxChange}
                   />
                   Tx 1
@@ -348,7 +366,7 @@ const EditLKSup = () => {
                     className="mr-2"
                     type="radio"
                     value="Tx 2"
-                    checked={statusTx === 'Tx 2'}
+                    checked={formData.Tx === 'Tx 2'}
                     onChange={handleTxChange}
                   />
                   Tx 2
@@ -385,37 +403,45 @@ const EditLKSup = () => {
               </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-              <div className="relative" ref={dropdownRef}>
-                <button
-                  type="button"
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  onClick={toggleDropdown}
-                >
-                  {formData.teknisi.length > 0 ? formData.teknisi.join(', ') : 'Pilih Teknisi'}
-                </button>
+            {/* Teknisi Section */}
+            <div className="mb-4 relative">
+              <label className="block text-gray-700 text-sm font-bold mb-2">
+                Teknisi
+              </label>
+              <div
+                className="border rounded p-2 cursor-pointer"
+                onClick={() => setShowTeknisiDropdown(!showTeknisiDropdown)}
+              >
+                {formData.teknisi.length > 0
+                  ? formData.teknisi.join(", ")
+                  : "Pilih Teknisi"}
+              </div>
+              <div ref={dropdownRef}>
                 {showTeknisiDropdown && (
-                  <div className="absolute z-10 mt-2 w-full rounded-md bg-white shadow-lg">
-                    {teknisiOptions.length > 0 ? (
-                      teknisiOptions.map((option, index) => (
-                        <div key={index} className="px-4 py-2 hover:bg-gray-100">
-                          <label className="block">
-                            <input
-                              className="mr-2"
-                              type="checkbox"
-                              name="teknisi"
-                              value={option}
-                              checked={formData.teknisi.includes(option)}
-                              onChange={() => handleTeknisiChange(option)}
-                            />
-                            {option}
-                          </label>
-                        </div>
-                      ))
-                    ) : (
-                      <div className="px-4 py-2">Loading teknisi...</div>
-                    )}
+                  <div className="absolute z-10 w-full bg-white border rounded mt-1 max-h-60 overflow-y-auto">
+                    {teknisiOptions.map((teknisi, index) => (
+                      <div
+                        key={index}
+                        className={`p-2 cursor-pointer hover:bg-gray-100 ${
+                          formData.teknisi.includes(teknisi) ? "bg-blue-50" : ""
+                        }`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleTeknisiChange(teknisi);
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.teknisi.includes(teknisi)}
+                          onChange={(e) => {
+                            e.stopPropagation();
+                            handleTeknisiChange(teknisi);
+                          }}
+                          className="mr-2"
+                        />
+                        {teknisi}
+                      </div>
+                    ))}
                   </div>
                 )}
               </div>

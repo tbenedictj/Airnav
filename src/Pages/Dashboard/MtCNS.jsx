@@ -1,150 +1,253 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../config/firebase';
-import { collection, getDocs, query, where } from 'firebase/firestore';
-import { format } from 'date-fns';
+import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 
 const MtCNS = () => {
-  const [openReports, setOpenReports] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [expandedRows, setExpandedRows] = useState(new Set());
+    const navigate = useNavigate();
+    const [laporanList, setLaporanList] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [entriesPerPage, setEntriesPerPage] = useState(10);
+    const [expandedRows, setExpandedRows] = useState({});
+    const [expandedAlat, setExpandedAlat] = useState({});
+    const [expandedTeknisi, setExpandedTeknisi] = useState({});
 
-  useEffect(() => {
-    const fetchOpenReports = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        // Create query for open status reports
-        const reportsQuery = query(
-          collection(db, "LaporanCNS"),
-          where("status", "==", "open")
-        );
-
-        const querySnapshot = await getDocs(reportsQuery);
-        const reports = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-
-        // Sort by date in descending order
-        reports.sort((a, b) => new Date(b.tanggal) - new Date(a.tanggal));
-        
-        setOpenReports(reports);
-      } catch (err) {
-        console.error("Error fetching open reports:", err);
-        setError("Failed to load maintenance reports");
-      } finally {
-        setLoading(false);
-      }
+    const toggleRowExpansion = (id, type) => {
+        if (type === 'peralatan') {
+            setExpandedAlat(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        } else if (type === 'aktivitas') {
+            setExpandedRows(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        }
+        else if (type === 'teknisi') {
+            setExpandedTeknisi(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        }
     };
 
-    fetchOpenReports();
-  }, []);
+    const fetchLaporan = async () => {
+        try {
+            const laporanRef = collection(db, 'LaporanCNS');
+            const q = query(laporanRef, orderBy('createdAt', 'desc'));
+            const querySnapshot = await getDocs(q);
+            const laporan = querySnapshot.docs
+                .map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }))
+                .filter(laporan => laporan.status === 'open');
+            setLaporanList(laporan);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching laporan:', error);
+            setLoading(false);
+        }
+    };
 
-  const toggleRowExpansion = (id) => {
-    const newExpandedRows = new Set(expandedRows);
-    if (expandedRows.has(id)) {
-      newExpandedRows.delete(id);
-    } else {
-      newExpandedRows.add(id);
-    }
-    setExpandedRows(newExpandedRows);
-  };
+    const handleDelete = async (id) => {
+        if (window.confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+            try {
+                await deleteDoc(doc(db, 'LaporanCNS', id));
+                await fetchLaporan();
+                alert('Data berhasil dihapus');
+            } catch (error) {
+                console.error('Error deleting document:', error);
+                alert('Terjadi kesalahan saat menghapus data');
+            }
+        }
+    };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
+    useEffect(() => {
+        fetchLaporan();
+    }, []);
+
+    const filteredLaporan = laporanList.filter(laporan =>
+        laporan.peralatan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        laporan.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        laporan.aktivitas?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (Array.isArray(laporan.teknisi) ? 
+            laporan.teknisi.join(' ').toLowerCase().includes(searchTerm.toLowerCase()) :
+            laporan.teknisi?.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-  }
 
-  if (error) {
     return (
-      <div className="text-center text-red-500 p-4">
-        {error}
-      </div>
-    );
-  }
+        <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            {/* Title Section */}
+            <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Peralatan Maintenance CNS</h1>
+            
+            {/* Main Content Section */}
+            <div className="bg-white p-4 rounded shadow">
+                <h2 className="text-lg font-semibold text-blue-600 mb-4">Laporan Peralatan dengan Status Open</h2>
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6">Open Maintenance Reports - CNS</h1>
-      
-      {openReports.length === 0 ? (
-        <div className="text-center text-gray-500 py-4">
-          No open maintenance reports found
+                {/* Top Action Bar */}
+                <div className="flex justify-between mb-4">
+                    <div>
+                        <button 
+                            onClick={() => navigate('/tambah-lk')}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
+                        >
+                            <i className="fas fa-plus mr-2"></i> Tambah Data
+                        </button>
+                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                            <i className="fas fa-filter mr-2"></i> Filter & Print PDF
+                        </button>
+                    </div>
+                    <div className="flex items-center text-black">
+                        <label className="mr-2">Show</label>
+                        <select className="border rounded p-1 text-black" value={entriesPerPage} onChange={(e) => setEntriesPerPage(Number(e.target.value))}>
+                            <option>10</option>
+                            <option>25</option>
+                            <option>50</option>
+                            <option>100</option>
+                        </select>
+                        <span className="ml-2">entries</span>
+                    </div>
+                </div>
+
+                {/* Search Bar Section */}
+                <div className="flex justify-between mb-4">
+                    <div></div>
+                    <div className="text-black">
+                        <label className="mr-2">Search:</label>
+                        <input type="text" className="border rounded p-1" value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+                    </div>
+                </div>
+
+                {/* Table Section */}
+                <table className="min-w-full border border-gray-300 border-collapse bg-white table-fixed">
+                    <thead>
+                        <tr className="text-black">
+                            <th className="py-2 px-4 border border-gray-300">Tanggal / Jam</th>
+                            <th className="py-2 px-4 border border-gray-300">Alat</th>
+                            <th className="py-2 px-4 border border-gray-300">Kegiatan</th>
+                            <th className="py-2 px-4 border border-gray-300">Teknisi</th>
+                            <th className="py-2 px-4 border border-gray-300">Status</th>
+                            <th className="py-2 px-4 border border-gray-300">Paraf</th>
+                            <th className="py-2 px-4 border border-gray-300">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody className="text-black">
+                        {filteredLaporan.slice(0, entriesPerPage).map((laporan) => (
+                            <tr key={laporan.id}>
+                                <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                    {laporan.tanggal} {laporan.jamSelesai}
+                                </td>
+                                <td className="py-2 px-4 border max-w-[150px] border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                    <div className="break-words whitespace-pre-wrap">
+                                        {laporan.peralatan?.length > 20 ? (
+                                            <>
+                                                <span>
+                                                    {expandedAlat[laporan.id]
+                                                        ? laporan.peralatan
+                                                        : `${laporan.peralatan.substring(0, 20)}...`
+                                                    }
+                                                </span>
+                                                <span
+                                                    className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
+                                                    onClick={() => toggleRowExpansion(laporan.id, 'peralatan')}
+                                                >
+                                                    {expandedAlat[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                </span>    
+                                            </>
+                                        ) : (
+                                            <span>{laporan.peralatan}</span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300 max-w-[300px]">
+                                    <div className="break-words whitespace-pre-wrap">
+                                        {laporan.aktivitas?.length > 50 ? (
+                                            <>
+                                                <span>
+                                                    {expandedRows[laporan.id] 
+                                                        ? laporan.aktivitas
+                                                        : `${laporan.aktivitas.substring(0, 50)}...`
+                                                    }
+                                                </span>
+                                                <span 
+                                                    className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
+                                                    onClick={() => toggleRowExpansion(laporan.id, 'aktivitas')}
+                                                >
+                                                    {expandedRows[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <span>{laporan.aktivitas}</span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300 max-w-[128px]">
+                                    <div className="break-words whitespace-pre-wrap">
+                                        {Array.isArray(laporan.teknisi) && laporan.teknisi.length > 0 ? (
+                                            <>
+                                                <span>
+                                                    {expandedTeknisi[laporan.id]
+                                                        ? laporan.teknisi.join(', ')
+                                                        : `${laporan.teknisi[0]}${laporan.teknisi.length > 1 ? '...' : ''}`
+                                                    }
+                                                </span>
+                                                {laporan.teknisi.length > 1 && (
+                                                    <span
+                                                        className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
+                                                        onClick={() => toggleRowExpansion(laporan.id, 'teknisi')}
+                                                    >
+                                                        {expandedTeknisi[laporan.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                    </span>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <span>{laporan.teknisi}</span>
+                                        )}
+                                    </div>
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300">
+                                    <span className="px-2 py-1 rounded text-xs sm:text-sm bg-yellow-500 text-white">
+                                        {laporan.status}
+                                    </span>
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300">
+                                    {laporan.buktiUrl && (
+                                        <img src={laporan.buktiUrl} alt="Paraf" className="w-24 h-12 object-contain" />
+                                    )}
+                                </td>
+                                <td className="py-2 px-4 border border-gray-300">
+                                    <div className="flex space-x-2">
+                                        <button
+                                            onClick={() => navigate(`/edit-lk-cns/${laporan.id}`)}
+                                            className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                                        >
+                                            <i className="fas fa-edit text-white text-sm"></i>
+                                        </button>
+                                        <button
+                                            onClick={() => navigate(`/detail-lk-cns/${laporan.id}`)}
+                                            className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
+                                        >
+                                            <i className="fas fa-file text-white text-sm"></i>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(laporan.id)}
+                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
+                                        >
+                                            <i className="fas fa-trash text-white text-sm"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
-      ) : (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
-            <thead className="bg-gray-100">
-              <tr>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Date</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Equipment</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Technician</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Activities</th>
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-600">Status</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {openReports.map((report) => (
-                <React.Fragment key={report.id}>
-                  <tr 
-                    className="hover:bg-gray-50 cursor-pointer"
-                    onClick={() => toggleRowExpansion(report.id)}
-                  >
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {format(new Date(report.tanggal), 'dd/MM/yyyy')}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {report.peralatan}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {Array.isArray(report.teknisi) 
-                        ? report.teknisi.join(', ')
-                        : report.teknisi}
-                    </td>
-                    <td className="px-4 py-3 text-sm text-gray-900">
-                      {expandedRows.has(report.id) 
-                        ? report.aktivitas
-                        : `${report.aktivitas?.substring(0, 50)}${report.aktivitas?.length > 50 ? '...' : ''}`}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
-                        {report.status}
-                      </span>
-                    </td>
-                  </tr>
-                  {expandedRows.has(report.id) && (
-                    <tr>
-                      <td colSpan="5" className="px-4 py-3 bg-gray-50">
-                        <div className="text-sm text-gray-900">
-                          <p className="font-semibold">Full Activities:</p>
-                          <p className="whitespace-pre-wrap">{report.aktivitas}</p>
-                          {report.buktiUrl && (
-                            <div className="mt-2">
-                              <p className="font-semibold">Evidence:</p>
-                              <img 
-                                src={report.buktiUrl} 
-                                alt="Maintenance Evidence" 
-                                className="max-w-md mt-2 rounded-lg shadow"
-                              />
-                            </div>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </React.Fragment>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
-    </div>
-  );
+    );
 };
 
 export default MtCNS;

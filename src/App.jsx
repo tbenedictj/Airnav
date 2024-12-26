@@ -39,8 +39,8 @@ import EditLKSup from './Pages/catatan/Support/EditCatatanSup/EditLK-Sup';
 import EditCHSup from './Pages/catatan/Support/EditCatatanSup/EditCH-Sup';
 import EditCMSup from './Pages/catatan/Support/EditCatatanSup/EditCM-Sup';
 import EditCBSup from './Pages/catatan/Support/EditCatatanSup/EditCB-Sup';
-import PeralatanOpenStatus from './Pages/Dashboard/Maintenance';
-import PeralatanOpenStatusSup from './Pages/Dashboard/MaintenanceSup';
+import MtCNS from "./Pages/Dashboard/MtCNS";
+import MtSup from "./Pages/Dashboard/MtSup";
 import PrivateRoute from './config/PrivateRoute';
 
 function App() {
@@ -508,26 +508,26 @@ function App() {
             }
           />
           <Route
-            path="/alat-mt-cns"
+            path="/mtcns"
             element={
               <PrivateRoute>
                 <div className="app-container">
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <PeralatanOpenStatus />
+                    <MtCNS />
                   </main>
                 </div>
               </PrivateRoute>
             }
           />
           <Route
-            path="/alat-mt-sup"
+            path="/mtsup"
             element={
               <PrivateRoute>
                 <div className="app-container">
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
-                    <PeralatanOpenStatusSup />
+                    <MtSup />
                   </main>
                 </div>
               </PrivateRoute>

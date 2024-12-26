@@ -36,13 +36,13 @@ const Dashboard = () => {
     }, []);
 
     const handleNavigateCNS = () => {
-        // Navigasi ke halaman Peralatan Maintenance CNS
-        navigate('/alat-mt-cns');
+        // Navigasi ke halaman Maintenance CNS
+        navigate('/mtcns');
     };
 
     const handleNavigateSupport = () => {
-        // Navigasi ke halaman Peralatan Maintenance Support
-        navigate('/alat-mt-sup');
+        // Navigasi ke halaman  Maintenance Support
+        navigate('/mtsup');
     };
     
     return (

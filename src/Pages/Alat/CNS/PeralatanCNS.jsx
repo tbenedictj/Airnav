@@ -125,31 +125,19 @@ const PeralatanCNS = () => {
                     <table className="min-w-full border border-gray-300">
                         <thead>
                             <tr className="text-black border-b border-gray-300 bg-gray-100">
-                                <th className="border-gray-300 w-[300px] border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Nama Alat
-                                    <button
-                                        onClick={() => handleSort('namaAlat')}
-                                        className="ml-2 text-blue-500 hover:text-blue-700"
-                                    >
-                                        ↕
+                                <th className="text-center border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
+                                    <button onClick={() => handleSort('namaAlat')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Nama&nbsp;↕
                                     </button>
                                 </th>
-                                <th className="border-gray-300 w-[200px] border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Kategori
-                                    <button
-                                        onClick={() => handleSort('kategoriAlat')}
-                                        className="ml-2 text-blue-500 hover:text-blue-700"
-                                    >
-                                        ↕
+                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
+                                    <button onClick={() => handleSort('kategoriAlat')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Kategori&nbsp;↕
                                     </button>
                                 </th>
-                                <th className="border-gray-300 w-[150px] border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Frekuensi
-                                    <button
-                                        onClick={() => handleSort('frekuensi')}
-                                        className="ml-2 text-blue-500 hover:text-blue-700"
-                                    >
-                                        ↕
+                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
+                                    <button onClick={() => handleSort('kategoriAlat')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Frekuensi&nbsp;↕
                                     </button>
                                 </th>
                                 <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">

@@ -125,12 +125,12 @@ const CatatanMingguan = () => {
                                                         ? item.aktivitas
                                                         : `${item.aktivitas.substring(0, 100)}...`}
                                                 </span>
-                                                <button 
-                                                    className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                <span 
+                                                    className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
                                                     onClick={() => toggleRow(item.id)}
                                                 >
                                                     {expandedRows[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                </button>
+                                                </span>
                                             </div>
                                         ) : (
                                             item.aktivitas
@@ -145,12 +145,12 @@ const CatatanMingguan = () => {
                                                             ? item.teknisi.join(', ')
                                                             : `${item.teknisi.join(', ').substring(0, 20)}...`}
                                                     </span>
-                                                    <button 
-                                                        className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                    <span 
+                                                        className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
                                                         onClick={() => toggleTeknisi(item.id)}
                                                     >
                                                         {expandedTeknisi[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                    </button>
+                                                    </span>
                                                 </div>
                                             ) : (
                                                 item.teknisi.join(', ')

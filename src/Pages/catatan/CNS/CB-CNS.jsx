@@ -151,12 +151,12 @@ const CatatanBulanan = () => {
                                                     ? catatan.aktivitas
                                                     : `${catatan.aktivitas.substring(0, 50)}...`}
                                             </span>
-                                            <button 
-                                                className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                            <span 
+                                                className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
                                                 onClick={() => toggleRowExpansion(catatan.id, 'aktivitas')}
                                             >
                                                 {expandedRows[catatan.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                            </button>
+                                            </span>
                                         </div>
                                     ) : (
                                         catatan.aktivitas
@@ -171,12 +171,12 @@ const CatatanBulanan = () => {
                                                         ? catatan.teknisi.join(', ')
                                                         : `${catatan.teknisi.join(', ').substring(0, 20)}...`}
                                                 </span>
-                                                <button 
-                                                    className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                <span 
+                                                    className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
                                                     onClick={() => toggleRowExpansion(catatan.id, 'teknisi')}
                                                 >
                                                     {expandedTeknisi[catatan.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                </button>
+                                                </span>
                                             </div>
                                         ) : (
                                             catatan.teknisi.join(', ')

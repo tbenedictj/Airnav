@@ -42,6 +42,10 @@ import EditCBSup from './Pages/catatan/Support/EditCatatanSup/EditCB-Sup';
 import MtCNS from "./Pages/Dashboard/MtCNS";
 import MtSup from "./Pages/Dashboard/MtSup";
 import PrivateRoute from './config/PrivateRoute';
+import LKCNSPDF from './Pages/catatan/CNS/PDFCNS/LK_CNS_PDF';
+import CHCNSPDF from './Pages/catatan/CNS/PDFCNS/CH-CNS-PDF';
+import CMCNSPDF from './Pages/catatan/CNS/PDFCNS/CM-CNS-PDF';
+import CBCNSPDF from './Pages/catatan/CNS/PDFCNS/CB-CNS-PDF';
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -528,6 +532,58 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <MtSup />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lk-cns-pdf"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <LKCNSPDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ch-cns-pdf"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CHCNSPDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cm-cns-pdf"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CMCNSPDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cb-cns-pdf"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CBCNSPDF />
                   </main>
                 </div>
               </PrivateRoute>

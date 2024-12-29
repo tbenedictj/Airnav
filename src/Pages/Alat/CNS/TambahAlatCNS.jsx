@@ -91,6 +91,8 @@ function TambahAlatCNS() {
                         <option value="Navigation">Navigation</option>
                         <option value="Surveillance">Surveillance</option>
                         <option value="Data Processing">Data Processing</option>
+                        <option value="DLL">DLL</option>
+                        <option value="Jaringan Pendukung">Jaringan Pendukung</option>
                     </select>
                 </div>
 

@@ -108,7 +108,10 @@ const CatatanHarian = () => {
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data
                         </button>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-2 md:mb-0">
+                        <button 
+                            onClick={() => navigate('/ch-cns-pdf')}
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded mb-2 md:mb-0"
+                        >
                             <i className="fas fa-filter mr-2"></i> Filter & Print PDF
                         </button>
                     </div>

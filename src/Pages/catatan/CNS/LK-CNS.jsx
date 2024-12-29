@@ -106,7 +106,10 @@ const LaporanKegiatanCNS = () => {
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data
                         </button>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                        <button 
+                            onClick={() => navigate('/lk-cns-pdf')}
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                        >
                             <i className="fas fa-filter mr-2"></i> Filter & Print PDF
                         </button>
                     </div>

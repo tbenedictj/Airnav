@@ -88,6 +88,12 @@ const CatatanHarian = () => {
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data
                         </button>
+                        <button
+                            onClick={() => navigate('/ch-sup-pdf')}
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                        >
+                            <i className="fas fa-filter mr-2"></i> Filter & Print PDF
+                        </button>
                     </div>
                     <div className="flex items-center">
                         <input

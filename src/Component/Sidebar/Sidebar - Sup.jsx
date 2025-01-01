@@ -78,14 +78,6 @@ export default function Sidebar({ onToggle }) {
     setHoveredItem(null);
   };
 
-  const cnsSubmenuItems = [
-    <div onClick={() => handleCnsSubmenuItemClick('/lk-cns')}>Laporan Kegiatan & Kerusakan</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/ch-cns')}>Pemeliharaan Harian</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/cm-cns')}>Pemeliharaan Mingguan</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/cb-cns')}>Pemeliharaan Bulanan</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/peralatan-cns')}>Peralatan</div>
-  ];
-
   const supportSubmenuItems = [
     <div onClick={() => handleSupportSubmenuItemClick('/lk-sup')}>Laporan Kegiatan & Kerusakan</div>,
     <div onClick={() => handleSupportSubmenuItemClick('/ch-sup')}>Pemeliharaan Harian</div>,
@@ -100,12 +92,6 @@ export default function Sidebar({ onToggle }) {
     if (onToggle) {
       onToggle(newExpanded);
     }
-  };
-
-  const handleCnsClick = () => {
-    setCnsSubmenuOpen(!cnsSubmenuOpen);
-    setActiveItem('CNS');
-    setHoveredItem(null);
   };
 
   const handleSupportClick = () => {
@@ -142,15 +128,6 @@ export default function Sidebar({ onToggle }) {
                 }}
               />
               <SidebarItem 
-                icon={<i className="fas fa-broadcast-tower text-white text-lg" />}
-                text="CNS" 
-                active={activeItem === 'CNS'}
-                hasSubmenu={true}
-                isSubmenuOpen={cnsSubmenuOpen}
-                submenuItems={cnsSubmenuItems}
-                onClick={handleCnsClick}
-              />
-              <SidebarItem 
                 icon={<i className="fas fa-life-ring text-white text-lg" />}
                 text="Support" 
                 active={activeItem === 'Support'}
@@ -166,15 +143,6 @@ export default function Sidebar({ onToggle }) {
                 onClick={() => {
                   setActiveItem('Teknisi');
                   navigate('/teknisi');
-                }}
-              />
-              <SidebarItem 
-                icon={<i className="fas fa-user-plus text-white text-lg" />}
-                text="Tambah Teknisi" 
-                active={activeItem === 'TambahTeknisi'}
-                onClick={() => {
-                  setActiveItem('TambahTeknisi');
-                  navigate('/tambah-teknisi');
                 }}
               />
             </ul>

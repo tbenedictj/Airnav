@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { db } from "../../../../config/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const LKCNSPDF = () => {
   const navigate = useNavigate();
@@ -68,16 +70,61 @@ const LKCNSPDF = () => {
 
   const totalPages = Math.ceil(filteredLaporan.length / entriesPerPage);
 
-  // Print functionality
+  
   const handlePrint = () => {
-    const printContent = document.getElementById("printContent");
-    const newWindow = window.open();
-    newWindow.document.write('<html><head><title>Print Report</title></head><body>');
-    newWindow.document.write(printContent.innerHTML);
-    newWindow.document.write('</body></html>');
-    newWindow.document.close();
-    newWindow.print();
+    if (filteredLaporan.length === 0) {
+      alert("Tidak ada data untuk dicetak.");
+      return;
+    }
+  
+    const pdf = new jsPDF();
+    const tableColumn = ["Tanggal", "Peralatan", "Status", "Keterangan"];
+    const tableRows = [];
+  
+    // Loop melalui data laporan yang sudah difilter
+    filteredLaporan.forEach((laporan) => {
+      const laporanData = [
+        laporan.tanggal || "-",
+        laporan.peralatan || "-",
+        laporan.status || "-",
+        laporan.keterangan || "-",
+      ];
+      tableRows.push(laporanData);
+    });
+  
+    pdf.setFontSize(12);
+    pdf.text("Laporan Kegiatan & Kerusakan", 14, 15); // Judul PDF
+    pdf.text(`Tanggal: ${new Date().toLocaleDateString()}`, 14, 22); // Tanggal cetak
+    pdf.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 30,
+    });
+  
+    // Membuka halaman baru untuk pratinjau PDF
+    const pdfURL = pdf.output("dataurlstring");
+    const previewWindow = window.open();
+    previewWindow.document.write(`
+      <html>
+        <head>
+          <title>Pratinjau PDF</title>
+        </head>
+        <body>
+          <iframe src="${pdfURL}" style="width:100%; height:100%; border:none;"></iframe>
+          <button style="position: fixed; top: 10px; left: 10px; padding: 10px; background: blue; color: white; border: none; cursor: pointer;" onclick="window.savePDF()">Simpan PDF</button>
+        </body>
+        <script>
+          window.savePDF = () => {
+            const link = document.createElement('a');
+            link.href = '${pdfURL}';
+            link.download = 'laporan-cns.pdf';
+            link.click();
+          };
+        </script>
+      </html>
+    `);
   };
+  
 
   return (
     <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">

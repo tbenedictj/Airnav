@@ -20,10 +20,11 @@ import TambahCBsup from './Pages/catatan/Support/TambahCBSup';
 import Tambahcbcns from './Pages/catatan/CNS/TambahCB-CNS';
 import Navigation from './Component/Nav/Navigation';
 import EditTeknisi from './Pages/Teknisi/EditTeknisi/EditTeknisi';
+import TeknisiAdmin from './Pages/Teknisi/Teknisi - admin';
+import Teknisi from './Pages/Teknisi/Teknisi';
 import { AuthProvider, useAuth } from './config/AuthContext';
 import PeralatanCNS from './Pages/Alat/CNS/PeralatanCNS';
 import PeralatanSup from './Pages/Alat/Support/PeralatanSup';
-import Teknisi from './Pages/Teknisi/Teknisi';
 import Menu from './Pages/Menu/menu';
 import TambahAlatCNS from './Pages/Alat/CNS/TambahAlatCNS';
 import TambahAlatSup from './Pages/Alat/Support/TambahAlatSupport';
@@ -42,6 +43,7 @@ import EditCBSup from './Pages/catatan/Support/EditCatatanSup/EditCB-Sup';
 import MtCNS from "./Pages/Dashboard/MtCNS";
 import MtSup from "./Pages/Dashboard/MtSup";
 import PrivateRoute from './config/PrivateRoute';
+import PrivateRouteWithRole from './config/PrivateRouteWithRole';
 import LKCNSPDF from './Pages/catatan/CNS/PDFCNS/LK_CNS_PDF';
 import CHCNSPDF from './Pages/catatan/CNS/PDFCNS/CH-CNS-PDF';
 import CMCNSPDF from './Pages/catatan/CNS/PDFCNS/CM-CNS-PDF';
@@ -50,6 +52,14 @@ import LKSupPDF from './Pages/catatan/Support/PDFSupport/LK-Sup-PDF';
 import CHSupPDF from './Pages/catatan/Support/PDFSupport/CH-Sup-PDF';
 import CMSupPDF from './Pages/catatan/Support/PDFSupport/CM-Sup-PDF';
 import CBSupPDF from './Pages/catatan/Support/PDFSupport/CB-Sup-PDF';
+import LKCNSView from './Pages/catatan/CNS/View only/LK-CNS - View';
+import CHCNSView from './Pages/catatan/CNS/View only/CH-CNS - View';
+import CMCNSView from './Pages/catatan/CNS/View only/CM-CNS - View';
+import CBCNSView from './Pages/catatan/CNS/View only/CB-CNS - View';
+import LKSupView from './Pages/catatan/Support/View only/LK-Sup View';
+import CHSupView from './Pages/catatan/Support/View only/CH-Sup View';
+import CMSupView from './Pages/catatan/Support/View only/CM-Sup View';
+import CBSupView from './Pages/catatan/Support/View only/CB-Sup View';
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -321,16 +331,29 @@ function App() {
             }
           />
           <Route
+            path="/teknisi-admin"
+            element={
+              <PrivateRouteWithRole allowedRoles={['admin', 'manager']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <TeknisiAdmin />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
+          <Route
             path="/teknisi"
             element={
-              <PrivateRoute>
+              <PrivateRouteWithRole allowedRoles={['cns', 'support', 'supervisor', 'viewer']}>
                 <div className="app-container">
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <Teknisi />
                   </main>
                 </div>
-              </PrivateRoute>
+              </PrivateRouteWithRole>
             }
           />
           <Route
@@ -645,7 +668,118 @@ function App() {
               </PrivateRoute>
             }
           />
-          
+          {/* View-only CNS routes */}
+          <Route
+            path="/lk-cns-view"
+            element={
+              <PrivateRouteWithRole allowedRoles={['viewer', 'supervisor']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <LKCNSView />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
+
+          <Route
+            path="/ch-cns-view"
+            element={
+              <PrivateRouteWithRole allowedRoles={['viewer', 'supervisor']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CHCNSView />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
+
+          <Route
+            path="/cm-cns-view"
+            element={
+              <PrivateRouteWithRole allowedRoles={['viewer', 'supervisor']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CMCNSView />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
+
+          <Route
+            path="/cb-cns-view"
+            element={
+              <PrivateRouteWithRole allowedRoles={['viewer', 'supervisor']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CBCNSView />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
+          {/* View-only Support routes */}
+          <Route
+            path="/lk-sup-view"
+            element={
+              <PrivateRouteWithRole allowedRoles={['viewer', 'supervisor']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <LKSupView />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
+
+          <Route
+            path="/ch-sup-view"
+            element={
+              <PrivateRouteWithRole allowedRoles={['viewer', 'supervisor']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CHSupView />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
+
+          <Route
+            path="/cm-sup-view"
+            element={
+              <PrivateRouteWithRole allowedRoles={['viewer', 'supervisor']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CMSupView />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
+
+          <Route
+            path="/cb-sup-view"
+            element={
+              <PrivateRouteWithRole allowedRoles={['viewer', 'supervisor']}>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CBSupView />
+                  </main>
+                </div>
+              </PrivateRouteWithRole>
+            }
+          />
           {/* Default routes */}
           <Route path="/" element={<Navigate to="/loginform" replace />} />
           <Route path="*" element={<Navigate to="/loginform" replace />} />

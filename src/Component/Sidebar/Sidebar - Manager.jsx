@@ -165,7 +165,7 @@ export default function Sidebar({ onToggle }) {
                 active={activeItem === 'Teknisi'}
                 onClick={() => {
                   setActiveItem('Teknisi');
-                  navigate('/teknisi');
+                  navigate('/teknisi-admin');
                 }}
               />
               <SidebarItem 

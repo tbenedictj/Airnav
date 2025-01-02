@@ -79,19 +79,17 @@ export default function Sidebar({ onToggle }) {
   };
 
   const cnsSubmenuItems = [
-    <div onClick={() => handleCnsSubmenuItemClick('/lk-cns')}>Laporan Kegiatan & Kerusakan</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/ch-cns')}>Pemeliharaan Harian</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/cm-cns')}>Pemeliharaan Mingguan</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/cb-cns')}>Pemeliharaan Bulanan</div>,
-    <div onClick={() => handleCnsSubmenuItemClick('/peralatan-cns')}>Peralatan</div>
+    <div onClick={() => handleCnsSubmenuItemClick('/lk-cns-view')}>Laporan Kegiatan & Kerusakan</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/ch-cns-view')}>Pemeliharaan Harian</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/cm-cns-view')}>Pemeliharaan Mingguan</div>,
+    <div onClick={() => handleCnsSubmenuItemClick('/cb-cns-view')}>Pemeliharaan Bulanan</div>
   ];
 
   const supportSubmenuItems = [
-    <div onClick={() => handleSupportSubmenuItemClick('/lk-sup')}>Laporan Kegiatan & Kerusakan</div>,
-    <div onClick={() => handleSupportSubmenuItemClick('/ch-sup')}>Pemeliharaan Harian</div>,
-    <div onClick={() => handleSupportSubmenuItemClick('/cm-sup')}>Pemeliharaan Mingguan</div>,
-    <div onClick={() => handleSupportSubmenuItemClick('/cb-sup')}>Pemeliharaan Bulanan</div>,
-    <div onClick={() => handleSupportSubmenuItemClick('/peralatan-sup')}>Peralatan</div>
+    <div onClick={() => handleSupportSubmenuItemClick('/lk-sup-view')}>Laporan Kegiatan & Kerusakan</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/ch-sup-view')}>Pemeliharaan Harian</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/cm-sup-view')}>Pemeliharaan Mingguan</div>,
+    <div onClick={() => handleSupportSubmenuItemClick('/cb-sup-view')}>Pemeliharaan Bulanan</div>
   ];
 
   const toggleSidebar = () => {

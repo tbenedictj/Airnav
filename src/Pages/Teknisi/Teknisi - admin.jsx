@@ -78,6 +78,12 @@ function Teknisi() {
                 </nav>
             </div>    
 
+        <button
+          onClick={() => navigate('/tambah-teknisi')}
+          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
+          <FontAwesomeIcon icon={faEdit} className="mr-2" /> Tambah Teknisi
+        </button>
+
       {/* Table Container */}
       <div className="w-screen max-w-4xl bg-white shadow-md rounded-lg p-4">
         <table className="min-w-full border border-gray-300 bg-white">
@@ -86,6 +92,7 @@ function Teknisi() {
             <tr className="text-black border-b border-gray-300">
               <th className="py-2 px-4 border-r border-gray-300">Nama Teknisi</th>
               <th className="py-2 px-4 border-r border-gray-300">Kategori</th>
+              <th className="py-2 px-4">Action</th>
             </tr>
           </thead>
 
@@ -95,6 +102,20 @@ function Teknisi() {
               <tr key={index} className="hover:bg-gray-100 border-b border-gray-300">
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.name}</td>
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.category}</td>
+                <td className="py-2 px-4 w-[110px]">
+                  <div className="flex space-x-1">
+                    <button 
+                      onClick={() => navigate(`/edit-teknisi/${teknisi.id}`)}
+                      className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                      <FontAwesomeIcon icon={faEdit} className="text-white text-sm" />
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(teknisi.id)}
+                      className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
+                      <FontAwesomeIcon icon={faTrash} className="text-white text-sm" />
+                    </button>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>

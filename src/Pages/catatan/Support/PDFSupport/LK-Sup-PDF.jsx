@@ -7,7 +7,7 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import logo from "../../../../assets/Icon/logo2.png"
 
-const LKCNSPDF = () => {
+const LKSupPDF = () => {
   const navigate = useNavigate();
   const [laporanList, setLaporanList] = useState([]);
   const [alatList, setAlatList] = useState([]); // State to store equipment data

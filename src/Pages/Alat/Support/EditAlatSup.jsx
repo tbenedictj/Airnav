@@ -155,20 +155,23 @@ function EditAlatSup() {
                     />
                 </div>
 
-                <div className="flex space-x-4">
-                    <Link
-                        to="/peralatan-sup"
-                        className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none"
-                    >
-                        Kembali
-                    </Link>
-                    <button
-                        type="submit"
-                        className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none"
-                    >
-                        Simpan
-                    </button>
-                </div>
+                <div className="flex flex-col sm:flex-row justify-between pt-4">
+                            <button
+                                type="button"
+                                onClick={() => navigate(-1)}
+                                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
+                                disabled={loading}
+                            >
+                                Kembali
+                            </button>
+                            <button
+                                type="submit"
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                disabled={loading}
+                            >
+                                {loading ? 'Menyimpan...' : 'Simpan'}
+                            </button>
+                        </div>
             </form>
         </div>
     );

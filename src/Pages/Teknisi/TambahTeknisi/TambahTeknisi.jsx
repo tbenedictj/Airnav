@@ -8,7 +8,7 @@ const AddTeknisi = () => {
   const navigate = useNavigate();
   const [technicianName, setTechnicianName] = useState("");
   const [category, setCategory] = useState("Supervisor");
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -97,24 +97,23 @@ const AddTeknisi = () => {
           </div>
 
           {/* Tombol Aksi */}
-          <div className="flex justify-end space-x-4">
-            <button
-              type="button"
-              onClick={goBack}
-              className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400"
-              disabled={isLoading}
-            >
-              Kembali
-            </button>
-
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-300"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Menyimpan...' : 'Simpan'}
-            </button>
-          </div>
+          <div className="flex flex-col sm:flex-row justify-between pt-4">
+                            <button
+                                type="button"
+                                onClick={() => navigate(-1)}
+                                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
+                                disabled={loading}
+                            >
+                                Kembali
+                            </button>
+                            <button
+                                type="submit"
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                                disabled={loading}
+                            >
+                                {loading ? 'Menyimpan...' : 'Simpan'}
+                            </button>
+                        </div>
         </form>
       </div>
     </div>

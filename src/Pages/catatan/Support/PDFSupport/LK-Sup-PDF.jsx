@@ -5,8 +5,9 @@ import { db } from "../../../../config/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import logo from "../../../../assets/Icon/logo2.png"
 
-const LKSupPDF = () => {
+const LKCNSPDF = () => {
   const navigate = useNavigate();
   const [laporanList, setLaporanList] = useState([]);
   const [alatList, setAlatList] = useState([]); // State to store equipment data
@@ -70,60 +71,79 @@ const LKSupPDF = () => {
 
   const totalPages = Math.ceil(filteredLaporan.length / entriesPerPage);
 
-  // Print functionality
+  
   const handlePrint = () => {
-      if (filteredLaporan.length === 0) {
-        alert("Tidak ada data untuk dicetak.");
-        return;
-      }
-    
-      const pdf = new jsPDF();
-      const tableColumn = ["Tanggal", "Peralatan", "Status", "Keterangan"];
-      const tableRows = [];
-    
-      // Loop melalui data laporan yang sudah difilter
-      filteredLaporan.forEach((laporan) => {
-        const laporanData = [
-          laporan.tanggal || "-",
-          laporan.peralatan || "-",
-          laporan.status || "-",
-          laporan.keterangan || "-",
-        ];
-        tableRows.push(laporanData);
-      });
-    
-      pdf.setFontSize(12);
-      pdf.text("Laporan Kegiatan & Kerusakan", 14, 15); // Judul PDF
-      pdf.text(`Tanggal: ${new Date().toLocaleDateString()}`, 14, 22); // Tanggal cetak
-      pdf.autoTable({
-        head: [tableColumn],
-        body: tableRows,
-        startY: 30,
-      });
-    
-      // Membuka halaman baru untuk pratinjau PDF
-      const pdfURL = pdf.output("dataurlstring");
-      const previewWindow = window.open();
-      previewWindow.document.write(`
-        <html>
-          <head>
-            <title>Pratinjau PDF</title>
-          </head>
-          <body>
-            <iframe src="${pdfURL}" style="width:100%; height:100%; border:none;"></iframe>
-            <button style="position: fixed; top: 10px; left: 10px; padding: 10px; background: blue; color: white; border: none; cursor: pointer;" onclick="window.savePDF()">Simpan PDF</button>
-          </body>
-          <script>
-            window.savePDF = () => {
-              const link = document.createElement('a');
-              link.href = '${pdfURL}';
-              link.download = 'laporan-cns.pdf';
-              link.click();
-            };
-          </script>
-        </html>
-      `);
-    };
+    if (filteredLaporan.length === 0) {
+      alert("Tidak ada data untuk dicetak.");
+      return;
+    }
+  
+    const pdf = new jsPDF();
+  
+    // Header dengan logo dan teks
+    pdf.addImage(logo, "PNG", 10, 12, 15, 15); // Tambahkan logo
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(14);
+  
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const headerText = "CATATAN FASILITAS & KEGIATAN";
+    const textWidth = pdf.getTextWidth(headerText);
+    const xCenterPosition = (pageWidth - textWidth) / 2;
+  
+    pdf.text(headerText, xCenterPosition, 18); // Teks header
+    pdf.setDrawColor(0); // Warna garis (hitam)
+    pdf.setLineWidth(0.2); // Ketebalan garis
+    pdf.line(10, 30, 200, 30); // Garis horizontal
+  
+    // Konten utama
+    const tableColumn = ["Tanggal", "Peralatan", "Status", "Keterangan"];
+    const tableRows = [];
+    filteredLaporan.forEach((laporan) => {
+      const laporanData = [
+        laporan.tanggal || "-",
+        laporan.peralatan || "-",
+        laporan.status || "-",
+        laporan.keterangan || "-",
+      ];
+      tableRows.push(laporanData);
+    });
+  
+    const startYContent = 35;
+    pdf.setFont("helvetica", "normal");
+    pdf.setFontSize(12);
+    pdf.text("Laporan Kegiatan & Kerusakan Support", 14, startYContent);
+    pdf.text(`Tanggal: ${new Date().toLocaleDateString()}`, 14, startYContent + 7);
+    pdf.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: startYContent + 15,
+    });
+  
+    // Membuka halaman baru untuk pratinjau PDF
+    const pdfURL = pdf.output("dataurlstring");
+    const previewWindow = window.open();
+    previewWindow.document.write(`
+      <html>
+        <head>
+          <title>Pratinjau PDF</title>
+        </head>
+        <body>
+          <iframe src="${pdfURL}" style="width:100%; height:100%; border:none;"></iframe>
+          <button style="position: fixed; top: 10px; left: 10px; padding: 10px; background: blue; color: white; border: none; cursor: pointer;" onclick="window.savePDF()">Simpan PDF</button>
+        </body>
+        <script>
+          window.savePDF = () => {
+            const link = document.createElement('a');
+            link.href = '${pdfURL}';
+            link.download = 'laporan-cns.pdf';
+            link.click();
+          };
+        </script>
+      </html>
+    `);
+  };
+  
+  
 
   return (
     <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">

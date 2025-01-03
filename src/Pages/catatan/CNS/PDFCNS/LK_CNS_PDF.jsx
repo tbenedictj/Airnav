@@ -5,6 +5,7 @@ import { db } from "../../../../config/firebase";
 import { collection, getDocs, query, orderBy } from "firebase/firestore";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import logo from "../../../../assets/Icon/logo2.png"
 
 const LKCNSPDF = () => {
   const navigate = useNavigate();
@@ -78,10 +79,25 @@ const LKCNSPDF = () => {
     }
   
     const pdf = new jsPDF();
+  
+    // Header dengan logo dan teks
+    pdf.addImage(logo, "PNG", 10, 12, 15, 15); // Tambahkan logo
+    pdf.setFont("helvetica", "bold");
+    pdf.setFontSize(14);
+  
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const headerText = "CATATAN FASILITAS & KEGIATAN";
+    const textWidth = pdf.getTextWidth(headerText);
+    const xCenterPosition = (pageWidth - textWidth) / 2;
+  
+    pdf.text(headerText, xCenterPosition, 18); // Teks header
+    pdf.setDrawColor(0); // Warna garis (hitam)
+    pdf.setLineWidth(0.2); // Ketebalan garis
+    pdf.line(10, 30, 200, 30); // Garis horizontal
+  
+    // Konten utama
     const tableColumn = ["Tanggal", "Peralatan", "Status", "Keterangan"];
     const tableRows = [];
-  
-    // Loop melalui data laporan yang sudah difilter
     filteredLaporan.forEach((laporan) => {
       const laporanData = [
         laporan.tanggal || "-",
@@ -92,13 +108,15 @@ const LKCNSPDF = () => {
       tableRows.push(laporanData);
     });
   
+    const startYContent = 35;
+    pdf.setFont("helvetica", "normal");
     pdf.setFontSize(12);
-    pdf.text("Laporan Kegiatan & Kerusakan", 14, 15); // Judul PDF
-    pdf.text(`Tanggal: ${new Date().toLocaleDateString()}`, 14, 22); // Tanggal cetak
+    pdf.text("Laporan Kegiatan & Kerusakan CNS", 14, startYContent);
+    pdf.text(`Tanggal: ${new Date().toLocaleDateString()}`, 14, startYContent + 7);
     pdf.autoTable({
       head: [tableColumn],
       body: tableRows,
-      startY: 30,
+      startY: startYContent + 15,
     });
   
     // Membuka halaman baru untuk pratinjau PDF
@@ -124,6 +142,7 @@ const LKCNSPDF = () => {
       </html>
     `);
   };
+  
   
 
   return (

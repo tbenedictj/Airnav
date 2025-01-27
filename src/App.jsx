@@ -644,7 +644,7 @@ function App() {
             }
           />
           <Route
-            path="/approve;"
+            path="/approve"
             element={
               <PrivateRoute>
                 <div className="app-container">

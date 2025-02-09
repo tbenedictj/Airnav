@@ -60,6 +60,7 @@ import LKSupView from './Pages/catatan/Support/View only/LK-Sup View';
 import CHSupView from './Pages/catatan/Support/View only/CH-Sup View';
 import CMSupView from './Pages/catatan/Support/View only/CM-Sup View';
 import CBSupView from './Pages/catatan/Support/View only/CB-Sup View';
+import Approval from './Pages/Aprroval/Approval'
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -643,6 +644,19 @@ function App() {
             }
           />
           <Route
+            path="/approve"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <Approval />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/cm-sup-pdf"
             element={
               <PrivateRoute>
@@ -780,6 +794,7 @@ function App() {
               </PrivateRouteWithRole>
             }
           />
+
           {/* Default routes */}
           <Route path="/" element={<Navigate to="/loginform" replace />} />
           <Route path="*" element={<Navigate to="/loginform" replace />} />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../config/firebase';
 import { useNavigate } from 'react-router-dom';
 
@@ -84,6 +85,14 @@ const Dashboard = () => {
                     <p className="text-3xl font-bold text-gray-800">{supportCount}</p>
                     <p className="text-sm text-gray-600">Status: Open</p>
                 </div>
+            </div>
+            <div className="flex mt-40 items-center text-black">
+                <button
+                className="bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                onClick={() => navigate('/approve')}
+                >
+                    <i className="fas fa-plus mr-2"></i> Approval
+                </button>
             </div>
         </div>
     );

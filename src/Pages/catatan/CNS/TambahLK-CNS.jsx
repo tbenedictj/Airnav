@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { storage, db } from "../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../../../config/AuthContext";
 
 const TambahCatatan = () => {
@@ -142,6 +142,7 @@ const handleCheckboxChange = (e) => {
         buktiUrl,
         userId: currentUser.uid,
         createdAt: new Date().toISOString(),
+        approve: false, // Add this line
         });
 
       navigate(-1); // Go back to previous page

@@ -128,7 +128,7 @@ export default function Sidebar({ onToggle }) {
             </button>
           </div>
 
-          <div className="flex-1 flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+          <div className="flex-1 flex flex-col overflow-y-auto no-scrollbar">
             <ul className="flex-1 px-3 py-4 space-y-1">
               <SidebarItem 
                 icon={<i className="fas fa-th-large text-white text-lg" />}

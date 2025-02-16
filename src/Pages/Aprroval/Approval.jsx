@@ -12,7 +12,6 @@ const Approval = () => {
         { date: '09 Februari 2024 - 10.00', reportType: 'Catatan Mingguan', name: 'EL Rasho Maquin', activity: 'Lihat Selengkapnya...' },
         { date: '10 Februari 2024 - 11.00', reportType: 'Laporan Harian', name: 'John Doe', activity: 'Lihat Selengkapnya...' },
         { date: '11 Februari 2024 - 12.00', reportType: 'Laporan Bulanan', name: 'Jane Smith', activity: 'Lihat Selengkapnya...' },
-        // Add more dummy entries as needed
     ];
 
     // Filter entries based on search term

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { storage, db } from "../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../../../config/AuthContext";
 
 const TambahCatatan = () => {
@@ -120,7 +120,8 @@ const TambahCatatan = () => {
                 teknisi: formData.teknisi,
                 status: formData.status,
                 bukti: buktiUrl,
-                createdAt: new Date(),
+                approve: false, // Add this line
+                createdAt: serverTimestamp(),
                 userId: currentUser.uid
             });
 

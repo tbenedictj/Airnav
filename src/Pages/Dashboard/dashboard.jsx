@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
-import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../config/firebase';
 import { useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
     const [openCNSCount, setOpenCNSCount] = useState(0);
     const [supportCount, setSupportCount] = useState(0);
+    const [suhuPeralatan, setSuhuPeralatan] = useState({ dvor: 0, localizer: 0 });
+
+    // State untuk Chatbot
+    const [question, setQuestion] = useState('');
+    const [answer, setAnswer] = useState('');
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -32,25 +37,39 @@ const Dashboard = () => {
             }
         };
 
+        const fetchSuhuPeralatan = async () => {
+            try {
+                const querySnapshot = await getDocs(collection(db, 'SuhuPeralatan'));
+                const suhuData = querySnapshot.docs.map(doc => doc.data());
+                setSuhuPeralatan({
+                    dvor: suhuData.find(item => item.nama === "DVOR")?.suhu || 0,
+                    localizer: suhuData.find(item => item.nama === "Localizer 18")?.suhu || 0,
+                });
+            } catch (error) {
+                console.error('Error fetching suhu peralatan:', error);
+            }
+        };
+
         fetchOpenCNSCount();
         fetchSupportCount();
+        fetchSuhuPeralatan();
     }, []);
 
-    const handleNavigateCNS = () => {
-        // Navigasi ke halaman Maintenance CNS
-        navigate('/mtcns');
+    const handleNavigateCNS = () => navigate('/alat-mt-cns');
+    const handleNavigateSupport = () => navigate('/alat-mt-sup');
+
+    // Fungsi untuk men-submit pertanyaan (placeholder)
+    const handleChatbotSubmit = () => {
+        // Di sini bisa memanggil API Chatbot sebenarnya
+        // Saat ini hanya placeholder
+        setAnswer(`Jawaban chatbot (placeholder) untuk pertanyaan: "${question}"`);
+        setQuestion('');
     };
 
-    const handleNavigateSupport = () => {
-        // Navigasi ke halaman  Maintenance Support
-        navigate('/mtsup');
-    };
-    
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">Dashboard</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {/* Card Peralatan Maintenance CNS */}
                 <div
                     onClick={handleNavigateCNS}
                     className={`cursor-pointer p-4 bg-white shadow rounded border-l-4 ${
@@ -68,7 +87,6 @@ const Dashboard = () => {
                     <p className="text-sm text-gray-600">Status: Open</p>
                 </div>
 
-                {/* Card Peralatan Maintenance Support */}
                 <div
                     onClick={handleNavigateSupport}
                     className={`cursor-pointer p-4 bg-white shadow rounded border-l-4 ${
@@ -86,13 +104,47 @@ const Dashboard = () => {
                     <p className="text-sm text-gray-600">Status: Open</p>
                 </div>
             </div>
-            <div className="flex mt-40 items-center text-black">
+
+            {/* Status Suhu Peralatan */}
+            <div className="mt-6 p-4 bg-white shadow rounded">
+                <h2 className="text-bl font-semibold mb-2 text-black">Suhu Peralatan :</h2>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-gray-100 rounded text-center">
+                        <p className="text-sm text-gray-500">DVOR</p>
+                        <p className="text-3xl font-bold text-green-400 italic">{suhuPeralatan.dvor}°</p>
+                    </div>
+                    <div className="p-3 bg-gray-100 rounded text-center">
+                        <p className="text-sm text-gray-500">Localizer 18</p>
+                        <p className="text-3xl font-bold text-green-400 italic">{suhuPeralatan.localizer}°</p>
+                    </div>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">Status Suhu Peralatan</p>
+                <a className="text-green-400 italic">Normal</a>
+            </div>
+
+            {/* Bagian Chatbot */}
+            <div className="mt-6 p-4 bg-white shadow rounded">
+                <h2 className="text-lg font-semibold mb-2 text-black">Tanya Chatbot</h2>
+                <textarea
+                    className="w-full p-2 border border-gray-300 rounded mb-2"
+                    placeholder="Tulis pertanyaan di sini..."
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                />
                 <button
-                className="bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
-                onClick={() => navigate('/approve')}
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    onClick={handleChatbotSubmit}
                 >
-                    <i className="fas fa-plus mr-2"></i> Approval
+                    Kirim
                 </button>
+
+                {/* Jawaban chatbot */}
+                {answer && (
+                    <div className="mt-4 p-2 bg-gray-100 border border-gray-300 rounded">
+                        <p className="text-gray-700">Jawaban Chatbot:</p>
+                        <p className="text-gray-800 font-semibold">{answer}</p>
+                    </div>
+                )}
             </div>
         </div>
     );

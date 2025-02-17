@@ -19,7 +19,10 @@ const TambahCatatan = () => {
     Rx: '',
     teknisi: '',
     status: 'open',
-    bukti: null
+    bukti: null,
+    editedBy: null,
+    editedAt: null,
+    pendingChanges: null
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -142,7 +145,10 @@ const handleCheckboxChange = (e) => {
         buktiUrl,
         userId: currentUser.uid,
         createdAt: new Date().toISOString(),
-        approve: false, // Add this line
+        approve: true, // Add this line
+        editedAt: null,
+        editedBy: null,
+        pendingChanges: null,
         });
 
       navigate(-1); // Go back to previous page

@@ -1,28 +1,120 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import React, { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
+import { db } from "../../config/firebase";
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Approval = () => {
     const [entriesPerPage, setEntriesPerPage] = useState(10);
-    const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [entries, setEntries] = useState([]);
+    const [loading, setLoading] = useState(false);
 
-    // Dummy data
-    const entries = [
-        { date: '09 Februari 2024 - 10.00', reportType: 'Catatan Mingguan', name: 'EL Rasho Maquin', activity: 'Lihat Selengkapnya...' },
-        { date: '10 Februari 2024 - 11.00', reportType: 'Laporan Harian', name: 'John Doe', activity: 'Lihat Selengkapnya...' },
-        { date: '11 Februari 2024 - 12.00', reportType: 'Laporan Bulanan', name: 'Jane Smith', activity: 'Lihat Selengkapnya...' },
-    ];
+    useEffect(() => {
+        const fetchData = async () => {
+            setLoading(true);
+            try {
+                const querySnapshot = await getDocs(collection(db, "LaporanCNS"));
+                const data = querySnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                setEntries(data);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }, []);
 
-    // Filter entries based on search term
     const filteredEntries = entries.filter(entry =>
-        entry.name.toLowerCase().includes(searchTerm.toLowerCase())
+        entry.peralatan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.aktivitas?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Calculate pagination
     const indexOfLastEntry = currentPage * entriesPerPage;
     const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
     const currentEntries = filteredEntries.slice(indexOfFirstEntry, indexOfLastEntry);
+
+    const handleApprove = async (entry) => {
+        if (!entry || !entry.id) {
+            console.error("Invalid entry object");
+            return;
+        }
+
+        const laporanRef = doc(db, "LaporanCNS", entry.id);
+        try {
+            const laporanDoc = await getDoc(laporanRef);
+            if (!laporanDoc.exists()) {
+                console.error("Document does not exist");
+                return;
+            }
+            const data = laporanDoc.data();
+            if (!data || !Array.isArray(data.pendingChanges) || data.pendingChanges.length === 0) {
+                console.error("No pending changes to approve");
+                return;
+            }
+    
+            const pendingChange = data.pendingChanges[0];
+            
+            await updateDoc(laporanRef, {
+                tanggal: pendingChange.tanggal,
+                jamSelesai: pendingChange.jamSelesai,
+                peralatan: pendingChange.peralatan,
+                aktivitas: pendingChange.aktivitas,
+                Tx: pendingChange.Tx,
+                Rx: pendingChange.Rx,
+                teknisi: pendingChange.teknisi,
+                status: pendingChange.status,
+                buktiUrl: pendingChange.buktiUrl,
+                userId: pendingChange.userId,
+                updatedAt: pendingChange.updatedAt,
+                pendingChanges: []
+            });
+
+            // Refresh the data after approval
+            const updatedDoc = await getDoc(laporanRef);
+            if (updatedDoc.exists()) {
+                setEntries(prevEntries => 
+                    prevEntries.map(e => 
+                        e.id === entry.id ? { id: entry.id, ...updatedDoc.data() } : e
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("Error approving document:", error);
+        }
+    }
+
+    const handleReject = async (entry) => {
+        if (!entry || !entry.id) {
+            console.error("Invalid entry object");
+            return;
+        }
+
+        const laporanRef = doc(db, "LaporanCNS", entry.id);
+        try {
+            await updateDoc(laporanRef, {
+                status: 'rejected',
+                pendingChanges: []
+            });
+
+            // Refresh the data after rejection
+            const updatedDoc = await getDoc(laporanRef);
+            if (updatedDoc.exists()) {
+                setEntries(prevEntries => 
+                    prevEntries.map(e => 
+                        e.id === entry.id ? { id: entry.id, ...updatedDoc.data() } : e
+                    )
+                );
+            }
+        } catch (error) {
+            console.error("Error rejecting document:", error);
+        }
+    }
 
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -86,19 +178,23 @@ const Approval = () => {
                         {currentEntries.length > 0 ? (
                             currentEntries.map((entry, index) => (
                                 <tr key={index} className="text-black">
-                                    <td className="py-2 px-4 border border-gray-300">{entry.date}</td>
-                                    <td className="py-2 px-4 border border-gray-300">{entry.reportType}</td>
-                                    <td className="py-2 px-4 border border-gray-300">{entry.name}</td>
-                                    <td className="py-2 px-4 border border-gray-300">{entry.activity}</td>
+                                    <td className="py-2 px-4 border border-gray-300">{entry.jamSelesai}</td>
+                                    <td className="py-2 px-4 border border-gray-300">Laporan Kegiatan & Kerusakan</td>
+                                    <td className="py-2 px-4 border border-gray-300">{entry.peralatan}</td>
+                                    <td className="py-2 px-4 border border-gray-300">{entry.aktivitas}</td>
                                     <td className="py-2 px-4 border border-gray-300">
                                         <div className="flex space-x-2">
                                             <button 
-                                            className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
+                                            className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                                            onClick={() => handleApprove(entry)}
+                                            >
                                                 <i className="fas fa-check text-white text-sm"></i>
                                             </button>
 
                                             <button 
-                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
+                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
+                                            onClick={() => handleReject(entry)}
+                                            >
                                                 <i className="fas fa-trash text-white text-sm"></i>
                                             </button>
                                         </div>
@@ -119,6 +215,6 @@ const Approval = () => {
             </footer>
         </div>
     );
-};
+}
 
 export default Approval;

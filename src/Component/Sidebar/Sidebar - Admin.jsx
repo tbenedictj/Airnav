@@ -1,5 +1,5 @@
 import React, { useState, createContext, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import logo from "../../assets/background/airnav.png";
 import { signOut } from 'firebase/auth';
 import { auth } from '../../config/firebase';
@@ -51,6 +51,7 @@ function SidebarItem({ icon, text, active, onClick, hasSubmenu, isSubmenuOpen, s
 
 export default function Sidebar({ onToggle }) {
   const navigate = useNavigate();
+  const location = useLocation();
   const [expanded, setExpanded] = useState(true);
   const [activeItem, setActiveItem] = useState('');
   const [hoveredItem, setHoveredItem] = useState(null);
@@ -175,6 +176,15 @@ export default function Sidebar({ onToggle }) {
                 onClick={() => {
                   setActiveItem('TambahTeknisi');
                   navigate('/tambah-teknisi');
+                }}
+              />
+              <SidebarItem 
+                icon={<i className="fas fa-check-circle text-white text-lg" />}
+                text="Approval"
+                active={activeItem === 'Approval'}
+                onClick={() => {
+                  setActiveItem('Approval');
+                  navigate('/approve');
                 }}
               />
             </ul>

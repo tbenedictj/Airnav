@@ -17,12 +17,12 @@ const TambahCatatan = () => {
     aktivitas: [],
     Tx: '',
     Rx: '',
-    teknisi: '',
+    teknisi: [],
     status: 'open',
     bukti: null,
     editedBy: null,
     editedAt: null,
-    pendingChanges: null
+    pendingChanges: []
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -148,7 +148,7 @@ const handleCheckboxChange = (e) => {
         approve: true, // Add this line
         editedAt: null,
         editedBy: null,
-        pendingChanges: null,
+        pendingChanges: [],
         });
 
       navigate(-1); // Go back to previous page

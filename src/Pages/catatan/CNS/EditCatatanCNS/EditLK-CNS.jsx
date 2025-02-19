@@ -21,7 +21,10 @@ const EditLKCNS = () => {
     teknisi: [],
     status: 'open',
     bukti: null,
-    buktiUrl: ''
+    editedBy: null,
+    editedAt: null,
+    
+    pendingChanges: []
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -159,7 +162,7 @@ const EditLKCNS = () => {
       const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
 
       const laporanRef = doc(db, "LaporanCNS", id);
-      await updateDoc(laporanRef, {
+      const pendingChange = {
         tanggal: formData.tanggal,
         jamSelesai: formData.jamSelesai,
         peralatan: formData.peralatan,
@@ -170,7 +173,12 @@ const EditLKCNS = () => {
         status: formData.status,
         buktiUrl,
         userId: currentUser.uid,
-        updatedAt: new Date().toISOString()
+        updatedAt: new Date().toISOString(),
+        approve: false
+      };
+
+      await updateDoc(laporanRef, {
+        pendingChanges: [pendingChange]
       });
 
       navigate(-1);

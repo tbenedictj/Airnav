@@ -10,7 +10,7 @@ import CBCNS from './Pages/catatan/CNS/CB-CNS';
 import CBSup from './Pages/catatan/Support/CB-Sup';
 import LKCNS from './Pages/catatan/CNS/LK-CNS';
 import LKSup from './Pages/catatan/Support/LK-Sup';
-import TambahLKCNS from './Pages/catatan/CNS/TambahLK-CNS';
+import TambahLKCNS from './Pages/Catatan/CNS/TambahLK-CNS';
 import TambahLKSup from './Pages/catatan/Support/TambahLK-Sup';
 import TambahCHCNS from './Pages/catatan/CNS/TambahCH-CNS';
 import TambahCHSup from './Pages/catatan/Support/TambahCHSup';
@@ -60,7 +60,7 @@ import LKSupView from './Pages/catatan/Support/View only/LK-Sup View';
 import CHSupView from './Pages/catatan/Support/View only/CH-Sup View';
 import CMSupView from './Pages/catatan/Support/View only/CM-Sup View';
 import CBSupView from './Pages/catatan/Support/View only/CB-Sup View';
-import Approval from './Pages/Aprroval/Approval'
+import Approval from './Pages/Aprroval/Approval';
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);

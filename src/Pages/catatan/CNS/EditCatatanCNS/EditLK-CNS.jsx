@@ -19,10 +19,10 @@ const EditLKCNS = () => {
     Tx: '',
     Rx: '',
     teknisi: [],
-    status: 'open',
+    status: '',
     bukti: null,
-    editedBy: null,
-    editedAt: null,
+    editedBy: currentUser.uid,
+    editedAt: new Date().toISOString(),
     
     pendingChanges: []
   });
@@ -171,10 +171,9 @@ const EditLKCNS = () => {
         Rx: formData.Rx,
         teknisi: formData.teknisi,
         status: formData.status,
-        buktiUrl,
+        buktiUrl: null,
         userId: currentUser.uid,
-        updatedAt: new Date().toISOString(),
-        approve: false
+        editedAt: new Date().toISOString(),
       };
 
       await updateDoc(laporanRef, {

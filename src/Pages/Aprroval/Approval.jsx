@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import { collection, getDocs, doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "../../config/firebase";
+import { db, auth } from "../../config/firebase";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Approval = () => {
@@ -10,16 +10,22 @@ const Approval = () => {
     const [searchTerm, setSearchTerm] = useState("");
     const [entries, setEntries] = useState([]);
     const [loading, setLoading] = useState(false);
+    const currentUser = auth.currentUser;
 
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
             try {
                 const querySnapshot = await getDocs(collection(db, "LaporanCNS"));
-                const data = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
+                const data = querySnapshot.docs
+                    .map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
+                    .filter(doc => 
+                        // Only show documents that have pending changes and haven't been approved
+                        doc.pendingChanges?.length > 0 && !doc.approve
+                    );
                 setEntries(data);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -31,8 +37,8 @@ const Approval = () => {
     }, []);
 
     const filteredEntries = entries.filter(entry =>
-        entry.peralatan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.aktivitas?.toLowerCase().includes(searchTerm.toLowerCase())
+        entry?.peralatan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry?.aktivitas?.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     const indexOfLastEntry = currentPage * entriesPerPage;
@@ -45,6 +51,11 @@ const Approval = () => {
             return;
         }
 
+        if (!currentUser) {
+            console.error("No user logged in");
+            return;
+        }
+
         const laporanRef = doc(db, "LaporanCNS", entry.id);
         try {
             const laporanDoc = await getDoc(laporanRef);
@@ -52,42 +63,45 @@ const Approval = () => {
                 console.error("Document does not exist");
                 return;
             }
+
             const data = laporanDoc.data();
             if (!data || !Array.isArray(data.pendingChanges) || data.pendingChanges.length === 0) {
                 console.error("No pending changes to approve");
                 return;
             }
-    
-            const pendingChange = data.pendingChanges[0];
-            
-            await updateDoc(laporanRef, {
-                tanggal: pendingChange.tanggal,
-                jamSelesai: pendingChange.jamSelesai,
-                peralatan: pendingChange.peralatan,
-                aktivitas: pendingChange.aktivitas,
-                Tx: pendingChange.Tx,
-                Rx: pendingChange.Rx,
-                teknisi: pendingChange.teknisi,
-                status: pendingChange.status,
-                buktiUrl: pendingChange.buktiUrl,
-                userId: pendingChange.userId,
-                updatedAt: pendingChange.updatedAt,
-                pendingChanges: []
-            });
 
-            // Refresh the data after approval
-            const updatedDoc = await getDoc(laporanRef);
-            if (updatedDoc.exists()) {
-                setEntries(prevEntries => 
-                    prevEntries.map(e => 
-                        e.id === entry.id ? { id: entry.id, ...updatedDoc.data() } : e
-                    )
-                );
-            }
+            const pendingChange = data.pendingChanges[0];
+            const updateData = {};
+
+            // Only include fields that exist in pendingChange
+            if (pendingChange.tanggal) updateData.tanggal = pendingChange.tanggal;
+            if (pendingChange.jamSelesai) updateData.jamSelesai = pendingChange.jamSelesai;
+            if (pendingChange.peralatan) updateData.peralatan = pendingChange.peralatan;
+            if (pendingChange.aktivitas) updateData.aktivitas = pendingChange.aktivitas;
+            if (pendingChange.Tx) updateData.Tx = pendingChange.Tx;
+            if (pendingChange.Rx) updateData.Rx = pendingChange.Rx;
+            if (pendingChange.teknisi) updateData.teknisi = pendingChange.teknisi;
+            if (pendingChange.status) updateData.status = pendingChange.status;
+            if (pendingChange.buktiUrl) updateData.buktiUrl = pendingChange.buktiUrl;
+            if (pendingChange.userId) updateData.userId = pendingChange.userId;
+            if (pendingChange.updatedAt) updateData.updatedAt = pendingChange.updatedAt;
+
+            // Add approval metadata
+            updateData.editedAt = new Date().toISOString();
+            updateData.editedBy = currentUser.email;
+            updateData.pendingChanges = [];
+            updateData.approve = true;
+
+            await updateDoc(laporanRef, updateData);
+
+            // Remove the approved entry from the list
+            setEntries(prevEntries => 
+                prevEntries.filter(e => e.id !== entry.id)
+            );
         } catch (error) {
             console.error("Error approving document:", error);
         }
-    }
+    };
 
     const handleReject = async (entry) => {
         if (!entry || !entry.id) {
@@ -99,22 +113,18 @@ const Approval = () => {
         try {
             await updateDoc(laporanRef, {
                 status: 'rejected',
-                pendingChanges: []
+                pendingChanges: [],
+                approve: false
             });
 
-            // Refresh the data after rejection
-            const updatedDoc = await getDoc(laporanRef);
-            if (updatedDoc.exists()) {
-                setEntries(prevEntries => 
-                    prevEntries.map(e => 
-                        e.id === entry.id ? { id: entry.id, ...updatedDoc.data() } : e
-                    )
-                );
-            }
+            // Remove the rejected entry from the list
+            setEntries(prevEntries => 
+                prevEntries.filter(e => e.id !== entry.id)
+            );
         } catch (error) {
             console.error("Error rejecting document:", error);
         }
-    }
+    };
 
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">

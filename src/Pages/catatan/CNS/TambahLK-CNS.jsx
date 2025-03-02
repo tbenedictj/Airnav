@@ -142,13 +142,12 @@ const handleCheckboxChange = (e) => {
         await addDoc(collection(db, 'LaporanCNS'), {
         ...formData,
         aktivitas: aktivitasFormatted, // Simpan aktivitas gabungan
-        buktiUrl,
+        buktiUrl: null,
         userId: currentUser.uid,
-        createdAt: new Date().toISOString(),
-        approve: true, // Add this line
+        createdAt: new Date().toISOString(),// Add this line
         editedAt: null,
         editedBy: null,
-        pendingChanges: [],
+        pendingChanges: []
         });
 
       navigate(-1); // Go back to previous page

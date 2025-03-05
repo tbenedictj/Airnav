@@ -61,6 +61,7 @@ import CHSupView from './Pages/catatan/Support/View only/CH-Sup View';
 import CMSupView from './Pages/catatan/Support/View only/CM-Sup View';
 import CBSupView from './Pages/catatan/Support/View only/CB-Sup View';
 import Approval from './Pages/Aprroval/Approval';
+import ChatBot from './Pages/chatbot';
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -794,7 +795,19 @@ function App() {
               </PrivateRouteWithRole>
             }
           />
-
+          <Route
+            path="/chatbot"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <ChatBot />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
           {/* Default routes */}
           <Route path="/" element={<Navigate to="/loginform" replace />} />
           <Route path="*" element={<Navigate to="/loginform" replace />} />

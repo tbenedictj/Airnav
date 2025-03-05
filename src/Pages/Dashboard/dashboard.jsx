@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import { useNavigate } from 'react-router-dom';
+import "@fortawesome/fontawesome-free/css/all.min.css";
 
 const Dashboard = () => {
     const [openCNSCount, setOpenCNSCount] = useState(0);
@@ -127,13 +128,12 @@ const Dashboard = () => {
                 <h2 className="text-lg font-semibold mb-2 text-black">Tanya Chatbot</h2>
                 <textarea
                     className="w-full p-2 border border-gray-300 rounded mb-2"
+                    onClick={() => navigate('/chatbot')}
                     placeholder="Tulis pertanyaan di sini..."
-                    value={question}
-                    onChange={(e) => setQuestion(e.target.value)}
                 />
                 <button
                     className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    onClick={handleChatbotSubmit}
+                    onClick={() => navigate('/chatbot')}
                 >
                     Kirim
                 </button>

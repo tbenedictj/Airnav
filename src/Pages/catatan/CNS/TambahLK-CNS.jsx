@@ -17,7 +17,7 @@ const TambahCatatan = () => {
     aktivitas: [],
     Tx: '',
     Rx: '',
-    teknisi: [],
+    teknisi: [], // Teknisi disimpan sebagai array
     status: 'open',
     bukti: null,
     editedBy: null,
@@ -26,6 +26,7 @@ const TambahCatatan = () => {
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false); // State untuk toggle dropdown
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,14 +44,13 @@ const TambahCatatan = () => {
         const teknisiList = teknisiSnapshot.docs
           .filter(doc => {
             const data = doc.data();
-            // Check for both 'CNS' and 'cns' in category
             return data.category?.toUpperCase() === 'CNS';
           })
           .map(doc => {
             const data = doc.data();
-            return data.name || data.nama; // Try both name fields
+            return data.name || data.nama; // Ambil nama teknisi
           })
-          .filter(name => name); // Remove any undefined values
+          .filter(name => name); // Hapus nilai undefined
         
         console.log("Final teknisi list:", teknisiList);
         setTeknisiOptions(teknisiList);
@@ -88,13 +88,12 @@ const TambahCatatan = () => {
   const handleRadioChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({
-        ...prev,
-        [name]: value
+      ...prev,
+      [name]: value
     }));
-};
+  };
 
-
-const handleCheckboxChange = (e) => {
+  const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -104,13 +103,23 @@ const handleCheckboxChange = (e) => {
     }));
   };
 
+  const handleTeknisiChange = (e) => {
+    const { value, checked } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      teknisi: checked
+        ? [...prev.teknisi, value] // Tambah teknisi jika dicentang
+        : prev.teknisi.filter(item => item !== value) // Hapus teknisi jika tidak dicentang
+    }));
+  };
+
   const handleCancelImage = () => {
     setImagePreview(null);
     setFormData(prev => ({
       ...prev,
       bukti: null
     }));
-    // Reset the file input
+    // Reset file input
     const fileInput = document.querySelector('input[type="file"]');
     if (fileInput) {
       fileInput.value = '';
@@ -124,7 +133,7 @@ const handleCheckboxChange = (e) => {
     try {
       let buktiUrl = '';
 
-      // Upload image if exists
+      // Upload gambar jika ada
       if (formData.bukti) {
         const buktiRef = ref(storage, `bukti/${Date.now()}-${formData.bukti.name}`);
         await uploadBytes(buktiRef, formData.bukti);
@@ -132,25 +141,25 @@ const handleCheckboxChange = (e) => {
       }
 
       const aktivitasFinal = [...formData.aktivitas];
-        if (formData.Tx) aktivitasFinal.push(formData.Tx); // Tambahkan Tx
-        if (formData.Rx) aktivitasFinal.push(formData.Rx); // Tambahkan Rx
+      if (formData.Tx) aktivitasFinal.push(formData.Tx);
+      if (formData.Rx) aktivitasFinal.push(formData.Rx);
 
-        const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
-        
+      const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
 
-    // Simpan ke Firestore
-        await addDoc(collection(db, 'LaporanCNS'), {
+      // Simpan ke Firestore
+      await addDoc(collection(db, 'LaporanCNS'), {
         ...formData,
-        aktivitas: aktivitasFormatted, // Simpan aktivitas gabungan
-        buktiUrl: null,
+        aktivitas: aktivitasFormatted,
+        buktiUrl: buktiUrl || null,
         userId: currentUser.uid,
-        createdAt: new Date().toISOString(),// Add this line
+        createdAt: new Date().toISOString(),
         editedAt: null,
         editedBy: null,
-        pendingChanges: []
-        });
+        pendingChanges: [],
+        teknisi: formData.teknisi // Simpan sebagai array
+      });
 
-      navigate(-1); // Go back to previous page
+      navigate(-1); // Kembali ke halaman sebelumnya
     } catch (error) {
       console.error('Error saving data:', error);
       alert('Terjadi kesalahan saat menyimpan data');
@@ -175,6 +184,7 @@ const handleCheckboxChange = (e) => {
 
         <form onSubmit={handleSubmit} className="shadow space-y-6">
           <div className="shadow space-y-4">
+            {/* Input Tanggal */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Tanggal</label>
               <input
@@ -187,6 +197,7 @@ const handleCheckboxChange = (e) => {
               />
             </div>
 
+            {/* Input Jam Selesai */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Jam Selesai</label>
               <input
@@ -199,6 +210,7 @@ const handleCheckboxChange = (e) => {
               />
             </div>
 
+            {/* Input Peralatan */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Peralatan</label>
               <select
@@ -215,6 +227,7 @@ const handleCheckboxChange = (e) => {
               </select>
             </div>
 
+            {/* Input Aktivitas */}
             <div className="flex flex-col sm:flex-row justify-between pt-4 text-black">
               <div className="mt-2">
                 <label className="block">
@@ -286,6 +299,7 @@ const handleCheckboxChange = (e) => {
               </div>
             </div>
 
+            {/* Input Status Tx */}
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold">Status Peralatan Tx</label>
               <div className="mt-2">
@@ -314,6 +328,7 @@ const handleCheckboxChange = (e) => {
               </div>
             </div>
 
+            {/* Input Status Rx */}
             <div className="mb-4">
               <label className="block text-gray-700 font-semibold">Status Peralatan Rx</label>
               <div className="mt-2">
@@ -342,28 +357,36 @@ const handleCheckboxChange = (e) => {
               </div>
             </div>
 
-            <div>
+            {/* Input Teknisi (Toggle Dropdown dengan Checkbox) */}
+            <div className="relative">
               <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-              <select
-                name="teknisi"
-                value={formData.teknisi}
-                onChange={handleInputChange}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                required
+              <button
+                type="button"
+                onClick={() => setDropdownOpen(!dropdownOpen)}
+                className="mt-1 block w-full rounded-md border-[1px] text-sm text-gray-400 border-gray-300 bg-white shadow-sm text-left p-2"
               >
-                <option value="">Pilih Teknisi</option>
-                {teknisiOptions.length > 0 ? (
-                  teknisiOptions.map((option, index) => (
-                    <option key={index} value={option}>
+                {formData.teknisi.length > 0 ? formData.teknisi.join(", ") : "Pilih Teknisi"}
+              </button>
+              {dropdownOpen && (
+                <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                  {teknisiOptions.map((option, index) => (
+                    <label key={index} className="block p-2 hover:bg-gray-100">
+                      <input
+                        type="checkbox"
+                        name="teknisi"
+                        value={option}
+                        checked={formData.teknisi.includes(option)}
+                        onChange={handleTeknisiChange}
+                        className="mr-2"
+                      />
                       {option}
-                    </option>
-                  ))
-                ) : (
-                  <option value="" disabled>Loading teknisi...</option>
-                )}
-              </select>
+                    </label>
+                  ))}
+                </div>
+              )}
             </div>
 
+            {/* Input Upload Bukti */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Upload Bukti</label>
               <input
@@ -392,6 +415,7 @@ const handleCheckboxChange = (e) => {
               )}
             </div>
 
+            {/* Input Status */}
             <div>
               <label className="block text-sm font-medium text-gray-700">Status</label>
               <select
@@ -405,11 +429,9 @@ const handleCheckboxChange = (e) => {
                 <option value="close">Close</option>
               </select>
             </div>
-
-            <div>
-            </div>
           </div>
 
+          {/* Tombol Kembali dan Simpan */}
           <div className="flex flex-col sm:flex-row justify-between pt-4">
             <button
               type="button"

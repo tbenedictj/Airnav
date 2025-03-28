@@ -91,12 +91,13 @@ const TambahCatatan = () => {
         }
     };
 
-    const handleTeknisiSelect = (teknisi) => {
+    const handleTeknisiSelect = (event) => {
+        const { value } = event.target;
         setFormData(prev => ({
             ...prev,
-            teknisi: prev.teknisi.includes(teknisi)
-                ? prev.teknisi.filter(t => t !== teknisi)
-                : [...prev.teknisi, teknisi]
+            teknisi: prev.teknisi.includes(value)
+                ? prev.teknisi.filter(t => t !== value)
+                : [...prev.teknisi, value]
         }));
     };
 
@@ -202,42 +203,34 @@ const TambahCatatan = () => {
                         </div>
 
                         <div className="relative" ref={dropdownRef}>
-                            <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-                            <div className="mt-1">
-                                <div
-                                    className="min-h-[2.5rem] p-2 border-[1px] border-black rounded-md cursor-pointer flex flex-wrap gap-1"
-                                    onClick={() => setShowTeknisiDropdown(!showTeknisiDropdown)}
-                                >
-                                    {formData.teknisi.length > 0 ? (
-                                        formData.teknisi.map((teknisi, index) => (
-                                            <span
-                                                key={index}
-                                                className="bg-blue-100 text-blue-800 px-2 py-1 rounded-md text-sm"
-                                            >
-                                                {teknisi}
-                                            </span>
-                                        ))
-                                    ) : (
-                                        <span className="text-gray-500">Pilih Teknisi</span>
-                                    )}
-                                </div>
-                                {showTeknisiDropdown && (
-                                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg">
-                                        {teknisiOptions.map((teknisi, index) => (
-                                            <div
-                                                key={index}
-                                                className={`p-2 cursor-pointer hover:bg-gray-100 ${
-                                                    formData.teknisi.includes(teknisi) ? 'bg-blue-50' : ''
-                                                }`}
-                                                onClick={() => handleTeknisiSelect(teknisi)}
-                                            >
-                                                {teknisi}
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+  <label className="block text-sm font-medium text-gray-700">Teknisi</label>
+  <button
+    type="button"
+    onClick={() => setShowTeknisiDropdown(!showTeknisiDropdown)}
+    className="mt-1 block w-full rounded-md border-[1px] text-sm text-gray-400 border-gray-300 bg-white shadow-sm text-left p-2"
+  >
+    {formData.teknisi.length > 0 ? formData.teknisi.join(", ") : "Pilih Teknisi"}
+  </button>
+
+  {showTeknisiDropdown && (
+    <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+      {teknisiOptions.map((teknisi, index) => (
+        <label key={index} className="block p-2 hover:bg-gray-100 cursor-pointer">
+          <input
+            type="checkbox"
+            name="teknisi"
+            value={teknisi}
+            checked={formData.teknisi.includes(teknisi)}
+            onChange={handleTeknisiSelect}
+            className="mr-2"
+          />
+          {teknisi}
+        </label>
+      ))}
+    </div>
+  )}
+</div>
+
 
                         <div>
                             <label className="block text-sm font-medium text-gray-700">Upload Bukti</label>

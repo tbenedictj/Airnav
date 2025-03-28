@@ -1,106 +1,177 @@
-import React, { useState } from "react";
+import React, {  useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { storage, db } from "../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../../../config/AuthContext";
 import Tandatangan from "../../../Component/Signature/Tandatangan";
 
 const TambahCatatan = () => {
     const navigate = useNavigate();
     const { currentUser } = useAuth();
+    const [peralatanOptions, setPeralatanOptions] = useState([]);
+    const [teknisiOptions, setTeknisiOptions] = useState([]);
     const [formData, setFormData] = useState({
         tanggal: '',
         jamSelesai: '',
         peralatan: '',
-        aktivitas: '',
-        teknisi: '',
-        bukti: null
+        aktivitas: [],
+        Tx: '',
+        Rx: '',
+        teknisi: [],
+        note: '',
+        bukti: null,
+        status: '' // Tambahkan status di sini
     });
     const [imagePreview, setImagePreview] = useState(null);
-    const [signatureData, setSignatureData] = useState(null);
     const [loading, setLoading] = useState(false);
+    const [showTeknisiDropdown, setShowTeknisiDropdown] = useState(false);
+    const dropdownRef = useRef(null);
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
+    useEffect(() => {
+            const fetchData = async () => {
+                try {
+                    // Fetch Peralatan
+                    const peralatanCollection = collection(db, "PeralatanSupport");
+                    const peralatanSnapshot = await getDocs(peralatanCollection);
+                    const peralatanList = peralatanSnapshot.docs.map(doc => doc.data().namaAlat);
+                    setPeralatanOptions(peralatanList);
+    
+                    // Fetch Teknisi Support
+                    const teknisiCollection = collection(db, "teknisi");
+                    const teknisiSnapshot = await getDocs(teknisiCollection);
+                    
+                    const teknisiList = teknisiSnapshot.docs
+                        .filter(doc => {
+                            const data = doc.data();
+                            return data.category?.toUpperCase() === 'SUPPORT';
+                        })
+                        .map(doc => {
+                            const data = doc.data();
+                            return data.name || data.nama;
+                        })
+                        .filter(name => name);
+                    
+                    setTeknisiOptions(teknisiList);
+                } catch (error) {
+                    console.error("Error fetching data:", error);
+                }
+            };
+    
+            fetchData();
+        }, []);
+    
+        useEffect(() => {
+            const handleClickOutside = (event) => {
+                if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                    setShowTeknisiDropdown(false);
+                }
+            };
+    
+            document.addEventListener('mousedown', handleClickOutside);
+            return () => document.removeEventListener('mousedown', handleClickOutside);
+        }, []);
+    
+        const handleInputChange = (e) => {
+            const { name, value } = e.target;
             setFormData(prev => ({
                 ...prev,
-                bukti: file
+                [name]: value
             }));
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
+        };
+        const handleRadioChange = (e) => {
+            const { name, value } = e.target;
+            setFormData(prev => ({
+                ...prev,
+                [name]: value
+            }));
+        };
+        
+        
+        const handleCheckboxChange = (e) => {
+            const { value, checked } = e.target;
+            setFormData(prev => ({
+              ...prev,
+              aktivitas: checked
+                ? [...prev.aktivitas, value] // Tambah aktivitas jika dicentang
+                : prev.aktivitas.filter(item => item !== value) // Hapus aktivitas jika tidak dicentang
+            }));
+          };
 
-    const handleCancelImage = () => {
-        setImagePreview(null);
-        setFormData(prev => ({
-            ...prev,
-            bukti: null
-        }));
-        // Reset the file input
-        const fileInput = document.querySelector('input[type="file"]');
-        if (fileInput) {
-            fileInput.value = '';
-        }
-    };
-
-    const handleSignatureChange = (data) => {
-        setSignatureData(data);
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setLoading(true);
-
-        try {
-            let buktiUrl = '';
-            let signatureUrl = '';
-
-            // Upload image if exists
-            if (formData.bukti) {
-                const buktiRef = ref(storage, `bukti/${Date.now()}-${formData.bukti.name}`);
-                await uploadBytes(buktiRef, formData.bukti);
-                buktiUrl = await getDownloadURL(buktiRef);
+          const handleImageChange = (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                setFormData(prev => ({
+                    ...prev,
+                    bukti: file
+                }));
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setImagePreview(reader.result);
+                };
+                reader.readAsDataURL(file);
             }
+        };
+    
+          const handleCancelImage = () => {
+            setFormData(prev => ({
+                ...prev,
+                bukti: null
+            }));
+            setImagePreview(null);
+        };
 
-            // Upload signature if exists
-            if (signatureData) {
-                const signatureBlob = await (await fetch(signatureData)).blob();
-                const signatureRef = ref(storage, `signatures/${Date.now()}-signature.png`);
-                await uploadBytes(signatureRef, signatureBlob);
-                signatureUrl = await getDownloadURL(signatureRef);
+        const handleSignatureChange = (signatureData) => {
+            setFormData(prev => ({
+                ...prev,
+                signature: signatureData
+            }));
+        };
+    
+        const handleTeknisiSelect = (event) => {
+            const { value } = event.target;
+            setFormData(prev => ({
+                ...prev,
+                teknisi: prev.teknisi.includes(value)
+                    ? prev.teknisi.filter(t => t !== value)
+                    : [...prev.teknisi, value]
+            }));
+        };
+    
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            setLoading(true);
+    
+            try {
+                let buktiUrl = '';
+                if (formData.bukti) {
+                    const storageRef = ref(storage, `bukti_support/${formData.bukti.name + Date.now()}`);
+                    const snapshot = await uploadBytes(storageRef, formData.bukti);
+                    buktiUrl = await getDownloadURL(snapshot.ref);
+                }
+    
+                await addDoc(collection(db, "LaporanSupport"), {
+                    tanggal: formData.tanggal,
+                    jamSelesai: formData.jamSelesai,
+                    peralatan: formData.peralatan,
+                    aktivitas: formData.aktivitas,
+                    teknisi: formData.teknisi,
+                    status: formData.status,
+                    bukti: buktiUrl,
+                    approve: false, // Add this line
+                    createdAt: serverTimestamp(),
+                    userId: currentUser.uid
+                });
+    
+                alert("Data berhasil ditambahkan!");
+                navigate('/lk-sup');
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                alert("Terjadi kesalahan saat menambahkan data");
+            } finally {
+                setLoading(false);
             }
-
-            // Save to Firestore
-            await addDoc(collection(db, 'CH-Sup'), {
-                ...formData,
-                buktiUrl,
-                signatureUrl,
-                userId: currentUser.uid,
-                createdAt: new Date().toISOString()
-            });
-
-            navigate('/ch-sup'); // Go to '/ch-sup' page
-        } catch (error) {
-            console.error('Error saving data:', error);
-            alert('Terjadi kesalahan saat menyimpan data');
-        } finally {
-            setLoading(false);
-        }
-    };
+        };
 
     return (
     <div className="container-fluid flex-col sticky max-w-4xl w-screen sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -142,40 +213,176 @@ const TambahCatatan = () => {
                     </div>
 
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Peralatan</label>
-                        <input
-                            type="text"
-                            name="peralatan"
-                            value={formData.peralatan}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        />
-                    </div>
+                            <label className="block text-sm font-medium text-gray-700">Peralatan</label>
+                            <select
+                                name="peralatan"
+                                value={formData.peralatan}
+                                onChange={handleInputChange}
+                                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                                required
+                            >
+                                <option value="">Pilih Peralatan</option>
+                                {peralatanOptions.map((alat, index) => (
+                                    <option key={index} value={alat}>{alat}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Aktivitas</label>
-                        <textarea
-                            name="aktivitas"
-                            value={formData.aktivitas}
-                            onChange={handleInputChange}
-                            rows={4}
-                            className= "mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        />
-                    </div>
+                        <div className="flex flex-col sm:flex-row justify-between pt-4 text-black">
+                            <div className="mt-2">
+                                <label className="block">
+                                <input
+                                    className="mr-2"
+                                    type="checkbox"
+                                    name="aktivitas"
+                                    value="Pemeliharaan Harian"
+                                    checked={formData.aktivitas.includes('Pemeliharaan Harian')}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Pemeliharaan Harian
+                                </label>
+                                <label className="block">
+                                <input
+                                    className="mr-2"
+                                    type="checkbox"
+                                    name="aktivitas"
+                                    value="Memeriksa kondisi pengaturan suhu ruangan"
+                                    checked={formData.aktivitas.includes('Memeriksa kondisi pengaturan suhu ruangan')}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Memeriksa kondisi pengaturan suhu ruangan
+                                </label>
+                                <label className="block">
+                                <input
+                                    className="mr-2"
+                                    type="checkbox"
+                                    name="aktivitas"
+                                    value="Periksa seluruh lampu indikator"
+                                    checked={formData.aktivitas.includes('Periksa seluruh lampu indikator')}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Periksa seluruh lampu indikator
+                                </label>
+                                <label className="block">
+                                <input
+                                    className="mr-2"
+                                    type="checkbox"
+                                    name="aktivitas"
+                                    value="Membersihkan ruangan peralatan"
+                                    checked={formData.aktivitas.includes('Membersihkan ruangan peralatan')}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Membersihkan ruangan peralatan
+                                </label>
+                                <label className="block">
+                                <input
+                                    className="mr-2"
+                                    type="checkbox"
+                                    name="aktivitas"
+                                    value="Test On Load Battery"
+                                    checked={formData.aktivitas.includes('Test On Load Battery')}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Test On Load Battery
+                                </label>
+                                <label className="block">
+                                <input
+                                    className="mr-2"
+                                    type="checkbox"
+                                    name="aktivitas"
+                                    value="Peralatan Normal Operasi"
+                                    checked={formData.aktivitas.includes('Peralatan Normal Operasi')}
+                                    onChange={handleCheckboxChange}
+                                />
+                                Peralatan Normal Operasi
+                                </label>
+                            </div>
+                        </div>
 
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700">Teknisi</label>
-                        <input
-                            type="text"
-                            name="teknisi"
-                            value={formData.teknisi}
-                            onChange={handleInputChange}
-                            className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
-                            required
-                        />
-                    </div>
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold">Status Peralatan Tx</label>
+              <div className="mt-2">
+                <label className="mr-4">
+                  <input
+                    className="mr-2"
+                    name="Tx"
+                    type="radio"
+                    value="Tx 1 Main | Tx 2 Standby"
+                    checked={formData.Tx === 'Tx 1 Main | Tx 2 Standby'}
+                    onChange={handleRadioChange}
+                  />
+                  Tx 1
+                </label>
+                <label>
+                  <input
+                    className="mr-2"
+                    name="Tx"
+                    type="radio"
+                    value="Tx 2 Main | Tx 1 Standby"
+                    checked={formData.Tx === 'Tx 2 Main | Tx 1 Standby'}
+                    onChange={handleRadioChange}
+                  />
+                  Tx 2
+                </label>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <label className="block text-gray-700 font-semibold">Status Peralatan Rx</label>
+              <div className="mt-2">
+                <label className="mr-4">
+                  <input
+                    className="mr-2"
+                    name="Rx"
+                    type="radio"
+                    value="Rx 1 Main | Rx 2 Standby"
+                    checked={formData.Rx === 'Rx 1 Main | Rx 2 Standby'}
+                    onChange={handleRadioChange}
+                  />
+                  Rx 1
+                </label>
+                <label>
+                  <input
+                    className="mr-2"
+                    name="Rx"
+                    type="radio"
+                    value="Rx 2 Main | Rx 1 Standby"
+                    checked={formData.Rx === 'Rx 2 Main | Rx 1 Standby'}
+                    onChange={handleRadioChange}
+                  />
+                  Rx 2
+                </label>
+              </div>
+            </div>
+
+<div className="relative" ref={dropdownRef}>
+  <label className="block text-sm font-medium text-gray-700">Teknisi</label>
+  <button
+    type="button"
+    onClick={() => setShowTeknisiDropdown(!showTeknisiDropdown)}
+    className="mt-1 block w-full rounded-md border-[1px] text-sm text-gray-400 border-gray-300 bg-white shadow-sm text-left p-2"
+  >
+    {formData.teknisi.length > 0 ? formData.teknisi.join(", ") : "Pilih Teknisi"}
+  </button>
+
+  {showTeknisiDropdown && (
+    <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+      {teknisiOptions.map((teknisi, index) => (
+        <label key={index} className="block p-2 hover:bg-gray-100 cursor-pointer">
+          <input
+            type="checkbox"
+            name="teknisi"
+            value={teknisi}
+            checked={formData.teknisi.includes(teknisi)}
+            onChange={handleTeknisiSelect}
+            className="mr-2"
+          />
+          {teknisi}
+        </label>
+      ))}
+    </div>
+  )}
+</div>
 
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Upload Bukti</label>

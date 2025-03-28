@@ -7,7 +7,7 @@ import "@fortawesome/fontawesome-free/css/all.min.css";
 const Dashboard = () => {
     const [openCNSCount, setOpenCNSCount] = useState(0);
     const [supportCount, setSupportCount] = useState(0);
-    const [suhuPeralatan, setSuhuPeralatan] = useState({ dvor: 0, localizer: 0 });
+    const [suhuPeralatan, setSuhuPeralatan] = useState({ amsc: 0, localizer: 0 });
 
     // State untuk Chatbot
     const [question, setQuestion] = useState('');
@@ -43,7 +43,7 @@ const Dashboard = () => {
                 const querySnapshot = await getDocs(collection(db, 'SuhuPeralatan'));
                 const suhuData = querySnapshot.docs.map(doc => doc.data());
                 setSuhuPeralatan({
-                    dvor: suhuData.find(item => item.nama === "DVOR")?.suhu || 0,
+                    amsc: suhuData.find(item => item.nama === "AMSC")?.suhu || 0,
                     localizer: suhuData.find(item => item.nama === "Localizer 18")?.suhu || 0,
                 });
             } catch (error) {
@@ -108,20 +108,32 @@ const Dashboard = () => {
 
             {/* Status Suhu Peralatan */}
             <div className="mt-6 p-4 bg-white shadow rounded">
-                <h2 className="text-bl font-semibold mb-2 text-black">Suhu Peralatan :</h2>
-                <div className="grid grid-cols-2 gap-4">
-                    <div className="p-3 bg-gray-100 rounded text-center">
-                        <p className="text-sm text-gray-500">DVOR</p>
-                        <p className="text-3xl font-bold text-green-400 italic">{suhuPeralatan.dvor}°</p>
-                    </div>
-                    <div className="p-3 bg-gray-100 rounded text-center">
-                        <p className="text-sm text-gray-500">Localizer 18</p>
-                        <p className="text-3xl font-bold text-green-400 italic">{suhuPeralatan.localizer}°</p>
-                    </div>
-                </div>
-                <p className="text-sm text-gray-600 mt-2">Status Suhu Peralatan</p>
-                <a className="text-green-400 italic">Normal</a>
-            </div>
+    <h2 className="text-lg font-semibold mb-2 text-black">Suhu Peralatan :</h2>
+    <div className="grid grid-cols-2 gap-4">
+        <div className="p-3 bg-gray-100 rounded text-center">
+            <p className="text-sm text-gray-500">AMSC</p>
+            <p className={`text-3xl font-bold italic ${
+                suhuPeralatan.amsc > 40 ? 'text-red-500' : 'text-green-400'
+            }`}>
+                {suhuPeralatan.amsc}°C
+            </p>
+        </div>
+        <div className="p-3 bg-gray-100 rounded text-center">
+            <p className="text-sm text-gray-500">Localizer 18</p>
+            <p className={`text-3xl font-bold italic ${
+                suhuPeralatan.localizer > 40 ? 'text-red-500' : 'text-green-400'
+            }`}>
+                {suhuPeralatan.localizer}°C
+            </p>
+        </div>
+    </div>
+    <p className="text-sm text-gray-600 mt-2">Status Suhu Peralatan</p>
+    <p className={`font-bold italic ${
+        suhuPeralatan.amsc > 40 || suhuPeralatan.localizer > 40 ? 'text-red-500' : 'text-green-400'
+    }`}>
+        {suhuPeralatan.amsc > 40 || suhuPeralatan.localizer > 40 ? 'Overheat' : 'Normal'}
+    </p>
+</div>
 
             {/* Bagian Chatbot */}
             <div className="mt-6 p-4 bg-white shadow rounded">

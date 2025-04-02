@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
+import { getDatabase, ref, onValue } from 'firebase/database';
 import { db } from '../../config/firebase';
 import { useNavigate } from 'react-router-dom';
 import "@fortawesome/fontawesome-free/css/all.min.css";
@@ -43,7 +44,7 @@ const Dashboard = () => {
                 const querySnapshot = await getDocs(collection(db, 'SuhuPeralatan'));
                 const suhuData = querySnapshot.docs.map(doc => doc.data());
                 setSuhuPeralatan({
-                    amsc: suhuData.find(item => item.nama === "AMSC")?.suhu || 0,
+                    // We'll replace AMSC with realtime data
                     localizer: suhuData.find(item => item.nama === "Localizer 18")?.suhu || 0,
                 });
             } catch (error) {
@@ -54,6 +55,27 @@ const Dashboard = () => {
         fetchOpenCNSCount();
         fetchSupportCount();
         fetchSuhuPeralatan();
+    }, []);
+
+    // Add realtime temperature monitoring for AMSC
+    useEffect(() => {
+        const database = getDatabase();
+        const suhuRef = ref(database, 'sensor/suhu'); 
+        const unsubscribe = onValue(suhuRef, (snapshot) => {
+            const suhuValue = snapshot.val() || 0;
+            setSuhuPeralatan(prev => ({
+                ...prev,
+                amsc: suhuValue
+            }));
+        }, (error) => {
+            console.error("Error reading realtime suhu:", error);
+            setSuhuPeralatan(prev => ({
+                ...prev,
+                amsc: 0
+            }));
+        });
+
+        return () => unsubscribe();
     }, []);
 
     const handleNavigateCNS = () => navigate('/alat-mt-cns');
@@ -108,32 +130,32 @@ const Dashboard = () => {
 
             {/* Status Suhu Peralatan */}
             <div className="mt-6 p-4 bg-white shadow rounded">
-    <h2 className="text-lg font-semibold mb-2 text-black">Suhu Peralatan :</h2>
-    <div className="grid grid-cols-2 gap-4">
-        <div className="p-3 bg-gray-100 rounded text-center">
-            <p className="text-sm text-gray-500">AMSC</p>
-            <p className={`text-3xl font-bold italic ${
-                suhuPeralatan.amsc > 40 ? 'text-red-500' : 'text-green-400'
-            }`}>
-                {suhuPeralatan.amsc}°C
-            </p>
-        </div>
-        <div className="p-3 bg-gray-100 rounded text-center">
-            <p className="text-sm text-gray-500">Localizer 18</p>
-            <p className={`text-3xl font-bold italic ${
-                suhuPeralatan.localizer > 40 ? 'text-red-500' : 'text-green-400'
-            }`}>
-                {suhuPeralatan.localizer}°C
-            </p>
-        </div>
-    </div>
-    <p className="text-sm text-gray-600 mt-2">Status Suhu Peralatan</p>
-    <p className={`font-bold italic ${
-        suhuPeralatan.amsc > 40 || suhuPeralatan.localizer > 40 ? 'text-red-500' : 'text-green-400'
-    }`}>
-        {suhuPeralatan.amsc > 40 || suhuPeralatan.localizer > 40 ? 'Overheat' : 'Normal'}
-    </p>
-</div>
+                <h2 className="text-lg font-semibold mb-2 text-black">Suhu Peralatan :</h2>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="p-3 bg-gray-100 rounded text-center">
+                        <p className="text-sm text-gray-500">AMSC</p>
+                        <p className={`text-3xl font-bold italic ${
+                            suhuPeralatan.amsc > 40 ? 'text-red-500' : 'text-green-400'
+                        }`}>
+                            {suhuPeralatan.amsc}°C
+                        </p>
+                    </div>
+                    <div className="p-3 bg-gray-100 rounded text-center">
+                        <p className="text-sm text-gray-500">Localizer 18</p>
+                        <p className={`text-3xl font-bold italic ${
+                            suhuPeralatan.localizer > 40 ? 'text-red-500' : 'text-green-400'
+                        }`}>
+                            {suhuPeralatan.localizer}°C
+                        </p>
+                    </div>
+                </div>
+                <p className="text-sm text-gray-600 mt-2">Status Suhu Peralatan</p>
+                <p className={`font-bold italic ${
+                    suhuPeralatan.amsc > 40 || suhuPeralatan.localizer > 40 ? 'text-red-500' : 'text-green-400'
+                }`}>
+                    {suhuPeralatan.amsc > 40 || suhuPeralatan.localizer > 40 ? 'Overheat' : 'Normal'}
+                </p>
+            </div>
 
             {/* Bagian Chatbot */}
             <div className="mt-6 p-4 bg-white shadow rounded">

@@ -150,7 +150,7 @@ const TambahCatatan = () => {
                     buktiUrl = await getDownloadURL(snapshot.ref);
                 }
     
-                await addDoc(collection(db, "LaporanSupport"), {
+                await addDoc(collection(db, "CH-Sup"), {
                     tanggal: formData.tanggal,
                     jamSelesai: formData.jamSelesai,
                     peralatan: formData.peralatan,
@@ -164,7 +164,7 @@ const TambahCatatan = () => {
                 });
     
                 alert("Data berhasil ditambahkan!");
-                navigate('/lk-sup');
+                navigate('/ch-sup');
             } catch (error) {
                 console.error("Error adding document: ", error);
                 alert("Terjadi kesalahan saat menambahkan data");

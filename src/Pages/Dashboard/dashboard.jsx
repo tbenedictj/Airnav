@@ -78,8 +78,8 @@ const Dashboard = () => {
         return () => unsubscribe();
     }, []);
 
-    const handleNavigateCNS = () => navigate('/alat-mt-cns');
-    const handleNavigateSupport = () => navigate('/alat-mt-sup');
+    const handleNavigateCNS = () => navigate('/mtcns');
+    const handleNavigateSupport = () => navigate('/mtsup');
 
     // Fungsi untuk men-submit pertanyaan (placeholder)
     const handleChatbotSubmit = () => {
@@ -107,7 +107,7 @@ const Dashboard = () => {
                         Peralatan Maintenance CNS
                     </h2>
                     <p className="text-3xl font-bold text-gray-800">{openCNSCount}</p>
-                    <p className="text-sm text-gray-600">Status: Open</p>
+                    <p className="text-sm text-gray-600">Status: Maintenance</p>
                 </div>
 
                 <div
@@ -124,7 +124,7 @@ const Dashboard = () => {
                         Peralatan Maintenance Support
                     </h2>
                     <p className="text-3xl font-bold text-gray-800">{supportCount}</p>
-                    <p className="text-sm text-gray-600">Status: Open</p>
+                    <p className="text-sm text-gray-600">Status: Maintenance</p>
                 </div>
             </div>
 

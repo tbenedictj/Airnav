@@ -65,6 +65,11 @@ const CatatanBulanan = () => {
         );
     });
 
+    const formatDateTime = (date, time) => {
+        if (!date) return '';
+        return `${date} ${time || ''}`;
+    };
+
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Bulanan Support</h1>
@@ -121,7 +126,9 @@ const CatatanBulanan = () => {
                         <tbody>
                             {filteredCatatan.map((item) => (
                                 <tr key={item.id}>
-                                    <td className="py-2 px-4 border">{item.waktu}</td>
+                                    <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                        {formatDateTime(item.tanggal, item.jamSelesai)}
+                                    </td>
                                     <td className="py-2 px-4 border">{item.peralatan}</td>
                                     <td className="py-2 px-4 border">
                                         {item.aktivitas?.length > 100 ? (
@@ -199,6 +206,23 @@ const CatatanBulanan = () => {
                     </table>
                 </div>
             </div>
+            <div className="container mx-auto p-4">
+                <div className="bg-white shadow-md rounded-lg p-4">
+                    <div className="flex justify-between items-center text-black">
+                        <p>Showing 1 to 10 of 28 entries</p>
+                        <div className="flex items-center space-x-2">
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
+                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer className="text-center py-4">
+                <p className="text-black">Air Nav Manado</p>
+            </footer>
         </div>
     );
 };

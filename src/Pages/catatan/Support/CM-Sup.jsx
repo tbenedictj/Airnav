@@ -65,6 +65,11 @@ const CatatanMingguan = () => {
         );
     });
 
+    const formatDateTime = (date, time) => {
+        if (!date) return '';
+        return `${date} ${time || ''}`;
+    };
+
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Mingguan Support</h1>
@@ -121,7 +126,9 @@ const CatatanMingguan = () => {
                         <tbody>
                             {filteredCatatan.map((item) => (
                                 <tr key={item.id}>
-                                    <td className="py-2 px-4 border">{item.waktu}</td>
+                                   <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                        {formatDateTime(item.tanggal, item.jamSelesai)}
+                                    </td>
                                     <td className="py-2 px-4 border">{item.peralatan}</td>
                                     <td className="py-2 px-4 border">
                                         {item.aktivitas?.length > 100 ? (

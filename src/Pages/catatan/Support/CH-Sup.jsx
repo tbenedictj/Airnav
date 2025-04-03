@@ -28,7 +28,7 @@ const CatatanHarian = () => {
             console.error('Error fetching data:', error);
         }
     };
-
+    
     const handleDelete = async (id) => {
         if (window.confirm('Apakah Anda yakin ingin menghapus catatan ini?')) {
             try {
@@ -64,6 +64,11 @@ const CatatanHarian = () => {
             item.status?.toLowerCase().includes(searchString)
         );
     });
+
+    const formatDateTime = (date, time) => {
+        if (!date) return '';
+        return `${date} ${time || ''}`;
+    };
 
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -111,7 +116,7 @@ const CatatanHarian = () => {
                             <tr className="bg-gray-100">
                                 <th className="py-2 px-4 border">Waktu</th>
                                 <th className="py-2 px-4 border">Peralatan</th>
-                                <th className="py-2 px-4 border">Aktivitas</th>
+                                <th className="py-2 px-4 border">Kegiatan</th>
                                 <th className="py-2 px-4 border">Teknisi</th>
                                 <th className="py-2 px-4 border">Note</th>
                                 <th className="py-2 px-4 border">Paraf</th>
@@ -121,15 +126,17 @@ const CatatanHarian = () => {
                         <tbody>
                             {filteredCatatan.map((item) => (
                                 <tr key={item.id}>
-                                    <td className="py-2 px-4 border">{item.waktu}</td>
+                                    <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                        {formatDateTime(item.tanggal, item.jamSelesai)}
+                                    </td>
                                     <td className="py-2 px-4 border">{item.peralatan}</td>
                                     <td className="py-2 px-4 border">
-                                        {item.aktivitas?.length > 100 ? (
+                                        {item.aktivitas?.length > 50 ? (
                                             <div>
                                                 <span>
                                                     {expandedRows[item.id] 
                                                         ? item.aktivitas
-                                                        : `${item.aktivitas.substring(0, 100)}...`}
+                                                        : `${item.aktivitas.substring(0, 50)}...`}
                                                 </span>
                                                 <button 
                                                     className="text-blue-600 hover:text-blue-800 text-sm block mt-1"

@@ -13,6 +13,8 @@ const PeralatanOpenStatusSup = () => {
     const [expandedRows, setExpandedRows] = useState({});
     const [expandedAlat, setExpandedAlat] = useState({});
     const [expandedTeknisi, setExpandedTeknisi] = useState({});
+    const [currentPage, setCurrentPage] = useState(1);
+    
 
     const toggleRowExpansion = (id, type) => {
         if (type === 'peralatan') {
@@ -80,6 +82,18 @@ const PeralatanOpenStatusSup = () => {
             laporan.teknisi?.toLowerCase().includes(searchTerm.toLowerCase()))
     );
 
+    // Calculate start and end indices for pagination
+    const startIndex = (currentPage - 1) * entriesPerPage;
+    const endIndex = startIndex + entriesPerPage;
+    const paginatedLaporan = filteredLaporan.slice(startIndex, endIndex);
+
+    // Change page
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
+    const totalPages = Math.ceil(filteredLaporan.length / entriesPerPage);
+
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Title Section */}
@@ -146,7 +160,7 @@ const PeralatanOpenStatusSup = () => {
                         </tr>
                     </thead>
                     <tbody className="text-black">
-                        {filteredLaporan.slice(0, entriesPerPage).map((laporan) => (
+                        {paginatedLaporan.slice(0, entriesPerPage).map((laporan) => (
                             <tr key={laporan.id}>
                                 <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
                                     {laporan.tanggal} {laporan.jamSelesai}
@@ -259,21 +273,41 @@ const PeralatanOpenStatusSup = () => {
                 </table>
             </div>
 
-            {/* Pagination Section */}
             <div className="container mx-auto p-4">
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <div className="flex justify-between items-center text-black">
-                        <p>Showing 1 to {Math.min(entriesPerPage, filteredLaporan.length)} of {filteredLaporan.length} entries</p>
+                        <p>Showing {(currentPage - 1) * entriesPerPage + 1} to {Math.min(currentPage * entriesPerPage, filteredLaporan.length)} of {filteredLaporan.length} entries</p>
                         <div className="flex items-center space-x-2">
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
-                            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
+                            <button 
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" 
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </button>
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button 
+                                    key={i} 
+                                    onClick={() => handlePageChange(i + 1)} 
+                                    className={`px-3 py-1 border border-blue-300 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-blue-600 hover:bg-blue-50'}`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button 
+                                onClick={() => handlePageChange(currentPage + 1)} 
+                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" 
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+            <footer className="text-center py-4">
+                <p className="text-black">Air Nav Manado</p>
+            </footer>
         </div>
     );
 };

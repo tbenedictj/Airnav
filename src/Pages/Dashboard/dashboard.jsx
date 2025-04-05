@@ -19,7 +19,7 @@ const Dashboard = () => {
     useEffect(() => {
         const fetchOpenCNSCount = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'PeralatanCNS'));
+                const querySnapshot = await getDocs(collection(db, 'LaporanCNS'));
                 const peralatanData = querySnapshot.docs.map(doc => doc.data());
                 const openCount = peralatanData.filter(alat => alat.status === "open").length;
                 setOpenCNSCount(openCount);
@@ -30,7 +30,7 @@ const Dashboard = () => {
 
         const fetchSupportCount = async () => {
             try {
-                const querySnapshot = await getDocs(collection(db, 'PeralatanSupport'));
+                const querySnapshot = await getDocs(collection(db, 'LaporanSupport'));
                 const supportData = querySnapshot.docs.map(doc => doc.data());
                 const openCount = supportData.filter(alat => alat.status === "open").length;
                 setSupportCount(openCount);

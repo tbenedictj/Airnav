@@ -70,7 +70,7 @@ const CatatanMingguan = () => {
             (item.status?.toLowerCase().includes(searchString))
         );
     });
-    
+
     const formatDateTime = (date, time) => {
         if (!date) return '';
         return `${date} ${time || ''}`;
@@ -151,6 +151,19 @@ const CatatanMingguan = () => {
                             </tr>
                         </thead>
                         <tbody>
+                        {paginatedCatatan.length === 0 ? (
+                            <tr>
+                                <td colSpan="7" className="text-center py-4">
+                                    Tidak ada Data
+                                </td>
+                            </tr>
+                        ) : (
+                            paginatedCatatan.map((item) => (
+                                <tr key={item.id}>
+                                    {/* render isi row */}
+                                </tr>
+                            ))
+                        )}
                             {paginatedCatatan.map((item) => (
                                 <tr key={item.id}>
                                    <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">

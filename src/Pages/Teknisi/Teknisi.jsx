@@ -11,6 +11,8 @@ function Teknisi() {
   const [teknisiData, setTeknisiData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [entriesPerPage, setEntriesPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Fetch data from Firestore
   useEffect(() => {
@@ -63,6 +65,25 @@ function Teknisi() {
     );
   }
 
+  // Paginating
+  const indexOfLastEntry = currentPage * entriesPerPage;
+  const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+  const currentData = teknisiData.slice(indexOfFirstEntry, indexOfLastEntry);
+  const totalPages = Math.ceil(teknisiData.length / entriesPerPage);
+
+  const goToPage = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const nextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const prevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+
   return (
     <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Header */}
@@ -91,7 +112,7 @@ function Teknisi() {
 
           {/* Table Body */}
           <tbody className="text-black">
-            {teknisiData.map((teknisi, index) => (
+            {currentData.map((teknisi, index) => (
               <tr key={index} className="hover:bg-gray-100 border-b border-gray-300">
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.name}</td>
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.category}</td>
@@ -102,15 +123,35 @@ function Teknisi() {
 
         {/* Pagination */}
         <div className="flex justify-between items-center mt-4 text-black">
-          <div>Showing 1 to 10 of {teknisiData.length} entries</div>
-          <div className="flex items-center space-x-2">
-            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Previous</button>
-            <button className="px-3 py-1 border border-blue-300 rounded-md bg-blue-600 text-white">1</button>
-            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">2</button>
-            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">3</button>
-            <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50">Next</button>
-          </div>
-        </div>
+  <div>
+    Showing {indexOfFirstEntry + 1} to {Math.min(indexOfLastEntry, teknisiData.length)} of {teknisiData.length} entries
+  </div>
+  <div className="flex items-center space-x-2">
+    <button
+      onClick={prevPage}
+      disabled={currentPage === 1}
+      className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50 disabled:opacity-50"
+    >
+      Previous
+    </button>
+    {Array.from({ length: totalPages }, (_, i) => (
+      <button
+        key={i + 1}
+        onClick={() => goToPage(i + 1)}
+        className={`px-3 py-1 border border-blue-300 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-blue-600 hover:bg-blue-50'}`}
+      >
+        {i + 1}
+      </button>
+    ))}
+    <button
+      onClick={nextPage}
+      disabled={currentPage === totalPages}
+      className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50 disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+</div>
       </div>
 
       {/* Footer */}

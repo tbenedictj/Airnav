@@ -161,6 +161,19 @@ const LaporanKegiatanSup = () => {
                         </tr>
                     </thead>
                     <tbody className="text-black">
+                    {filteredLaporan.length === 0 ? (
+                            <tr>
+                                <td colSpan="7" className="text-center py-4">
+                                    Tidak ada Data
+                                </td>
+                            </tr>
+                        ) : (
+                            filteredLaporan.map((item) => (
+                                <tr key={item.id}>
+                                    {/* render isi row */}
+                                </tr>
+                            ))
+                        )}
                         {filteredLaporan.slice(0, entriesPerPage).map((laporan) => (
                             <tr key={laporan.id}>
                                 <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">

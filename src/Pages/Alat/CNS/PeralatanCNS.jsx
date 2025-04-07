@@ -41,7 +41,7 @@ const PeralatanCNS = () => {
         if (window.confirm('Are you sure you want to delete this item?')) {
             try {
                 await deleteDoc(doc(db, 'PeralatanCNS', id));
-                setPeralatan(peralatan.filter(alat => alat.id !== id)); // Update local state
+                setPeralatan(peralatan.filter(alat => alat.id !== id));
                 alert('Data berhasil dihapus.');
             } catch (err) {
                 console.error('Error deleting document:', err);
@@ -60,16 +60,16 @@ const PeralatanCNS = () => {
     };
 
     const getFilteredAndSortedPeralatan = () => {
-        let filtered = peralatan.filter((alat) => 
+        let filtered = peralatan.filter((alat) =>
             (alat.status || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             (alat.status === 'open' ? 'maintenance' : 'normal ops').includes(searchTerm.toLowerCase()) ||
             (alat.namaAlat || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             (alat.kategoriAlat || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             (alat.frekuensi || '').toLowerCase().includes(searchTerm.toLowerCase())
         );
-    
+
         if (!sortField) return filtered;
-    
+
         return filtered.sort((a, b) => {
             const aVal = a[sortField] || '';
             const bVal = b[sortField] || '';
@@ -79,13 +79,8 @@ const PeralatanCNS = () => {
         });
     };
 
-    if (loading) {
-        return <div>Loading...</div>;
-    }
-
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error: {error}</div>;
 
     // Pagination
     const filteredData = getFilteredAndSortedPeralatan();
@@ -94,11 +89,9 @@ const PeralatanCNS = () => {
     const currentEntries = filteredData.slice(indexOfFirstEntry, indexOfLastEntry);
     const totalPages = Math.ceil(filteredData.length / entriesPerPage);
 
-    // Change page
     const handlePageChange = (pageNumber) => {
         setCurrentPage(pageNumber);
     };
-
 
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -113,11 +106,9 @@ const PeralatanCNS = () => {
                 </nav>
             </div>
 
-
             <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-blue-600 text-lg font-semibold mb-4">Peralatan CNS</h2>
 
-                {/* Add Button */}
                 <div className="flex justify-between flex-wrap gap-4 mb-6">
                     <button
                         onClick={() => navigate('/tambah-alat-cns')}
@@ -126,7 +117,6 @@ const PeralatanCNS = () => {
                         + Tambah Alat
                     </button>
 
-                    {/* Entries and Search Controls */}
                     <div className="flex flex-wrap gap-4 items-center">
                         <div className="flex items-center text-sm sm:text-base">
                             <span className="mr-2">Show</span>
@@ -135,7 +125,7 @@ const PeralatanCNS = () => {
                                 value={entriesPerPage}
                                 onChange={(e) => {
                                     setEntriesPerPage(parseInt(e.target.value));
-                                    setCurrentPage(1); // reset ke halaman 1 saat ubah jumlah entri
+                                    setCurrentPage(1);
                                 }}
                             >
                                 <option value="10">10</option>
@@ -157,7 +147,6 @@ const PeralatanCNS = () => {
                     </div>
                 </div>
 
-                {/* Table */}
                 <div className="overflow-x-auto">
                     <table className="min-w-full border border-gray-300">
                         <thead>
@@ -186,68 +175,73 @@ const PeralatanCNS = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {currentEntries.map((alat) => (
-                                <tr key={alat.id} className="hover:bg-gray-50 border-b border-gray-300">
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">
-                                        {alat.namaAlat}
-                                    </td>
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">
-                                        {alat.kategoriAlat}
-                                    </td>
-                                    <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">
-                                        {alat.frekuensi}
-                                    </td>
-                                    <td className="border-gray-300 border-r px-4 py-2">
-                                        <span
-                                            className={`px-2 py-1 rounded text-xs sm:text-sm ${
-                                                alat.status === 'open' ? 'bg-yellow-500' : 'bg-green-600'
-                                            } text-white`}
-                                        >
-                                            {alat.status === 'open' ? 'Maintenance' : 'Normal ops'}
-                                        </span>
-                                    </td>
-                                    <td className="px-4 py-2 w-[110px] space-x-1 flex">
-                                        <button
-                                            onClick={() => navigate(`/edit-alat-cns/${alat.id}`)}
-                                            className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                                            <FontAwesomeIcon icon={faEdit} className="text-white text-sm" />
-                                        </button>
-                                        <button
-                                            onClick={() => handleDelete(alat.id)}
-                                            className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
-                                            <FontAwesomeIcon icon={faTrash} className="text-white text-sm" />
-                                        </button>
+                            {currentEntries.length > 0 ? (
+                                currentEntries.map((alat) => (
+                                    <tr key={alat.id} className="hover:bg-gray-50 border-b border-gray-300">
+                                        <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.namaAlat}</td>
+                                        <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.kategoriAlat}</td>
+                                        <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.frekuensi}</td>
+                                        <td className="border-gray-300 border-r px-4 py-2">
+                                            <span className={`px-2 py-1 rounded text-xs sm:text-sm ${alat.status === 'open' ? 'bg-yellow-500' : 'bg-green-600'} text-white`}>
+                                                {alat.status === 'open' ? 'Maintenance' : 'Normal ops'}
+                                            </span>
+                                        </td>
+                                        <td className="px-4 py-2 w-[110px] space-x-1 flex">
+                                            <button
+                                                onClick={() => navigate(`/edit-alat-cns/${alat.id}`)}
+                                                className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
+                                            >
+                                                <FontAwesomeIcon icon={faEdit} className="text-white text-sm" />
+                                            </button>
+                                            <button
+                                                onClick={() => handleDelete(alat.id)}
+                                                className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
+                                            >
+                                                <FontAwesomeIcon icon={faTrash} className="text-white text-sm" />
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            ) : (
+                                <tr>
+                                    <td colSpan="5" className="text-center py-4">
+                                        Tidak ada data
                                     </td>
                                 </tr>
-                            ))}
+                            )}
                         </tbody>
                     </table>
                 </div>
             </div>
+
             <div className="container mx-auto p-4">
                 <div className="bg-white shadow-md rounded-lg p-4">
                     <div className="flex justify-between items-center text-black">
-                    <p>Showing {(currentPage - 1) * entriesPerPage + 1} to {Math.min(currentPage * entriesPerPage, filteredData.length)} of {filteredData.length} entries</p>
+                        <p>
+                            Showing {(currentPage - 1) * entriesPerPage + 1} to {Math.min(currentPage * entriesPerPage, filteredData.length)} of {filteredData.length} entries
+                        </p>
                         <div className="flex items-center space-x-2">
-                            <button 
+                            <button
                                 onClick={() => handlePageChange(currentPage - 1)}
-                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" 
+                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50"
                                 disabled={currentPage === 1}
                             >
                                 Previous
                             </button>
                             {[...Array(totalPages)].map((_, i) => (
-                                <button 
-                                    key={i} 
-                                    onClick={() => handlePageChange(i + 1)} 
-                                    className={`px-3 py-1 border border-blue-300 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-blue-600 hover:bg-blue-50'}`}
+                                <button
+                                    key={i}
+                                    onClick={() => handlePageChange(i + 1)}
+                                    className={`px-3 py-1 border border-blue-300 rounded-md ${
+                                        currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-blue-600 hover:bg-blue-50'
+                                    }`}
                                 >
                                     {i + 1}
                                 </button>
                             ))}
-                            <button 
-                                onClick={() => handlePageChange(currentPage + 1)} 
-                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" 
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50"
                                 disabled={currentPage === totalPages}
                             >
                                 Next
@@ -256,6 +250,7 @@ const PeralatanCNS = () => {
                     </div>
                 </div>
             </div>
+
             <footer className="text-center py-4">
                 <p className="text-black">Air Nav Manado</p>
             </footer>

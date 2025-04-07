@@ -145,7 +145,7 @@ const LaporanKegiatanCNS = () => {
                 </div>
 
                 {/* Table Section */}
-                <table className="container-fluid min-w-full h-screen border border-gray-300 border-collapse bg-white">
+                <table className="container-fluid min-w-full border border-gray-300 border-collapse bg-white">
                     <thead>
                         <tr className="text-black">
                             <th className="py-2 px-4 border border-gray-300">Tanggal / Jam</th>
@@ -158,6 +158,19 @@ const LaporanKegiatanCNS = () => {
                         </tr>
                     </thead>
                     <tbody className="text-black">
+                    {paginatedLaporan.length > 0 ? (
+                        paginatedLaporan.map((laporan) => (
+                            <tr key={laporan.id}>
+                                {/* ...row content seperti sebelumnya... */}
+                            </tr>
+                         ))
+                    ) : (
+                        <tr>
+                            <td colSpan="7" className="text-center py-4">
+                                Tidak ada data
+                            </td>
+                        </tr>
+                     )}
                         {paginatedLaporan.map((laporan) => (
                             <tr key={laporan.id}>
                                 <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">

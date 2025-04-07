@@ -15,6 +15,8 @@ const PeralatanCNS = () => {
     const [error, setError] = useState(null);
     const [sortField, setSortField] = useState(null);
     const [sortOrder, setSortOrder] = useState(null);
+    const [entriesPerPage, setEntriesPerPage] = useState(10);
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         const fetchPeralatan = async () => {
@@ -57,7 +59,7 @@ const PeralatanCNS = () => {
         }
     };
 
-    const sortedPeralatan = () => {
+    const getFilteredAndSortedPeralatan = () => {
         let filtered = peralatan.filter((alat) => 
             (alat.status || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
             (alat.status === 'open' ? 'maintenance' : 'normal ops').includes(searchTerm.toLowerCase()) ||
@@ -84,6 +86,19 @@ const PeralatanCNS = () => {
     if (error) {
         return <div>Error: {error}</div>;
     }
+
+    // Pagination
+    const filteredData = getFilteredAndSortedPeralatan();
+    const indexOfLastEntry = currentPage * entriesPerPage;
+    const indexOfFirstEntry = indexOfLastEntry - entriesPerPage;
+    const currentEntries = filteredData.slice(indexOfFirstEntry, indexOfLastEntry);
+    const totalPages = Math.ceil(filteredData.length / entriesPerPage);
+
+    // Change page
+    const handlePageChange = (pageNumber) => {
+        setCurrentPage(pageNumber);
+    };
+
 
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -117,8 +132,11 @@ const PeralatanCNS = () => {
                             <span className="mr-2">Show</span>
                             <select
                                 className="border rounded px-2 py-1"
-                                value={entries}
-                                onChange={(e) => setEntries(e.target.value)}
+                                value={entriesPerPage}
+                                onChange={(e) => {
+                                    setEntriesPerPage(parseInt(e.target.value));
+                                    setCurrentPage(1); // reset ke halaman 1 saat ubah jumlah entri
+                                }}
                             >
                                 <option value="10">10</option>
                                 <option value="25">25</option>
@@ -168,7 +186,7 @@ const PeralatanCNS = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {sortedPeralatan().map((alat) => (
+                            {currentEntries.map((alat) => (
                                 <tr key={alat.id} className="hover:bg-gray-50 border-b border-gray-300">
                                     <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">
                                         {alat.namaAlat}
@@ -206,6 +224,41 @@ const PeralatanCNS = () => {
                     </table>
                 </div>
             </div>
+            <div className="container mx-auto p-4">
+                <div className="bg-white shadow-md rounded-lg p-4">
+                    <div className="flex justify-between items-center text-black">
+                    <p>Showing {(currentPage - 1) * entriesPerPage + 1} to {Math.min(currentPage * entriesPerPage, filteredData.length)} of {filteredData.length} entries</p>
+                        <div className="flex items-center space-x-2">
+                            <button 
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" 
+                                disabled={currentPage === 1}
+                            >
+                                Previous
+                            </button>
+                            {[...Array(totalPages)].map((_, i) => (
+                                <button 
+                                    key={i} 
+                                    onClick={() => handlePageChange(i + 1)} 
+                                    className={`px-3 py-1 border border-blue-300 rounded-md ${currentPage === i + 1 ? 'bg-blue-600 text-white' : 'text-blue-600 hover:bg-blue-50'}`}
+                                >
+                                    {i + 1}
+                                </button>
+                            ))}
+                            <button 
+                                onClick={() => handlePageChange(currentPage + 1)} 
+                                className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" 
+                                disabled={currentPage === totalPages}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer className="text-center py-4">
+                <p className="text-black">Air Nav Manado</p>
+            </footer>
         </div>
     );
 };

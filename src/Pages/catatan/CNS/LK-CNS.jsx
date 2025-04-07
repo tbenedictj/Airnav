@@ -59,12 +59,22 @@ const LaporanKegiatanCNS = () => {
     }, []);
 
     // Filter laporan based on search term
-    const filteredLaporan = laporanList.filter(laporan =>
-        laporan.peralatan.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        laporan.aktivitas.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        laporan.teknisi.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        laporan.status.toLowerCase().includes(searchTerm.toLocaleLowerCase()) 
-    );
+    const filteredLaporan = laporanList.filter(laporan => {
+        const peralatan = typeof laporan.peralatan === 'string' ? laporan.peralatan.toLowerCase() : '';
+        const teknisi = typeof laporan.teknisi === 'string' ? laporan.teknisi.toLowerCase() : '';
+        const status = typeof laporan.status === 'string' ? laporan.status.toLowerCase() : '';
+        const tanggal = typeof laporan.tanggal === 'string' ? laporan.tanggal.toLowerCase() : '';
+        const jamSelesai = typeof laporan.jamSelesai === 'string' ? laporan.jamSelesai.toLowerCase() : '';
+        const term = searchTerm.toLowerCase();
+    
+        return (
+            peralatan.includes(term) ||
+            teknisi.includes(term) ||
+            status.includes(term) ||
+            tanggal.includes(term) ||
+            jamSelesai.includes(term)
+        );
+    });
 
     // Calculate start and end indices for pagination
     const startIndex = (currentPage - 1) * entriesPerPage;

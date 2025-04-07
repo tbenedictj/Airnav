@@ -68,11 +68,20 @@ const CatatanBulanan = () => {
     };
 
     // Filter data based on search term
-    const filteredData = data.filter(item => 
-        item.peralatan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.aktivitas?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.teknisi?.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredData = data.filter(item => {
+        const peralatan = typeof item.peralatan === 'string' ? item.peralatan.toLowerCase() : '';
+        const teknisi = typeof item.teknisi === 'string' ? item.teknisi.toLowerCase() : '';
+        const tanggal = typeof item.tanggal === 'string' ? item.tanggal.toLowerCase() : '';
+        const jamSelesai = typeof item.jamSelesai === 'string' ? item.jamSelesai.toLowerCase() : '';
+        const term = searchTerm.toLowerCase();
+    
+        return (
+            peralatan.includes(term) ||
+            teknisi.includes(term) ||
+            jamSelesai.includes(term) ||
+            tanggal.includes(term)
+        );
+    });
 
     // Pagination
     const indexOfLastEntry = currentPage * entriesPerPage;

@@ -58,13 +58,22 @@ const PeralatanCNS = () => {
     };
 
     const sortedPeralatan = () => {
-        if (!sortField) return peralatan;
-        return peralatan.sort((a, b) => {
-            if (sortOrder === 'asc') {
-                return a[sortField] > b[sortField] ? 1 : -1;
-            } else {
-                return a[sortField] < b[sortField] ? 1 : -1;
-            }
+        let filtered = peralatan.filter((alat) => 
+            (alat.status || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (alat.status === 'open' ? 'maintenance' : 'normal ops').includes(searchTerm.toLowerCase()) ||
+            (alat.namaAlat || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (alat.kategoriAlat || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (alat.frekuensi || '').toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    
+        if (!sortField) return filtered;
+    
+        return filtered.sort((a, b) => {
+            const aVal = a[sortField] || '';
+            const bVal = b[sortField] || '';
+            return sortOrder === 'asc'
+                ? aVal.toString().localeCompare(bVal.toString())
+                : bVal.toString().localeCompare(aVal.toString());
         });
     };
 

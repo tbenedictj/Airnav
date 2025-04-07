@@ -58,12 +58,16 @@ const CatatanHarian = () => {
 
     const filteredCatatan = catatan.filter(item => {
         const searchString = searchTerm.toLowerCase();
+    
+        const teknisiText = Array.isArray(item.teknisi)
+            ? item.teknisi.join(', ').toLowerCase()
+            : (typeof item.teknisi === 'string' ? item.teknisi.toLowerCase() : '');
+    
         return (
-            item.waktu?.toLowerCase().includes(searchString) ||
-            item.peralatan?.toLowerCase().includes(searchString) ||
-            item.aktivitas?.toLowerCase().includes(searchString) ||
-            (Array.isArray(item.teknisi) ? item.teknisi.join(', ').toLowerCase().includes(searchString) : false) ||
-            item.status?.toLowerCase().includes(searchString)
+            (`${item.tanggal ?? ''} ${item.jamSelesai ?? ''}`.toLowerCase().includes(searchString)) ||
+            (item.peralatan?.toLowerCase().includes(searchString)) ||
+            teknisiText.includes(searchString) ||
+            (item.status?.toLowerCase().includes(searchString))
         );
     });
 

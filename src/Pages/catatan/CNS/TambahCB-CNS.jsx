@@ -160,14 +160,22 @@ const TambahCatatan = () => {
                 buktiUrl = await getDownloadURL(buktiRef);
             }
 
-            // Save to Firestore
-            await addDoc(collection(db, 'CB-CNS'), {
-                ...formData,
-                teknisi: formData.teknisi.join(', '),
-                buktiUrl,
-                userId: currentUser.uid,
-                createdAt: new Date().toISOString()
-            });
+            const aktivitasFinal = [...formData.aktivitas];
+                if (formData.Tx) aktivitasFinal.push(formData.Tx); // Tambahkan Tx
+                if (formData.Rx) aktivitasFinal.push(formData.Rx); // Tambahkan Rx
+
+                const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
+
+                 // Save to Firestore
+                            await addDoc(collection(db, 'CB-CNS'), {
+                                ...formData,
+                                teknisi: formData.teknisi.join(', '),
+                                aktivitas: aktivitasFormatted,
+                                buktiUrl,
+                                userId: currentUser.uid,
+                                createdAt: new Date().toISOString()
+                            });
+
 
             navigate('/cb-cns');
         } catch (error) {

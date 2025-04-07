@@ -72,14 +72,24 @@ const LaporanKegiatanSup = () => {
     }, []);
 
     // Filter laporan based on search term
-    const filteredLaporan = laporanList.filter(laporan =>
-        laporan.peralatan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        laporan.status?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        laporan.aktivitas?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        (Array.isArray(laporan.teknisi) ? 
-            laporan.teknisi.join(' ').toLowerCase().includes(searchTerm.toLowerCase()) :
-            laporan.teknisi?.toLowerCase().includes(searchTerm.toLowerCase()))
-    );
+    const filteredLaporan = laporanList.filter(laporan => {
+        const peralatan = typeof laporan.peralatan === 'string' ? laporan.peralatan.toLowerCase() : '';
+        const teknisi = Array.isArray(laporan.teknisi)
+            ? laporan.teknisi.join(', ').toLowerCase()
+            : (typeof laporan.teknisi === 'string' ? laporan.teknisi.toLowerCase() : '');
+        const status = typeof laporan.status === 'string' ? laporan.status.toLowerCase() : '';
+        const tanggal = typeof laporan.tanggal === 'string' ? laporan.tanggal.toLowerCase() : '';
+        const jamSelesai = typeof laporan.jamSelesai === 'string' ? laporan.jamSelesai.toLowerCase() : '';
+        const term = searchTerm.toLowerCase();
+    
+        return (
+            peralatan.includes(term) ||
+            teknisi.includes(term) ||
+            status.includes(term) ||
+            tanggal.includes(term) ||
+            jamSelesai.includes(term)
+        );
+    });
 
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">

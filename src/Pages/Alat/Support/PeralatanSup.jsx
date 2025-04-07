@@ -57,17 +57,6 @@ const PeralatanSup = () => {
         }
     };
 
-    const sortedPeralatanSup = () => {
-        if (!sortField) return peralatanSup;
-        return peralatanSup.sort((a, b) => {
-            if (sortOrder === 'asc') {
-                return a[sortField].localeCompare(b[sortField]);
-            } else {
-                return b[sortField].localeCompare(a[sortField]);
-            }
-        });
-    };
-
     if (loading) {
         return <div>Loading...</div>;
     }
@@ -75,6 +64,30 @@ const PeralatanSup = () => {
     if (error) {
         return <div>Error: {error}</div>;
     }
+
+    const getFilteredAndSortedPeralatan = () => {
+        let filtered = peralatanSup.filter((alat) =>
+            (alat.status || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (alat.status === 'open' ? 'maintenance' : 'normal ops').includes(searchTerm.toLowerCase()) ||
+            (alat.namaAlat || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (alat.kategoriAlat || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (alat.SNOutdoor || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (alat.SNIndoor || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+            alat.Tahun?.toString().includes(searchTerm)
+        );
+    
+        if (sortField) {
+            filtered.sort((a, b) => {
+                const aVal = a[sortField] || '';
+                const bVal = b[sortField] || '';
+                return sortOrder === 'asc'
+                    ? aVal.toString().localeCompare(bVal.toString())
+                    : bVal.toString().localeCompare(aVal.toString());
+            });
+        }
+    
+        return filtered.slice(0, parseInt(entries));
+    };
 
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -160,7 +173,7 @@ const PeralatanSup = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {sortedPeralatanSup().map((alat) => (
+                            {getFilteredAndSortedPeralatan().map((alat) => (
                                 <tr key={alat.id} className="hover:bg-gray-50 border-b border-gray-300">
                                     <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.namaAlat}</td>
                                     <td className="border-gray-300 border-r px-4 py-2 text-sm sm:text-base">{alat.kategoriAlat}</td>

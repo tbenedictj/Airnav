@@ -20,8 +20,7 @@ const TambahCatatan = () => {
         Rx: '',
         teknisi: [],
         note: '',
-        bukti: null,
-        status: '' // Tambahkan status di sini
+        bukti: null
     });
     const [imagePreview, setImagePreview] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -149,15 +148,21 @@ const TambahCatatan = () => {
                     const snapshot = await uploadBytes(storageRef, formData.bukti);
                     buktiUrl = await getDownloadURL(snapshot.ref);
                 }
+
+                const aktivitasFinal = [...formData.aktivitas];
+                if (formData.Tx) aktivitasFinal.push(formData.Tx); // Tambahkan Tx
+                if (formData.Rx) aktivitasFinal.push(formData.Rx); // Tambahkan Rx
+
+                const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
     
                 await addDoc(collection(db, "CH-Sup"), {
                     tanggal: formData.tanggal,
                     jamSelesai: formData.jamSelesai,
                     peralatan: formData.peralatan,
-                    aktivitas: formData.aktivitas,
-                    teknisi: formData.teknisi,
-                    status: formData.status,
+                    aktivitas: aktivitasFormatted,
+                    teknisi: formData.teknisi.join(', '),
                     bukti: buktiUrl,
+                    note: formData.note,
                     approve: false, // Add this line
                     createdAt: serverTimestamp(),
                     userId: currentUser.uid
@@ -355,6 +360,17 @@ const TambahCatatan = () => {
               </div>
             </div>
 
+            <div>
+                            <label className="block text-sm font-medium text-gray-700">Catatan</label>
+                            <textarea
+                                name="note"
+                                value={formData.note}
+                                onChange={handleInputChange}
+                                rows={4}
+                                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                            />
+                        </div>
+
 <div className="relative" ref={dropdownRef}>
   <label className="block text-sm font-medium text-gray-700">Teknisi</label>
   <button
@@ -410,11 +426,6 @@ const TambahCatatan = () => {
                                 </button>
                             </div>
                         )}
-                    </div>
-
-                    {/* Signature Component */}
-                    <div className="mb-4">
-                        <Tandatangan onSignatureChange={handleSignatureChange} />
                     </div>
                 </div>
 

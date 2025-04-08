@@ -142,6 +142,12 @@ const TambahCatatan = () => {
         }
     };
 
+    const aktivitasFinal = [...formData.aktivitas];
+        if (formData.Tx) aktivitasFinal.push(formData.Tx); // Tambahkan Tx
+        if (formData.Rx) aktivitasFinal.push(formData.Rx); // Tambahkan Rx
+
+        const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (formData.teknisi.length === 0) {
@@ -162,12 +168,13 @@ const TambahCatatan = () => {
 
             // Save to Firestore
             await addDoc(collection(db, 'CM-CNS'), {
-                ...formData,
-                teknisi: formData.teknisi.join(', '),
-                buktiUrl,
-                userId: currentUser.uid,
-                createdAt: new Date().toISOString()
-            });
+                            ...formData,
+                            teknisi: formData.teknisi.join(', '),
+                            aktivitas: aktivitasFormatted,
+                            buktiUrl,
+                            userId: currentUser.uid,
+                            createdAt: new Date().toISOString()
+                        });
 
             navigate('/cm-cns');
         } catch (error) {

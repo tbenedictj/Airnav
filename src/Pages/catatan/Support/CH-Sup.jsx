@@ -9,6 +9,8 @@ const CatatanHarian = () => {
     const [catatan, setCatatan] = useState([]);
     const [expandedRows, setExpandedRows] = useState({});
     const [expandedTeknisi, setExpandedTeknisi] = useState({});
+    const [expandedAlat, setExpandedAlat] = useState({});
+    const [expandedNote, setExpandedNote] = useState({});
     const [searchTerm, setSearchTerm] = useState('');
     const [entriesPerPage, setEntriesPerPage] = useState(10);
     const [currentPage, setCurrentPage] = useState(1);
@@ -42,11 +44,29 @@ const CatatanHarian = () => {
         }
     };
 
-    const toggleRow = (id) => {
-        setExpandedRows(prev => ({
-            ...prev,
-            [id]: !prev[id]
-        }));
+    const toggleRowExpansion = (id, type) => {
+        if (type === 'aktivitas') {
+            setExpandedRows(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        } else if (type === 'teknisi') {
+            setExpandedTeknisi(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        } else if (type === 'peralatan') {
+            setExpandedAlat(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        }
+        else if (type === 'note') {
+            setExpandedNote(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        }
     };
 
     const toggleTeknisi = (id) => {
@@ -168,26 +188,50 @@ const CatatanHarian = () => {
                                     <td className="py-2 px-4 border border-gray-300 whitespace-nowrap overflow-hidden overflow-ellipsis">
                                         {formatDateTime(item.tanggal, item.jamSelesai)}
                                     </td>
-                                    <td className="py-2 px-4 border">{item.peralatan}</td>
-                                    <td className="py-2 px-4 border">
-                                        {item.aktivitas?.length > 50 ? (
-                                            <div>
-                                                <span>
-                                                    {expandedRows[item.id] 
-                                                        ? item.aktivitas
-                                                        : `${item.aktivitas.substring(0, 50)}...`}
-                                                </span>
-                                                <button 
-                                                    className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
-                                                    onClick={() => toggleRow(item.id)}
-                                                >
-                                                    {expandedRows[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                </button>
+                                    <td className="py-2 px-4 border border-gray-300 max-w-[150px] whitespace-nowrap overflow-hidden overflow-ellipsis">
+                                            <div className="break-words whitespace-pre-wrap">
+                                            {item.peralatan?.length > 20 ? (
+                                                <>
+                                                    <span>
+                                                        {expandedAlat[item.id]
+                                                            ? item.peralatan
+                                                            : `${item.peralatan.substring(0, 20)}...`
+                                                        }
+                                                    </span>
+                                                    <span
+                                                        className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm block mt-1"
+                                                        onClick={() => toggleRowExpansion(item.id, 'peralatan')}
+                                                    >
+                                                        {expandedRows[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                    </span>
+                                                </>
+                                            ) : (
+                                                <span>{item.peralatan}</span>
+                                            )}
                                             </div>
-                                        ) : (
-                                            item.aktivitas
-                                        )}
-                                    </td>
+                                        </td>
+                                    <td className="py-2 px-4 border border-gray-300 max-w-[300px]">
+                                            <div className="break-words whitespace-pre-wrap">
+                                                {item.aktivitas?.length > 50 ? (
+                                                    <>
+                                                        <span>
+                                                            {expandedRows[item.id] 
+                                                                ? item.aktivitas
+                                                                : `${item.aktivitas.substring(0, 50)}...`
+                                                            }
+                                                        </span>
+                                                        <span 
+                                                            className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm block mt-1"
+                                                            onClick={() => toggleRowExpansion(item.id, 'aktivitas')}
+                                                        >
+                                                            {expandedRows[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                        </span>
+                                                    </>
+                                                ) : (
+                                                    <span>{item.aktivitas}</span>
+                                                )}
+                                            </div>
+                                        </td>
                                     <td className="py-2 px-4 border">
                                         {Array.isArray(item.teknisi) ? (
                                             item.teknisi.join(', ').length > 20 ? (
@@ -197,12 +241,12 @@ const CatatanHarian = () => {
                                                             ? item.teknisi.join(', ')
                                                             : `${item.teknisi.join(', ').substring(0, 20)}...`}
                                                     </span>
-                                                    <button 
-                                                        className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                    <span 
+                                                        className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm block mt-1"
                                                         onClick={() => toggleTeknisi(item.id)}
                                                     >
                                                         {expandedTeknisi[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                    </button>
+                                                    </span>
                                                 </div>
                                             ) : (
                                                 item.teknisi.join(', ')
@@ -211,13 +255,39 @@ const CatatanHarian = () => {
                                             item.teknisi
                                         )}
                                     </td>
-                                    <td className="py-2 px-4 border">{item.status}</td>
-                                    <td className="py-2 px-4 border">
-                                        {item.paraf && (
-                                            <img src={item.paraf} alt="Paraf" className="w-24 h-12 mx-auto" />
-                                        )}
-                                    </td>
-                                    <td className="py-2 px-4 border">
+                                    <td className="py-2 px-4 border border-gray-300 max-w-[300px]">
+                                            <div className="break-words whitespace-pre-wrap">
+                                                {item.note?.length > 50 ? (
+                                            <>
+                                                <span>
+                                                    {expandedNote[item.id]
+                                                    ? item.note
+                                                    : `${item.note.substring(0, 50)}...`
+                                                    }
+                                                </span>
+                                                <span
+                                                    className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm block mt-1"
+                                                    onClick={() => toggleRowExpansion(item.id, 'note')}
+                                                >
+                                                    {expandedNote[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                </span>
+                                            </>
+                                            ) : (
+                                                <span>{item.note || '-'}</span>
+                                            )}
+                                            </div>
+                                        </td>
+                                        <td className="py-2 px-4 border border-gray-300 text-center">
+                                            {item.bukti && (
+                                                <img
+                                                    src={item.bukti}
+                                                    alt="Paraf"
+                                                    className="w-12 h-12 object-contain cursor-pointer mx-auto"
+                                                    onClick={() => window.open(item.bukti, '_blank')}
+                                                />
+                                            )}
+                                        </td>    
+                                    <td className="py-2 px-4 border border-gray-300">
                                         <div className="flex space-x-2 justify-center">
                                             <button 
                                                 className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"

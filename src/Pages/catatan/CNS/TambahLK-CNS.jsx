@@ -14,9 +14,7 @@ const TambahCatatan = () => {
     tanggal: '',
     jamSelesai: '',
     peralatan: '',
-    aktivitas: [],
-    Tx: '',
-    Rx: '',
+    aktivitas: '',
     teknisi: [], // Teknisi disimpan sebagai array
     status: 'open',
     bukti: null,
@@ -85,24 +83,6 @@ const TambahCatatan = () => {
     }
   };
 
-  const handleRadioChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleCheckboxChange = (e) => {
-    const { value, checked } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      aktivitas: checked
-        ? [...prev.aktivitas, value] // Tambah aktivitas jika dicentang
-        : prev.aktivitas.filter(item => item !== value) // Hapus aktivitas jika tidak dicentang
-    }));
-  };
-
   const handleTeknisiChange = (e) => {
     const { value, checked } = e.target;
     setFormData(prev => ({
@@ -140,16 +120,10 @@ const TambahCatatan = () => {
         buktiUrl = await getDownloadURL(buktiRef);
       }
 
-      const aktivitasFinal = [...formData.aktivitas];
-      if (formData.Tx) aktivitasFinal.push(formData.Tx);
-      if (formData.Rx) aktivitasFinal.push(formData.Rx);
-
-      const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
-
       // Simpan ke Firestore
       await addDoc(collection(db, 'LaporanCNS'), {
         ...formData,
-        aktivitas: aktivitasFormatted,
+        aktivitas: formData.aktivitas,
         buktiUrl: buktiUrl || null,
         userId: currentUser.uid,
         createdAt: new Date().toISOString(),
@@ -228,134 +202,17 @@ const TambahCatatan = () => {
             </div>
 
             {/* Input Aktivitas */}
-            <div className="flex flex-col sm:flex-row justify-between pt-4 text-black">
-              <div className="mt-2">
-                <label className="block">
-                  <input
-                    className="mr-2"
-                    type="checkbox"
-                    name="aktivitas"
-                    value="Pemeliharaan Harian"
-                    checked={formData.aktivitas.includes('Pemeliharaan Harian')}
-                    onChange={handleCheckboxChange}
-                  />
-                  Pemeliharaan Harian
-                </label>
-                <label className="block">
-                  <input
-                    className="mr-2"
-                    type="checkbox"
-                    name="aktivitas"
-                    value="Memeriksa kondisi pengaturan suhu ruangan"
-                    checked={formData.aktivitas.includes('Memeriksa kondisi pengaturan suhu ruangan')}
-                    onChange={handleCheckboxChange}
-                  />
-                  Memeriksa kondisi pengaturan suhu ruangan
-                </label>
-                <label className="block">
-                  <input
-                    className="mr-2"
-                    type="checkbox"
-                    name="aktivitas"
-                    value="Periksa seluruh lampu indikator"
-                    checked={formData.aktivitas.includes('Periksa seluruh lampu indikator')}
-                    onChange={handleCheckboxChange}
-                  />
-                  Periksa seluruh lampu indikator
-                </label>
-                <label className="block">
-                  <input
-                    className="mr-2"
-                    type="checkbox"
-                    name="aktivitas"
-                    value="Membersihkan ruangan peralatan"
-                    checked={formData.aktivitas.includes('Membersihkan ruangan peralatan')}
-                    onChange={handleCheckboxChange}
-                  />
-                  Membersihkan ruangan peralatan
-                </label>
-                <label className="block">
-                  <input
-                    className="mr-2"
-                    type="checkbox"
-                    name="aktivitas"
-                    value="Test On Load Battery"
-                    checked={formData.aktivitas.includes('Test On Load Battery')}
-                    onChange={handleCheckboxChange}
-                  />
-                  Test On Load Battery
-                </label>
-                <label className="block">
-                  <input
-                    className="mr-2"
-                    type="checkbox"
-                    name="aktivitas"
-                    value="Peralatan Normal Operasi"
-                    checked={formData.aktivitas.includes('Peralatan Normal Operasi')}
-                    onChange={handleCheckboxChange}
-                  />
-                  Peralatan Normal Operasi
-                </label>
-              </div>
-            </div>
-
-            {/* Input Status Tx */}
-            <div className="mb-4">
-              <label className="block text-gray-700 font-semibold">Status Peralatan Tx</label>
-              <div className="mt-2">
-                <label className="mr-4">
-                  <input
-                    className="mr-2"
-                    name="Tx"
-                    type="radio"
-                    value="Tx 1 Main | Tx 2 Standby"
-                    checked={formData.Tx === 'Tx 1 Main | Tx 2 Standby'}
-                    onChange={handleRadioChange}
-                  />
-                  Tx 1
-                </label>
-                <label>
-                  <input
-                    className="mr-2"
-                    name="Tx"
-                    type="radio"
-                    value="Tx 2 Main | Tx 1 Standby"
-                    checked={formData.Tx === 'Tx 2 Main | Tx 1 Standby'}
-                    onChange={handleRadioChange}
-                  />
-                  Tx 2
-                </label>
-              </div>
-            </div>
-
-            {/* Input Status Rx */}
-            <div className="mb-4">
-              <label className="block text-gray-700 font-semibold">Status Peralatan Rx</label>
-              <div className="mt-2">
-                <label className="mr-4">
-                  <input
-                    className="mr-2"
-                    name="Rx"
-                    type="radio"
-                    value="Rx 1 Main | Rx 2 Standby"
-                    checked={formData.Rx === 'Rx 1 Main | Rx 2 Standby'}
-                    onChange={handleRadioChange}
-                  />
-                  Rx 1
-                </label>
-                <label>
-                  <input
-                    className="mr-2"
-                    name="Rx"
-                    type="radio"
-                    value="Rx 2 Main | Rx 1 Standby"
-                    checked={formData.Rx === 'Rx 2 Main | Rx 1 Standby'}
-                    onChange={handleRadioChange}
-                  />
-                  Rx 2
-                </label>
-              </div>
-            </div>
+            <div>
+                            <label className="block text-sm font-medium text-gray-700">Aktivitas</label>
+                            <textarea
+                                name="aktivitas"
+                                value={formData.aktivitas}
+                                onChange={handleInputChange}
+                                rows={4}
+                                className="mt-1 block w-full rounded-md border-[1px] border-black bg-white shadow-sm focus:border-black focus:ring-0"
+                                required
+                            />
+                        </div>
 
             {/* Input Teknisi (Toggle Dropdown dengan Checkbox) */}
             <div className="relative">

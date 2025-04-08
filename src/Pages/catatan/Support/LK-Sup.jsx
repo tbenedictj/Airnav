@@ -275,7 +275,7 @@ const LaporanKegiatanSup = () => {
                                     </button>
                                     <button 
                                         className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() => handleDelete(laporan.id)}
                                     >
                                         <i className="fas fa-trash text-white text-sm"></i>
                                     </button>

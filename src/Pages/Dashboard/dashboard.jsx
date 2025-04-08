@@ -135,7 +135,7 @@ const Dashboard = () => {
                     <div className="p-3 bg-gray-100 rounded text-center">
                         <p className="text-sm text-gray-500">AMSC</p>
                         <p className={`text-3xl font-bold italic ${
-                            suhuPeralatan.amsc > 40 ? 'text-red-500' : 'text-green-400'
+                            suhuPeralatan.amsc > 28 ? 'text-red-500' : 'text-green-400'
                         }`}>
                             {suhuPeralatan.amsc}°C
                         </p>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../../config/firebase';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import sign from '../../../assets/Icon/p1.png';
 
 
@@ -37,26 +37,39 @@ const LaporanKegiatanCNS = () => {
     }
     };
 
-    useEffect(() => {
-        const fetchLaporan = async () => {
-            try {
-                const laporanRef = collection(db, 'LaporanCNS');
-                const q = query(laporanRef, orderBy('createdAt', 'desc'));
-                const querySnapshot = await getDocs(q);
-                const laporan = querySnapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setLaporanList(laporan);
-                setLoading(false);
-            } catch (error) {
-                console.error('Error fetching laporan:', error);
-                setLoading(false);
-            }
-        };
+    const fetchLaporan = async () => {
+        try {
+            const laporanRef = collection(db, 'LaporanCNS');
+            const q = query(laporanRef, orderBy('createdAt', 'desc'));
+            const querySnapshot = await getDocs(q);
+            const laporan = querySnapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setLaporanList(laporan);
+            setLoading(false);
+        } catch (error) {
+            console.error('Error fetching laporan:', error);
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchLaporan();
     }, []);
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Apakah Anda yakin ingin menghapus data ini?')) {
+            try {
+                await deleteDoc(doc(db, 'LaporanCNS', id));
+                fetchLaporan(); 
+                alert('Data berhasil dihapus');
+            } catch (error) {
+                console.error('Error deleting document:', error);
+                alert('Terjadi kesalahan saat menghapus data');
+            }
+        }
+    };
 
     // Filter laporan based on search term
     const filteredLaporan = laporanList.filter(laporan => {
@@ -270,7 +283,7 @@ const LaporanKegiatanCNS = () => {
                                     </button>
                                     <button 
                                         className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
-                                        onClick={() => handleDelete(item.id)}
+                                        onClick={() => handleDelete(laporan.id)}
                                     >
                                         <i className="fas fa-trash text-white text-sm"></i>
                                     </button>

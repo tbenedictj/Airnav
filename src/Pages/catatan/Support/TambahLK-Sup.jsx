@@ -113,12 +113,13 @@ const TambahCatatan = () => {
                 buktiUrl = await getDownloadURL(snapshot.ref);
             }
 
+
             await addDoc(collection(db, "LaporanSupport"), {
                 tanggal: formData.tanggal,
                 jamSelesai: formData.jamSelesai,
                 peralatan: formData.peralatan,
                 aktivitas: formData.aktivitas,
-                teknisi: formData.teknisi,
+                teknisi: formData.teknisi.join(', '),
                 status: formData.status,
                 bukti: buktiUrl,
                 approve: false, // Add this line

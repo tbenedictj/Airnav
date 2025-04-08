@@ -14,6 +14,7 @@ const CatatanHarian = () => {
     const [expandedRows, setExpandedRows] = useState({});
     const [expandedTeknisi, setExpandedTeknisi] = useState({});
     const [expandedAlat, setExpandedAlat] = useState({});
+    const [expandedNote, setExpandedNote] = useState({});
 
     useEffect(() => {
         fetchData();
@@ -61,6 +62,12 @@ const CatatanHarian = () => {
             }));
         } else if (type === 'peralatan') {
             setExpandedAlat(prev => ({
+                ...prev,
+                [id]: !prev[id]
+            }));
+        }
+        else if (type === 'note') {
+            setExpandedNote(prev => ({
                 ...prev,
                 [id]: !prev[id]
             }));
@@ -248,9 +255,26 @@ const CatatanHarian = () => {
                                                 )}
                                             </div>
                                         </td>
-                                        <td className="py-2 px-4 border border-gray-300">
-                                            <div className="max-h-20 overflow-y-auto break-words">
-                                                {item.note || '-'}
+                                        <td className="py-2 px-4 border border-gray-300 max-w-[300px]">
+                                            <div className="break-words whitespace-pre-wrap">
+                                                {item.note?.length > 50 ? (
+                                            <>
+                                                <span>
+                                                    {expandedNote[item.id]
+                                                    ? item.note
+                                                    : `${item.note.substring(0, 50)}...`
+                                                    }
+                                                </span>
+                                                <span
+                                                    className="text-blue-600 hover:text-blue-800 cursor-pointer text-sm block mt-1"
+                                                    onClick={() => toggleRowExpansion(item.id, 'note')}
+                                                >
+                                                    {expandedNote[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
+                                                </span>
+                                            </>
+                                            ) : (
+                                                <span>{item.note || '-'}</span>
+                                            )}
                                             </div>
                                         </td>
                                         <td className="py-2 px-4 border border-gray-300 text-center">

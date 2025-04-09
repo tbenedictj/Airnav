@@ -277,7 +277,7 @@ const LaporanKegiatanCNS = () => {
                                     </button>
                                     <button 
                                         className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
-                                        onClick={() => navigate(`/detail-lk-cns/${laporan.id}`)}
+                                        onClick={() => navigate(`/lk-cns-pdf/${laporan.id}`)}
                                     >
                                         <i className="fas fa-file text-white text-sm"></i>
                                     </button>

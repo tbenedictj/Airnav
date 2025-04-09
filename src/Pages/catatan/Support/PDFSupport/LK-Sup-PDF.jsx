@@ -215,6 +215,9 @@ const LKSupPDF = () => {
           Print to PDF
         </button>
       </div>
+      <footer className="text-center py-4">
+        <p className="text-black">Air Nav Manado</p>
+    </footer>
     </div>
   );
 };

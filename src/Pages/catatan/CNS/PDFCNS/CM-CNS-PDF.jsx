@@ -160,7 +160,7 @@ const CMCNSPDF = () => {
       <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
         <nav className="text-gray-600">
           <span className="mx-2">/</span>
-          <Link to="/ch-cns" className="text-blue-500"> Data Pemeliharaan Mingguan CNS</Link>
+          <Link to="/cm-cns" className="text-blue-500"> Data Pemeliharaan Mingguan CNS</Link>
           <span className="mx-2">/</span>
           <span>Filter Data PDF</span>
         </nav>
@@ -211,6 +211,9 @@ const CMCNSPDF = () => {
           Print to PDF
         </button>
       </div>
+      <footer className="text-center py-4">
+        <p className="text-black">Air Nav Manado</p>
+    </footer>
     </div>
   );
 };

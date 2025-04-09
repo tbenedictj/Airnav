@@ -286,7 +286,7 @@ const CatatanBulanan = () => {
                                             </button>
                                             <button 
                                                 className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
-                                                onClick={() => navigate(`/detail-cb-sup/${item.id}`)}
+                                                onClick={() => navigate(`/cb-sup-pdf/${item.id}`)}
                                             >
                                                 <i className="fas fa-file text-white text-sm"></i>
                                             </button>

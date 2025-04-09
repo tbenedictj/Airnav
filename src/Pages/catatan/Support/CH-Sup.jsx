@@ -69,12 +69,6 @@ const CatatanHarian = () => {
         }
     };
 
-    const toggleTeknisi = (id) => {
-        setExpandedTeknisi(prev => ({
-            ...prev,
-            [id]: !prev[id]
-        }));
-    };
 
     const filteredCatatan = catatan.filter(item => {
         const searchString = searchTerm.toLowerCase();
@@ -297,7 +291,7 @@ const CatatanHarian = () => {
                                             </button>
                                             <button 
                                                 className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
-                                                onClick={() => navigate(`/detail-ch-sup/${item.id}`)}
+                                                onClick={() => navigate(`/ch-sup-pdf/${item.id}`)}
                                             >
                                                 <i className="fas fa-file text-white text-sm"></i>
                                             </button>

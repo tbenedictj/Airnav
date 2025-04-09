@@ -48,6 +48,8 @@ import LKCNSPDF from './Pages/catatan/CNS/PDFCNS/LK_CNS_PDF';
 import CHCNSPDF from './Pages/catatan/CNS/PDFCNS/CH-CNS-PDF';
 import CMCNSPDF from './Pages/catatan/CNS/PDFCNS/CM-CNS-PDF';
 import CBCNSPDF from './Pages/catatan/CNS/PDFCNS/CB-CNS-PDF';
+import CHCNSPDFSingle from './Pages/catatan/CNS/PDFCNS/CH-CNS-PDF-Single';
+import CMCNSPDFSingle from './Pages/catatan/CNS/PDFCNS/CM-CNS-PDF-Single';
 import LKSupPDF from './Pages/catatan/Support/PDFSupport/LK-Sup-PDF';
 import CHSupPDF from './Pages/catatan/Support/PDFSupport/CH-Sup-PDF';
 import CMSupPDF from './Pages/catatan/Support/PDFSupport/CM-Sup-PDF';
@@ -62,6 +64,12 @@ import CMSupView from './Pages/catatan/Support/View only/CM-Sup View';
 import CBSupView from './Pages/catatan/Support/View only/CB-Sup View';
 import Approval from './Pages/Aprroval/Approval';
 import ChatBot from './Pages/chatbot';
+import CBCnsSinglePDF from './Pages/catatan/CNS/PDFCNS/CB-CNS-PDF-Single';
+import LKCnsSinglePDF from './Pages/catatan/CNS/PDFCNS/LK-CNS-PDF-Single';
+import CHSupSinglePDF from './Pages/catatan/Support/PDFSupport/CH-Sup-PDF-Single';
+import CMSupSinglePDF from './Pages/catatan/Support/PDFSupport/CM-Sup-PDF-Single';
+import CBSupSinglePDF from './Pages/catatan/Support/PDFSupport/CB-Sup-PDF-Single';
+import LKSupSinglePDF from './Pages/catatan/Support/PDFSupport/LK-Sup-PDF-Single';
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
@@ -619,6 +627,58 @@ function App() {
             }
           />
           <Route
+            path="/ch-cns-pdf/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CHCNSPDFSingle />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cm-cns-pdf/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CMCNSPDFSingle />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cb-cns-pdf/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CBCnsSinglePDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lk-cns-pdf/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <LKCnsSinglePDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/lk-sup-pdf"
             element={
               <PrivateRoute>
@@ -678,6 +738,58 @@ function App() {
                   <Navigation onToggle={handleSidebarToggle} />
                   <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
                     <CBSupPDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/ch-sup-pdf/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CHSupSinglePDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cm-sup-pdf/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CMSupSinglePDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/cb-sup-pdf/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <CBSupSinglePDF />
+                  </main>
+                </div>
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/lk-sup-pdf/:id"
+            element={
+              <PrivateRoute>
+                <div className="app-container">
+                  <Navigation onToggle={handleSidebarToggle} />
+                  <main className={`main-content ${!isSidebarExpanded ? 'sidebar-collapsed' : ''}`}>
+                    <LKSupSinglePDF />
                   </main>
                 </div>
               </PrivateRoute>

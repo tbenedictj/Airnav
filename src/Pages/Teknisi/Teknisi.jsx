@@ -1,67 +1,73 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useNavigate } from 'react-router-dom';
-import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
-import { db } from '../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+
+const API_URL = 'http://localhost:5000/api';
 
 function Teknisi() {
   const navigate = useNavigate();
   const [teknisiData, setTeknisiData] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Fetch data from Firestore
-  useEffect(() => {
-    const fetchTeknisi = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "teknisi"));
-        const teknisiList = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        setTeknisiData(teknisiList);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching teknisi:", err);
-        setError("Gagal memuat data teknisi");
-        setLoading(false);
-      }
-    };
-
-    fetchTeknisi();
-  }, []);
-
-  // Handle delete technician
-  const handleDelete = async (id) => {
-    if (window.confirm("Apakah Anda yakin ingin menghapus teknisi ini?")) {
-      try {
-        await deleteDoc(doc(db, "teknisi", id));
-        setTeknisiData(prevData => prevData.filter(teknisi => teknisi.id !== id));
-        alert("Teknisi berhasil dihapus");
-      } catch (error) {
-        console.error("Error deleting technician:", error);
-        alert("Gagal menghapus teknisi");
-      }
+  // Fetch teknisi data
+  const fetchTeknisi = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`${API_URL}/teknisi`);
+      setTeknisiData(response.data);
+    } catch (error) {
+      setError('Error fetching teknisi data');
+      console.error('Error:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  // Add new teknisi
+  const addTeknisi = async (teknisiData) => {
+    try {
+      const response = await axios.post(`${API_URL}/teknisi`, teknisiData);
+      setTeknisiData([...teknisiData, response.data]);
+    } catch (error) {
+      setError('Error adding teknisi');
+      console.error('Error:', error);
+    }
+  };
 
-  if (error) {
-    return (
-      <div className="text-red-500 text-center p-4">
-        {error}
-      </div>
-    );
-  }
+  // Update teknisi
+  const updateTeknisi = async (id, teknisiData) => {
+    try {
+      const response = await axios.put(`${API_URL}/teknisi/${id}`, teknisiData);
+      setTeknisiData(teknisiData.map(item => 
+        item.id === id ? response.data : item
+      ));
+    } catch (error) {
+      setError('Error updating teknisi');
+      console.error('Error:', error);
+    }
+  };
+
+  // Delete teknisi
+  const deleteTeknisi = async (id) => {
+    try {
+      await axios.delete(`${API_URL}/teknisi/${id}`);
+      setTeknisiData(teknisiData.filter(item => item.id !== id));
+    } catch (error) {
+      setError('Error deleting teknisi');
+      console.error('Error:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTeknisi();
+  }, []);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -86,6 +92,7 @@ function Teknisi() {
             <tr className="text-black border-b border-gray-300">
               <th className="py-2 px-4 border-r border-gray-300">Nama Teknisi</th>
               <th className="py-2 px-4 border-r border-gray-300">Kategori</th>
+              <th className="py-2 px-4 border-r border-gray-300">Aksi</th>
             </tr>
           </thead>
 
@@ -95,6 +102,10 @@ function Teknisi() {
               <tr key={index} className="hover:bg-gray-100 border-b border-gray-300">
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.name}</td>
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.category}</td>
+                <td className="py-2 px-4 border-r border-gray-300">
+                  <button className="px-3 py-1 border border-blue-300 rounded-md text-blue-600 hover:bg-blue-50" onClick={() => navigate(`/teknisi/${teknisi.id}/edit`)}><FontAwesomeIcon icon={faEdit} /></button>
+                  <button className="px-3 py-1 border border-red-300 rounded-md text-red-600 hover:bg-red-50" onClick={() => deleteTeknisi(teknisi.id)}><FontAwesomeIcon icon={faTrash} /></button>
+                </td>
               </tr>
             ))}
           </tbody>

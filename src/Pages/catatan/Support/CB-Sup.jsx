@@ -1,44 +1,78 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash, faEye, faPlus } from '@fortawesome/free-solid-svg-icons';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import { db } from '../../../config/firebase';
-import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
+
+const API_URL = 'http://localhost:5000/api';
 
 const CatatanBulanan = () => {
     const navigate = useNavigate();
-    const [catatan, setCatatan] = useState([]);
+    const [data, setData] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [searchTerm, setSearchTerm] = useState('');
     const [expandedRows, setExpandedRows] = useState({});
     const [expandedTeknisi, setExpandedTeknisi] = useState({});
-    const [searchTerm, setSearchTerm] = useState('');
 
-    useEffect(() => {
-        fetchCatatan();
-    }, []);
-
-    const fetchCatatan = async () => {
+    // Fetch data
+    const fetchData = async () => {
         try {
-            const q = query(collection(db, 'CB-Sup'), orderBy('createdAt', 'desc'));
-            const querySnapshot = await getDocs(q);
-            const catatanData = querySnapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
-            setCatatan(catatanData);
-        } catch (error) {
-            console.error('Error fetching data:', error);
+            setLoading(true);
+            const response = await axios.get(`${API_URL}/support/CB`);
+            setData(response.data);
+            setError(null);
+        } catch (err) {
+            console.error("Error fetching data:", err);
+            setError("Failed to load data");
+        } finally {
+            setLoading(false);
         }
     };
 
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    // Delete record
     const handleDelete = async (id) => {
-        if (window.confirm('Apakah Anda yakin ingin menghapus catatan ini?')) {
+        if (window.confirm("Are you sure you want to delete this record?")) {
             try {
-                await deleteDoc(doc(db, 'CB-Sup', id));
-                fetchCatatan();
+                await axios.delete(`${API_URL}/support/CB/${id}`);
+                setData(prevData => prevData.filter(item => item.id !== id));
+                alert("Record deleted successfully");
             } catch (error) {
-                console.error('Error deleting document:', error);
+                console.error("Error deleting record:", error);
+                alert("Failed to delete record");
             }
         }
     };
+
+    // Filter data based on search term
+    const filteredData = data.filter(item =>
+        item.waktu?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.peralatan?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        item.aktivitas?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (Array.isArray(item.teknisi) ? item.teknisi.join(', ').toLowerCase().includes(searchTerm.toLowerCase()) : false) ||
+        item.status?.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (loading) {
+        return (
+            <div className="flex justify-center items-center h-screen">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="text-red-500 text-center p-4">
+                {error}
+            </div>
+        );
+    }
 
     const toggleRow = (id) => {
         setExpandedRows(prev => ({
@@ -53,17 +87,6 @@ const CatatanBulanan = () => {
             [id]: !prev[id]
         }));
     };
-
-    const filteredCatatan = catatan.filter(item => {
-        const searchString = searchTerm.toLowerCase();
-        return (
-            item.waktu?.toLowerCase().includes(searchString) ||
-            item.peralatan?.toLowerCase().includes(searchString) ||
-            item.aktivitas?.toLowerCase().includes(searchString) ||
-            (Array.isArray(item.teknisi) ? item.teknisi.join(', ').toLowerCase().includes(searchString) : false) ||
-            item.status?.toLowerCase().includes(searchString)
-        );
-    });
 
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -86,13 +109,15 @@ const CatatanBulanan = () => {
                             onClick={() => navigate('/tambah-cb-sup')}
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
-                            <i className="fas fa-plus mr-2"></i> Tambah Data
+                            <FontAwesomeIcon icon={faPlus} className="mr-2" />
+                            Tambah Data
                         </button>
                         <button
                             onClick={() => navigate('/cb-sup-pdf')}
                             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
                         >
-                            <i className="fas fa-filter mr-2"></i> Filter & Print PDF
+                            <FontAwesomeIcon icon={faEye} className="mr-2" />
+                            Filter & Print PDF
                         </button>
                     </div>
                     <div className="flex items-center">
@@ -119,7 +144,7 @@ const CatatanBulanan = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {filteredCatatan.map((item) => (
+                            {filteredData.map((item) => (
                                 <tr key={item.id}>
                                     <td className="py-2 px-4 border">{item.waktu}</td>
                                     <td className="py-2 px-4 border">{item.peralatan}</td>
@@ -177,19 +202,19 @@ const CatatanBulanan = () => {
                                                 className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center"
                                                 onClick={() => navigate(`/edit-cb-sup/${item.id}`)}
                                             >
-                                                <i className="fas fa-edit text-white text-sm"></i>
+                                                <FontAwesomeIcon icon={faEdit} className="text-white text-sm"></FontAwesomeIcon>
                                             </button>
                                             <button 
                                                 className="w-[30px] h-[30px] bg-blue-500 hover:bg-blue-600 rounded flex items-center justify-center"
                                                 onClick={() => navigate(`/detail-cb-sup/${item.id}`)}
                                             >
-                                                <i className="fas fa-file text-white text-sm"></i>
+                                                <FontAwesomeIcon icon={faEye} className="text-white text-sm"></FontAwesomeIcon>
                                             </button>
                                             <button 
                                                 className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center"
                                                 onClick={() => handleDelete(item.id)}
                                             >
-                                                <i className="fas fa-trash text-white text-sm"></i>
+                                                <FontAwesomeIcon icon={faTrash} className="text-white text-sm"></FontAwesomeIcon>
                                             </button>
                                         </div>
                                     </td>

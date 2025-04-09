@@ -61,10 +61,12 @@ import CHSupView from './Pages/catatan/Support/View only/CH-Sup View';
 import CMSupView from './Pages/catatan/Support/View only/CM-Sup View';
 import CBSupView from './Pages/catatan/Support/View only/CB-Sup View';
 import Approval from './Pages/Aprroval/Approval';
-import ChatBot from './Pages/chatbot';
+import ChatBot from './Pages/chatBot/chatbot';
+import authService from './services/authService';
 
 function App() {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const isAuthenticated = authService.isAuthenticated();
 
   const handleSidebarToggle = (expanded) => {
     setIsSidebarExpanded(expanded);
@@ -75,7 +77,9 @@ function App() {
       <Router>
         <Routes>
           {/* Public route for login */}
-          <Route path="/loginform" element={<LoginForm />} />
+          <Route path="/loginform" element={
+            isAuthenticated ? <Navigate to="/dashboard" /> : <LoginForm />
+          } />
           
           {/* Protected routes */}
           <Route path="/menu" element={
@@ -809,8 +813,12 @@ function App() {
             }
           />
           {/* Default routes */}
-          <Route path="/" element={<Navigate to="/loginform" replace />} />
-          <Route path="*" element={<Navigate to="/loginform" replace />} />
+          <Route path="/" element={
+            isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/loginform" />
+          } />
+          <Route path="*" element={
+            isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/loginform" />
+          } />
         </Routes>
       </Router>
     </AuthProvider>

@@ -1,0 +1,30 @@
+# Project Summary: AirNav
+
+## Overview
+The AirNav project is a web application designed for monitoring and managing aviation-related data. It provides functionalities for users to view, approve, and manage various reports related to aviation operations.
+
+## Key Features
+1. **Dashboard**: A central hub for users to access various functionalities, including viewing reports and managing entries.
+2. **Approval System**: Users can approve or reject reports, with functionalities to track pending changes.
+3. **Firebase Integration**: Utilizes Firebase Firestore for data storage and management, allowing real-time updates and easy data retrieval.
+4. **User Authentication**: Implements user authentication to ensure that only authorized personnel can approve or manage reports.
+5. **Responsive Design**: The application is designed to be responsive, ensuring usability across different devices and screen sizes.
+
+## Components
+- **Sidebar**: Provides navigation to different sections of the application, including Dashboard, CNS, Support, and Approval.
+- **Approval Page**: Displays reports waiting for approval, allowing users to approve or reject them. It includes features for searching and filtering reports.
+- **Data Management**: Handles fetching, updating, and displaying data from Firebase, ensuring that users see the most current information.
+
+## Technologies Used
+- **React**: The front-end framework for building the user interface.
+- **Firebase**: For authentication and real-time data storage.
+- **Tailwind CSS**: For styling and responsive design.
+- **Font Awesome**: For icons used throughout the application.
+
+## Future Enhancements
+- Implementing more advanced filtering options for reports.
+- Adding user roles and permissions for more granular access control.
+- Enhancing the user interface for better user experience.
+
+## Conclusion
+The AirNav project aims to streamline the management of aviation reports, ensuring that users can efficiently approve and track changes in real-time. With the integration of modern web technologies, it provides a robust platform for aviation data management.

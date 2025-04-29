@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { storage, db } from "../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../../../config/AuthContext";
 
 const TambahCatatan = () => {
@@ -17,9 +17,12 @@ const TambahCatatan = () => {
     aktivitas: [],
     Tx: '',
     Rx: '',
-    teknisi: '',
+    teknisi: [],
     status: 'open',
-    bukti: null
+    bukti: null,
+    editedBy: null,
+    editedAt: null,
+    pendingChanges: []
   });
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -139,9 +142,12 @@ const handleCheckboxChange = (e) => {
         await addDoc(collection(db, 'LaporanCNS'), {
         ...formData,
         aktivitas: aktivitasFormatted, // Simpan aktivitas gabungan
-        buktiUrl,
+        buktiUrl: null,
         userId: currentUser.uid,
-        createdAt: new Date().toISOString(),
+        createdAt: new Date().toISOString(),// Add this line
+        editedAt: null,
+        editedBy: null,
+        pendingChanges: []
         });
 
       navigate(-1); // Go back to previous page

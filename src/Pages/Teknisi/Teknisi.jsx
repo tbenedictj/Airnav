@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -64,16 +64,19 @@ function Teknisi() {
   }
 
   return (
-    <div className="container-fluid mt-40 mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
       {/* Header */}
-      <div className="w-screen max-w-4xl mb-6">
+ 
         <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Teknisi</h1>
-        <button
-          onClick={() => navigate('/tambah-teknisi')}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
-          <FontAwesomeIcon icon={faEdit} className="mr-2" /> Tambah Teknisi
-        </button>
-      </div>
+
+            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                <nav className="text-gray-600">
+                    <span className="mx-2">/</span>
+                    <Link to="/dashboard" className="text-blue-500">Dashboard</Link>
+                    <span className="mx-2">/</span>
+                    <span>List Teknisi</span>
+                </nav>
+            </div>    
 
       {/* Table Container */}
       <div className="w-screen max-w-4xl bg-white shadow-md rounded-lg p-4">
@@ -83,7 +86,6 @@ function Teknisi() {
             <tr className="text-black border-b border-gray-300">
               <th className="py-2 px-4 border-r border-gray-300">Nama Teknisi</th>
               <th className="py-2 px-4 border-r border-gray-300">Kategori</th>
-              <th className="py-2 px-4">Action</th>
             </tr>
           </thead>
 
@@ -93,20 +95,6 @@ function Teknisi() {
               <tr key={index} className="hover:bg-gray-100 border-b border-gray-300">
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.name}</td>
                 <td className="py-2 px-4 border-r border-gray-300">{teknisi.category}</td>
-                <td className="py-2 px-4 w-[110px]">
-                  <div className="flex space-x-1">
-                    <button 
-                      onClick={() => navigate(`/edit-teknisi/${teknisi.id}`)}
-                      className="w-[30px] h-[30px] bg-green-500 hover:bg-green-600 rounded flex items-center justify-center">
-                      <FontAwesomeIcon icon={faEdit} className="text-white text-sm" />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(teknisi.id)}
-                      className="w-[30px] h-[30px] bg-red-500 hover:bg-red-600 rounded flex items-center justify-center">
-                      <FontAwesomeIcon icon={faTrash} className="text-white text-sm" />
-                    </button>
-                  </div>
-                </td>
               </tr>
             ))}
           </tbody>

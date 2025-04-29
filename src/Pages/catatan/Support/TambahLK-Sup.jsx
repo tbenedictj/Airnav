@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { storage, db } from "../../../config/firebase";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import { collection, addDoc, getDocs, serverTimestamp } from "firebase/firestore";
 import { useAuth } from "../../../config/AuthContext";
 
 const TambahCatatan = () => {
@@ -120,7 +120,8 @@ const TambahCatatan = () => {
                 teknisi: formData.teknisi,
                 status: formData.status,
                 bukti: buktiUrl,
-                createdAt: new Date(),
+                approve: false, // Add this line
+                createdAt: serverTimestamp(),
                 userId: currentUser.uid
             });
 
@@ -269,17 +270,19 @@ const TambahCatatan = () => {
                             </select>
                         </div>
 
-                        <div className="flex justify-end space-x-4">
-                            <Link
-                                to="/lk-sup"
-                                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded"
+                        <div className="flex flex-col sm:flex-row justify-between pt-4">
+                            <button
+                                type="button"
+                                onClick={() => navigate(-1)}
+                                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
+                                disabled={loading}
                             >
                                 Kembali
-                            </Link>
+                            </button>
                             <button
                                 type="submit"
+                                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                                 disabled={loading}
-                                className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded disabled:bg-blue-300"
                             >
                                 {loading ? 'Menyimpan...' : 'Simpan'}
                             </button>

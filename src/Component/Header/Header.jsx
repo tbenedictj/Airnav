@@ -1,77 +1,32 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import '../../App.css';
+import React from 'react';
+import { useAuth } from '../../config/AuthContext';
+import HeaderAdmin from './Header - Admin';
+import HeaderCNS from './Header - CNS';
+import HeaderManager from './Header - Manager';
+import HeaderSup from './Header - Sup';
+import HeaderSupervisor from './Header - Supervisor';
+import HeaderViewer from './Header - Viewer';
 
 export default function Header({ expanded }) {
-  const [currentDate, setCurrentDate] = useState('');
-  const [currentShift, setCurrentShift] = useState('');
+  const { currentUser } = useAuth();
 
-  const determineShift = (hours) => {
-    if (hours >= 7 && hours < 13) {
-      return 'Dinas Pagi';
-    } else if (hours >= 13 && hours < 19) {
-      return 'Dinas Siang';
-    } else {
-      return 'Dinas Malam';
-    }
-  };
+  if (!currentUser) return null;
 
-  useEffect(() => {
-    const fetchCurrentTime = async () => {
-      try {
-        const response = await fetch('http://worldtimeapi.org/api/timezone/Asia/Jakarta');
-        const data = await response.json();
-        const date = new Date(data.datetime);
-        const options = { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric',
-          timeZone: 'Asia/Jakarta'
-        };
-        const formattedDate = date.toLocaleDateString('en-US', options);
-        setCurrentDate(formattedDate);
-        setCurrentShift(determineShift(date.getHours()));
-      } catch (error) {
-        console.error('Error fetching time:', error);
-        const date = new Date();
-        const options = { 
-          weekday: 'long', 
-          year: 'numeric', 
-          month: 'long', 
-          day: 'numeric' 
-        };
-        setCurrentDate(date.toLocaleDateString('en-US', options));
-        setCurrentShift(determineShift(date.getHours()));
-      }
-    };
-
-    fetchCurrentTime();
-    const interval = setInterval(fetchCurrentTime, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <header className={`header ${!expanded ? 'collapsed' : ''}`} style={{ left: expanded ? '16rem' : '4rem' }}>
-      <div className="flex items-center justify-end p-4">
-        <div className="flex items-center space-x-4">
-          <div className="flex items-center gap-2">
-            <div className="text-sm font-semibold text-black">
-              {currentDate}
-            </div>
-          </div>
-          <div className="border-l h-6 border-gray-300 mx-4"></div>
-          <div className="text-black">
-            Selamat Bekerja, <span className="font-bold text-black">{currentShift}</span>
-          </div>
-          <div className="border-l h-6 border-gray-300 mx-4"></div>
-          <div className="flex items-center text-black">
-            <span>admin</span>
-            <FontAwesomeIcon icon={faUser} className="ml-2" />
-          </div>
-        </div>
-      </div>
-    </header>
-  );
+  const email = currentUser.email.toLowerCase();
+  switch (email) {
+    case 'admin@airnav.com':
+      return <HeaderAdmin expanded={expanded} />;
+    case 'cns@airnav.com':
+      return <HeaderCNS expanded={expanded} />;
+    case 'manager@airnav.com':
+      return <HeaderManager expanded={expanded} />;
+    case 'support@airnav.com':
+      return <HeaderSup expanded={expanded} />;
+    case 'supervisor@airnav.com':
+      return <HeaderSupervisor expanded={expanded} />;
+    case 'viewer@airnav.com':
+      return <HeaderViewer expanded={expanded} />;
+    default:
+      return <HeaderViewer expanded={expanded} />;
+  }
 }

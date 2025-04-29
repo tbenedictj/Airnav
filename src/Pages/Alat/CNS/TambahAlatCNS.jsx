@@ -91,6 +91,8 @@ function TambahAlatCNS() {
                         <option value="Navigation">Navigation</option>
                         <option value="Surveillance">Surveillance</option>
                         <option value="Data Processing">Data Processing</option>
+                        <option value="DLL">DLL</option>
+                        <option value="Jaringan Pendukung">Jaringan Pendukung</option>
                     </select>
                 </div>
 
@@ -119,20 +121,22 @@ function TambahAlatCNS() {
                     />
                 </div>
 
-                <div className="flex space-x-4">
+                <div className="flex flex-col sm:flex-row justify-between pt-4">
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
+                        disabled={isLoading}
+                    >
+                        Kembali
+                    </button>
                     <button
                         type="submit"
-                        className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none disabled:bg-blue-300"
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
                         disabled={isLoading}
                     >
                         {isLoading ? 'Menyimpan...' : 'Simpan'}
                     </button>
-                    <Link
-                        to="/peralatan-cns"
-                        className="px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 focus:outline-none"
-                    >
-                        Kembali
-                    </Link>
                 </div>
             </form>
         </div>

@@ -98,7 +98,7 @@ const TambahCatatan = () => {
             : prev.aktivitas.filter(item => item !== value) // Hapus aktivitas jika tidak dicentang
         }));
       };
-      
+
     const handleTeknisiChange = (selectedTeknisi) => {
         setFormData(prev => {
             const updatedTeknisi = prev.teknisi.includes(selectedTeknisi)
@@ -160,10 +160,16 @@ const TambahCatatan = () => {
                 buktiUrl = await getDownloadURL(buktiRef);
             }
 
+            const aktivitasFinal = [...formData.aktivitas];
+                if (formData.Tx) aktivitasFinal.push(formData.Tx); // Tambahkan Tx
+                if (formData.Rx) aktivitasFinal.push(formData.Rx); // Tambahkan Rx
+
+                const aktivitasFormatted = aktivitasFinal.map(item => `- ${item}`).join('\n');
             // Save to Firestore
             await addDoc(collection(db, 'CH-CNS'), {
                 ...formData,
                 teknisi: formData.teknisi.join(', '),
+                aktivitas: aktivitasFormatted,
                 buktiUrl,
                 userId: currentUser.uid,
                 createdAt: new Date().toISOString()
@@ -490,21 +496,23 @@ const TambahCatatan = () => {
                         </div>
                     </div>
 
-                    <div className="flex justify-end space-x-4 pt-4">
-                        <Link
-                            to="/ch-cns"
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-gray-700 bg-gray-200 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
-                        >
-                            Batal
-                        </Link>
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        >
-                            {loading ? 'Menyimpan...' : 'Simpan'}
-                        </button>
-                    </div>
+                    <div className="flex flex-col sm:flex-row justify-between pt-4">
+                    <button
+                        type="button"
+                        onClick={() => navigate(-1)}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mb-2 sm:mb-0"
+                        disabled={loading}
+                    >
+                        Kembali
+                    </button>
+                    <button
+                        type="submit"
+                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                        disabled={loading}
+                    >
+                        {loading ? 'Menyimpan...' : 'Simpan'}
+                    </button>
+                </div>
                 </form>
             </div>
         </div>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { collection, getDocs, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../../../config/firebase';
 import '@fortawesome/fontawesome-free/css/all.min.css';
@@ -80,6 +80,16 @@ const PeralatanCNS = () => {
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Peralatan CNS</h1>
 
+            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                <nav className="text-gray-600">
+                    <span className="mx-2">/</span>
+                    <Link to="/dashboard" className="text-blue-500">Dashboard</Link>
+                    <span className="mx-2">/</span>
+                    <span>List Peralatan CNS</span>
+                </nav>
+            </div>
+
+
             <div className="bg-white rounded-lg shadow p-6">
                 <h2 className="text-blue-600 text-lg font-semibold mb-4">Peralatan CNS</h2>
 
@@ -125,31 +135,19 @@ const PeralatanCNS = () => {
                     <table className="min-w-full border border-gray-300">
                         <thead>
                             <tr className="text-black border-b border-gray-300 bg-gray-100">
-                                <th className="border-gray-300 w-[300px] border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Nama Alat
-                                    <button
-                                        onClick={() => handleSort('namaAlat')}
-                                        className="ml-2 text-blue-500 hover:text-blue-700"
-                                    >
-                                        ↕
+                                <th className="text-center border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
+                                    <button onClick={() => handleSort('namaAlat')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Nama&nbsp;↕
                                     </button>
                                 </th>
-                                <th className="border-gray-300 w-[200px] border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Kategori
-                                    <button
-                                        onClick={() => handleSort('kategoriAlat')}
-                                        className="ml-2 text-blue-500 hover:text-blue-700"
-                                    >
-                                        ↕
+                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
+                                    <button onClick={() => handleSort('kategoriAlat')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Kategori&nbsp;↕
                                     </button>
                                 </th>
-                                <th className="border-gray-300 w-[150px] border-r px-4 py-2 text-left text-sm sm:text-base">
-                                    Frekuensi
-                                    <button
-                                        onClick={() => handleSort('frekuensi')}
-                                        className="ml-2 text-blue-500 hover:text-blue-700"
-                                    >
-                                        ↕
+                                <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">
+                                    <button onClick={() => handleSort('kategoriAlat')} className="bg-transparent text-black ml-2 hover:text-gray-700">
+                                        Frekuensi&nbsp;↕
                                     </button>
                                 </th>
                                 <th className="border-gray-300 border-r px-4 py-2 text-left text-sm sm:text-base">

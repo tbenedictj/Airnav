@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../../config/firebase';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
@@ -68,6 +68,16 @@ const CatatanMingguan = () => {
     return (
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Data Pemeliharaan Mingguan Support</h1>
+            
+            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                <nav className="text-gray-600">
+                    <span className="mx-2">/</span>
+                    <Link to="/dashboard" className="text-blue-500">Dashboard</Link>
+                    <span className="mx-2">/</span>
+                    <span>List Data Pemeliharaan Mingguan Support</span>
+                </nav>
+            </div>            
+            
             <div className="bg-white p-4 rounded shadow">
                 <h2 className="text-lg font-semibold text-blue-600 mb-4">Pemeliharaan Mingguan Support</h2>
                 <div className="flex justify-between mb-4">
@@ -77,6 +87,12 @@ const CatatanMingguan = () => {
                             className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded mr-2"
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data
+                        </button>
+                        <button
+                            onClick={() => navigate('/cm-sup-pdf')}
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                        >
+                            <i className="fas fa-filter mr-2"></i> Filter & Print PDF
                         </button>
                     </div>
                     <div className="flex items-center">
@@ -97,7 +113,7 @@ const CatatanMingguan = () => {
                                 <th className="py-2 px-4 border">Peralatan</th>
                                 <th className="py-2 px-4 border">Aktivitas</th>
                                 <th className="py-2 px-4 border">Teknisi</th>
-                                <th className="py-2 px-4 border">Status</th>
+                                <th className="py-2 px-4 border">Note</th>
                                 <th className="py-2 px-4 border">Paraf</th>
                                 <th className="py-2 px-4 border">Aksi</th>
                             </tr>
@@ -115,12 +131,12 @@ const CatatanMingguan = () => {
                                                         ? item.aktivitas
                                                         : `${item.aktivitas.substring(0, 100)}...`}
                                                 </span>
-                                                <button 
-                                                    className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                <span 
+                                                    className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
                                                     onClick={() => toggleRow(item.id)}
                                                 >
                                                     {expandedRows[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                </button>
+                                                </span>
                                             </div>
                                         ) : (
                                             item.aktivitas
@@ -135,12 +151,12 @@ const CatatanMingguan = () => {
                                                             ? item.teknisi.join(', ')
                                                             : `${item.teknisi.join(', ').substring(0, 20)}...`}
                                                     </span>
-                                                    <button 
-                                                        className="text-blue-600 hover:text-blue-800 text-sm block mt-1"
+                                                    <span 
+                                                        className="text-blue-600 hover:text-blue-800 text-sm cursor-pointer block mt-1"
                                                         onClick={() => toggleTeknisi(item.id)}
                                                     >
                                                         {expandedTeknisi[item.id] ? 'Sembunyikan' : 'Selengkapnya'}
-                                                    </button>
+                                                    </span>
                                                 </div>
                                             ) : (
                                                 item.teknisi.join(', ')

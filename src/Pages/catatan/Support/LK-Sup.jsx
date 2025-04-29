@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import { db } from '../../../config/firebase';
 import { collection, getDocs, query, orderBy, deleteDoc, doc } from 'firebase/firestore';
@@ -85,6 +85,16 @@ const LaporanKegiatanSup = () => {
         <div className="container-fluid flex-col sticky h-screen mt-14 mx-auto px-4 sm:px-6 lg:px-8 py-6">
             {/* Title Section */}
             <h1 className="text-2xl font-bold mb-4 text-center sm:text-left">List Laporan Kegiatan & Kerusakan Support</h1>
+
+            <div className="bg-gray-100 p-3 shadow rounded-lg mb-6">
+                <nav className="text-gray-600">
+                    <span className="mx-2">/</span>
+                    <Link to="/dashboard" className="text-blue-500">Dashboard</Link>
+                    <span className="mx-2">/</span>
+                    <span>List Laporan Kegiatan & Kerusakan Support</span>
+                </nav>
+            </div>
+
             
             {/* Main Content Section */}
             <div className="bg-white p-4 rounded shadow">
@@ -99,7 +109,10 @@ const LaporanKegiatanSup = () => {
                         >
                             <i className="fas fa-plus mr-2"></i> Tambah Data
                         </button>
-                        <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded">
+                        <button 
+                             onClick={() => navigate('/lk-sup-pdf')}
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded"
+                        >
                             <i className="fas fa-filter mr-2"></i> Filter & Print PDF
                         </button>
                     </div>
